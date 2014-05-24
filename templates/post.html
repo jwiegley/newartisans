@@ -1,20 +1,10 @@
-<h1>$title$</h1>
-<div class="soft">
-    Posted in: $tags$.
+<div id="primary">
+    <div class="inside">
+        <h1 style="margin-bottom:10px">$title$</h1>
+        <div style="opacity:0.8;"><small>
+                <i>Posted by <a href="https://plus.google.com/u/0/111107020823914597555?rel=author">Danny Su</a> on $date$ with labels: $tags$</i>
+        </small></div>
+        <br>
+        $body$
+    </div>
 </div>
-
-$body$
-
-<h2>Comments</h2>
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-var disqus_identifier = '$url$';
-var disqus_url = 'http://jaspervdj.be' + '$url$';
-var disqus_title = '$title$';
-(function() {
-var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-dsq.src = 'http://jaspervdj.disqus.com/embed.js';
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript><p>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=jaspervdj">comments powered by Disqus.</a></p></noscript>

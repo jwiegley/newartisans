@@ -1,4 +1,4 @@
-{ cabal, hakyll, pandoc }:
+{ cabal, hakyll, pandoc, pandocTypes, blazeHtml, blazeMarkup }:
 
 cabal.mkDerivation (self: {
   pname = "newartisans";
@@ -6,7 +6,7 @@ cabal.mkDerivation (self: {
   src = ./.;
   isLibrary = false;
   isExecutable = true;
-  buildDepends = [ hakyll pandoc ];
+  buildDepends = [ hakyll pandoc pandocTypes blazeHtml blazeMarkup ];
   meta = {
     homepage = "http://newartisans.com";
     description = "Lost in Technopolis";
