@@ -1,0 +1,261 @@
+---
+title: Neat tricks with iptables
+description: desc here
+tags: 
+date: [2007-09-14 Fri 19:33]
+category: Uncategorized
+id: 201
+---
+
+The past few months have seen me digging deep into the world of TCP/IP and firewalls.  It has been a fascinating journey into packet queueing and TCP headers, three-way handshakes and ICMP broadcasts.
+
+The result of this research has been the ongoing creation of a firewall to protect my laptop against open networks, and my Internet server from port scanning and DoS attacks.  I'm pretty certain I haven't even scratched the surface yet, but I have found some settings to protect against the most common attacks. Below I'll summarize the major pieces of my new firewall, and the logic behind it.
+
+<!--more-->
+## Address spoofing
+
+The easiest way to fool a server is to construct a packet that whose source address is faked, or spoofed.  This is surprisingly easy to do.  To craft packets, I use a very powerful network analysis tool called [Scapy][].  Scapy will allow you to create packets on the fly, transmit them, and scan your network for any response.
+
+[Scapy]: http://www.secdev.org/projects/scapy/
+
+For example, let's say I'm on my local network (which I am right now, as I write this), connected via wireless as `192.168.15.113`.  I'm going to interact with the router, which is at `192.168.15.1`.  For the purposes of analysis, I've also setup a virtual machine running on `192.168.15.114`, so I can see what happens when I spoof the packet.
+
+So, let's say I spoof an ICMP `echo-request` packet, sent to `.1` (router) from `.113` (me) but spoofed as if it had come from `.114` (virtual machine).  In Scapy this is quite easy to do.  I run two scapy session in two terminal windows. In the first I type:
+
+	>>> send(IP(src="192.168.15.114", dst="192.168.15.1")/ICMP())
+	.
+	Sent 1 packets.
+
+Although my machine is at `.113`, I'm telling scapy to set the source address for the ICMP `echo-request` packet to `.114`, which is the host I want to attack. I'm sending this "ping" to the router, which should now send its response back to `.114` instead of me.
+
+In my other terminal window, I run scapy again, this time in *promiscuous* mode as a packet sniffer.  Promiscuous mode means that it will capture all packets seen on the network, not just those destined for my own machine.  Here's what I see:
+
+	>>> sniff(filter="icmp")
+	^C
+	>>> _.show()
+	0000 Ether / IP / ICMP 192.168.15.114 > 192.168.15.1 echo-request 0
+	0001 Ether / IP / ICMP 192.168.15.1 > 192.168.15.114 echo-reply 0
+
+I ran the sniffer, then did the ping, then stopped the sniffer by pressing Control-C.  I can see that two ICMP packets were seen during the sniff.  By showing the contents of these packets, I can see both the packet that I transmitted, and the response -- which came back to `.114`!
+
+That's a spoof.  How can it be used to attack someone?  Read on in the next section, since what we just did forms the basis for a smurf attack.
+
+Some packet spoofs, however, are more obvious.  For example, a packet coming from the Internet bound for a private IP address or certain broadcast addresses, such as address beginning with `192.168` or `224`.  These are never valid, so it's a good idea to drop such packets immediately upon receipt. Here are the `iptables` rules to do this:
+
+	# Reject packets from RFC1918 class networks (i.e., spoofed)
+	iptables -A INPUT -s 10.0.0.0/8     -j DROP
+	iptables -A INPUT -s 169.254.0.0/16 -j DROP
+	iptables -A INPUT -s 172.16.0.0/12  -j DROP
+	iptables -A INPUT -s 127.0.0.0/8    -j DROP
+
+	iptables -A INPUT -s 224.0.0.0/4      -j DROP
+	iptables -A INPUT -d 224.0.0.0/4      -j DROP
+	iptables -A INPUT -s 240.0.0.0/5      -j DROP
+	iptables -A INPUT -d 240.0.0.0/5      -j DROP
+	iptables -A INPUT -s 0.0.0.0/8        -j DROP
+	iptables -A INPUT -d 0.0.0.0/8        -j DROP
+	iptables -A INPUT -d 239.255.255.0/24 -j DROP
+	iptables -A INPUT -d 255.255.255.255  -j DROP
+
+Here's the same thing, now for `ipfw` users:
+
+	# Verify the reverse path to help avoid spoofed packets.  This means any
+	# packet coming from a particular interface must have an address matching the
+	# netmask for that interface.
+	ipfw add 100 deny all from any to any not verrevpath in
+
+	# Deny all inbound traffic from RFC1918 address spaces (spoof!)
+	ipfw add 110 deny all from 192.168.0.0/16 to any in
+	ipfw add 120 deny all from 172.16.0.0/12 to any in
+	ipfw add 130 deny all from 10.0.0.0/8 to any in
+	ipfw add 140 deny all from 127.0.0.0/8 to any in
+
+	ipfw add 150 deny all from 224.0.0.0/4 to any in
+	ipfw add 160 deny all from any to 224.0.0.0/4 in
+	ipfw add 170 deny all from 240.0.0.0/5 to any in
+	ipfw add 180 deny all from any to 240.0.0.0/5 in
+	ipfw add 190 deny all from 0.0.0.0/8 to any in
+	ipfw add 200 deny all from any to 0.0.0.0/8 in
+	ipfw add 210 deny all from any to 239.255.255.0/24 in
+	ipfw add 220 deny all from any to 255.255.255.255 in
+
+## Smurf attacks
+
+A smurf attack (which is named after the program people use to perform the attack), consists of three hosts: The attacker, a middle-man, and the victim.
+
+The intention here is to flood the victim with ICMP packets, clogging up their network bandwidth, or exhausting their bandwidth quota with their ISP.  The reason for using a middle-man to do this is so that the attacker cannot be identified as the source of the attack.
+
+What the attacker does is to craft an unending stream of ICMP packets, spoofed to appear *as if they had originated from the victim*.  These packets are sent to the middle-man, who responds to each one by sending an ICMP `echo-response` packet to the victim.  The victim, of course, never asked for these packets,but it has no way to stop the unending flood.  Even if he calls the middle-man's ISP, there is no way for the middle-man to easily stop the flood,except by turning off all ICMP traffic.  Even if he examines his packet logs,he cannot find out the IP address of the attacker, because the attacker has spoofed the packet.
+
+There is a defense against the smurf attack: rate limit incoming ICMP packets down to an extremely slow trickle.  After all, when ICMP traffic is legitimate, it is very low-bandwidth.  If someone pings you to see if you're alive, usually just a few response packets is all that's necessary.  And for the other types of ICMP response -- such as when the router informs your network card about routing issues -- again only a few packets are needed, not the huge flood that represents a smurf attack.
+
+Here is how to mount a defense using `iptables`:
+
+	# Allow most ICMP packets to be received (so people can check our
+	# presence), but restrict the flow to avoid ping flood attacks
+	iptables -A INPUT -p icmp -m icmp --icmp-type address-mask-request -j DROP
+	iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP
+	iptables -A INPUT -p icmp -m icmp -m limit --limit 1/second -j ACCEPT 
+
+Here we limit ICMP traffic to one packet per second.  So, even if someone floods us via smurf, the most packets we'll ever receive in a day is just over 86,000.  If you want even fewer, increase the limit.
+
+To implement this same rule using `ipfw`, it's necessary to use the `dummynet` traffic shaper to route ICMP packets down a narrow bandwidth channel:
+
+	# If you want to make packet decision after pipe inejection, enable this to
+	# make sure that packets get reinjected into the firewall
+	#sysctl -w net.inet.ip.fw.one_pass=0
+
+	# Rate limit ICMP traffic to avoid line clogging by Smurf attacks.  We
+	# direct ICMP packets into a 16 Kbit/s link.
+	ipfw pipe 300 config bw 16Kbit/s queue 1
+	ipfw pipe 310 config bw 16Kbit/s queue 5
+
+	ipfw add 300 drop icmp from any to not me in
+	ipfw add 310 drop icmp from not me to any out
+
+	ipfw add 320 pipe 100 icmp from any to any in
+	ipfw add 330 pipe 110 icmp from any to any out
+
+Again, the rate limit is configurable, so if you find that 16 Kbit/s is a large percentage of your link (as it may be, say, for a 256 Kbit/s DSL connection), then drop it down to 8 Kbit/s or even 4 Kbit/s.
+
+## Bogus packets
+
+Beyond packet spoofing, there are other types of bogus packets an attacker might generate to try to expose flows in your network stack.  Take the SYN and FIN flags, for example.  TCP SYN is used to request that a TCP connection be opened on a server; TCP FIN is used to terminate an existing connection.  So,does it make any sense to send a packet that has both SYN and FIN set together?
+
+Not at all.  These kinds of packets are "bogus", in that they use flag combinations which make no sense.  However, some network implementations can be fooled into some strange behavior when such unexpected packets are received.  The best defense, then, is just to reject them all.  Here's how to restrict bogus packets using `iptables`:
+
+	# Drop invalid packets immediately
+	iptables -A INPUT   -m state --state INVALID -j DROP
+	iptables -A FORWARD -m state --state INVALID -j DROP
+	iptables -A OUTPUT  -m state --state INVALID -j DROP
+
+	# Drop bogus TCP packets
+	iptables -A INPUT -p tcp -m tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+	iptables -A INPUT -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+
+## TCP reset attacks
+
+To understand a TCP reset attack, you first must understand how TCP manages connections.  To connect to a remote host, the client initiates a connection using a "three-way handshake", or sequence of three packets handed back and forth between the client and server, like this:
+
+ 1. The client send a TCP SYN packet to the server, with its "seq" field set to a random number.
+
+ 2. The server responds with a SYN+ACK packet, whose "ack" field is one greater than the "seq" field of the client's packet, but whose own "seq" field is another random number, this time chosen by the server.
+
+ 3. The client establishes the connection by responding to this packet with an ACK packet whose "ack" field is one greater than the server's "seq" number, and whose own "seq" field is one greater than the first "seq" value from step 1.
+
+By picking randomized, initial sequence numbers, and then transmitting these sequence numbers along with every packet -- incremented once for each packet -- the server and client can validate that indeed the next packet received is the correct packet, from the correct sender.
+
+The can best be understand by seeing the actual packets.  I will use scapy to manually establish a TCP connection to a server, and show you what the packets look like at each point during the communication:
+
+First, I send the initial SYN packet, using a seq of 0 (instead of a random number).  This means that I expect the "ack" field from the server's response to be set to 1 (seq+1).  After sending, I listen for the response packet, the server's SYN+ACK.  This can be done with one command in scapy:
+
+	>>> sr1(IP(dst='mail.johnwiegley.com')/TCP(dport=25,flags='S'))
+	Begin emission:
+	.Finished to send 1 packets.
+	..*
+	Received 4 packets, got 1 answers, remaining 0 packets
+	,IP version=4L ihl=5L tos=0x0 len=44 id=0 flags=DF frag=0L ttl=51
+	    proto=tcp chksum=0x10d2 src=208.70.150.154 dst=192.168.15.113
+	    options=&#039;&#039; |
+	  >
+
+I've formatted the results a little, but here you can see the "SA" flags of the response packet (SYN+ACK), and the "ack" field properly set to 1.  The seq field has been set to a random number by the server, to 651538917.  This means that the packet I send in response must set the "ack" field to 651538918 (seq=ack+1).  I can use a little Python magic to make this easier for me, by using the special underbar variable to refer to the details of the received packet:
+
+	>>> sr1(IP(dst='mail.johnwiegley.com')/TCP(dport=25,flags='A',ack=_.seq+1,seq=1))
+	Begin emission:
+	Finished to send 1 packets.
+	...............*
+	Received 16 packets, got 1 answers, remaining 0 packets
+	,IP version=4L ihl=5L tos=0x0 len=80 id=43334 flags=DF frag=0L ttl=51
+	    proto=tcp chksum=0x6767 src=208.70.150.154 dst=192.168.15.113
+	    options=&#039;&#039; |
+	  ,TCP sport=smtp dport=ftp_data seq=651538918L ack=1L dataofs=5L
+	       reserved=0L flags=PA window=5840 chksum=0x2cdb urgptr=0
+	       options=[] |
+	    >>
+
+Success!  The server has responded to our ACK by sending back the initial data packet in the conversation, which contains the opening banner of an SMTP connection.  You can see the flags in this answer packet are PA (PSH+ACK), which means that it is an acknowledge of our acknowledge, and that we should consider the data payload immediately rather than waiting for more data to accumulate first.  The "seq" field is now one greater than the "seq" field from the SYN+ACK packet (since this is the second packet the server has sent us).  Any packet we send back in response must have its "ack" set to one greater than this "seq".
+
+Now, there are two ways of concluding this connection.  If the client wishes to close the connection, he sends a FIN packet, whose "ack" field must contain the proper next value in the sequence.  If the server has to finish, he also sends a FIN packet, again whose "ack" must be properly set.  If either side must "abort" the connection -- usually in order to rebuild it -- they send an RST packet instead of a FIN.
+
+This opens up a line of attack, however, since an attacker now only needs to know two things to force us to close our connection: Our IP address, and the next packet number in the sequence.  If they have both of these, they can send us a bogus packet, spoofed as if coming from the server, with the RST flag set.  If he gets the sequence number right, we have no choice but to assume the server is telling us to tear down our connection.
+
+Of course, guessing the right sequence number is not necessarily easy to do.  There are various ways to reduce the number of packets that have to be generated, but a determined attacker *will* be able to find the right number, if the connection is long-lived.  This is the case with some routing hardware, which depends on long-lived connections to work.  It will have no effect, of course, on clients that use UDP-based VPNs, because there is no equivalent to the RST flag to disrupt a UDP communication.
+
+How can one defend against a RST attack?  The easiest way is just to slow down the receipt of RST packets.  Data travels rather quickly on the Internet, and the odds are that the next packet in a sequence will arrive fairly soon.  By delaying RST packets by about half a second, it makes it much harder for the attacker to force his packet into the queue before the correct one.  It's not a foolproof defense, but it certainly makes the attacker's job a great deal more difficult.
+
+This defense cannot be implemented directly in `iptables`, but requires queueing disciplines to be done correctly.  However, a somewhat similar defense can be made simply by rate limiting RST packets, just as we did for ICMP packets above:
+
+	# Drop excessive RST packets to avoid SMURF attacks, by given the
+	# next real data packet in the sequence a better chance to arrive first.
+	iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST \
+	    -m limit --limit 2/second --limit-burst 2 -j ACCEPT
+
+In `ipfw` the implementation is simpler, because we can use the `dummynet` shaper:
+
+	# Delay TCP RESET packets.
+	ipfw pipe 400 config delay 500
+	ipfw add 400 pipe 400 tcp from any to any in tcpflags rst
+
+## SYN flooding
+
+If you recall the discussion on TCP three-way handshakes in the previous section, we find there is a weak-point in the scheme: For every SYN packet a server receives, he must assign -- and remember -- the corresponding "seq" value that he sends out with his SYN+ACK, in order to authorize the client's ACK when it is finally received.
+
+That is, if a client sends a SYN packet, and the server responds with a SYN+ACK packet, it is now waiting for an ACK packet from the client to complete the connection.  Until the ACK packet arrives, the server keeps the connection in a "half-open" state, where it keeps track of the "seq" number it assigned to that potential connection, awaiting the client's ACK packet to complete it.
+
+But this information about the half-open connection takes up memory in the kernel, and the more SYN packets it receives with hearing an answering ACK, the more half-open connections it will keep reserved.  Of course, there is a timeout for these connection, but it is usually large enough that a determined attacker can overwhelm a server's table space for half-open connections, making it impossible for legitimate clients to connection.
+
+The answer to a SYN flood is to restrict the rate of new connections, since very rarely will a person need to open a flood of new connections all at once.  Bare in mind when you set the values for this rule that web pages with tons of tiny icons will prompt an equal number of connection requests from a client every time he access that page.
+
+	# Protect against SYN floods by rate limiting the number of new
+	# connections from any host to 60 per second.  This does *not* do rate
+	# limiting overall, because then someone could easily shut us down by
+	# saturating the limit.
+	iptables -A INPUT -m state --state NEW -p tcp -m tcp --syn \
+	    -m recent --name synflood --set
+	iptables -A INPUT -m state --state NEW -p tcp -m tcp --syn \
+	    -m recent --name synflood --update --seconds 1 --hitcount 60 -j DROP
+
+The same can be achieved in `ipfw` using the `dummynet` shaper:
+
+	# Direct SYN
+	ipfw pipe 500 config bw 64Kbit/s queue 5
+	ipfw add 500 pipe 500 tcp from any to any in setup
+
+## Port scanning
+
+A lot of hosts try to port scan my server these days, looking for open services they can try to exploit.  Since I run very few services on my server, what I like to do is look for port connections to a commonly scanned port (port 139, for Windows File Sharing), and then block the hosts who attempt the connection from talking to my server for an entire day.  The rule is quite simple using the `iptables` `recent` module:
+
+	# Anyone who tried to portscan us is locked out for an entire day.
+	iptables -A INPUT   -m recent --name portscan --rcheck --seconds 86400 -j DROP
+	iptables -A FORWARD -m recent --name portscan --rcheck --seconds 86400 -j DROP
+
+	# Once the day has passed, remove them from the portscan list
+	iptables -A INPUT   -m recent --name portscan --remove
+	iptables -A FORWARD -m recent --name portscan --remove
+
+	# These rules add scanners to the portscan list, and log the attempt.
+	iptables -A INPUT   -p tcp -m tcp --dport 139 \
+	    -m recent --name portscan --set -j LOG --log-prefix "Portscan:"
+	iptables -A INPUT   -p tcp -m tcp --dport 139 \
+	    -m recent --name portscan --set -j DROP
+
+	iptables -A FORWARD -p tcp -m tcp --dport 139 \
+	    -m recent --name portscan --set -j LOG --log-prefix "Portscan:"
+	iptables -A FORWARD -p tcp -m tcp --dport 139 \
+	    -m recent --name portscan --set -j DROP
+
+Unfortunately, there is no way to implement this sand-trap using `ipfw` alone. It would require a `divert` rule that sends packets to a user-space daemon, which would keep track of host address and implement the day-long packet drop. Since I don't use `ipfw` on any servers at the moment, I haven't yet written this utility.
+
+## Password attacks
+
+Password attacks are becoming a continual nuisance to anyone who runs a server on the Internet.  Every day I see hundreds and hundreds of failed login attempts to both my FTP service and my ssh service.
+
+The best way to avoid these logins to the ssh service is to disable password logins entirely.  Use public key authentication only, with keys installed by the system administrator when new accounts are created.  Then you can simply ignore the failed attempts, as they will never get anywhere.
+
+For FTP, it's a big tougher, because you want people to be able to login, at least anonymously.  For anonymous only logins, I use `vsftpd`, which lets me disable user-based logins altogether.  This also cures the problem, as no failed logins appear in my logfiles anymore.
+
+## Conclusion
+
+That's just a few of the steps I take to protect my server from attacks.  Like I said, it's probably just the tip of the iceberg, but it's been an enjoyable learning process, and hopefully some good will come of all this arcane knowledge know that I'm finally getting a grasp on it.
+

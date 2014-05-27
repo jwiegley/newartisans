@@ -1,0 +1,17 @@
+---
+title: Fixed a few bugs in Ready Lisp
+description: desc here
+tags: SBCL, SLIME
+date: [2007-12-08 Sat 18:11]
+category: Uncategorized
+id: 175
+---
+
+A couple of pathname issues were discovered in the release of Ready Lisp that was posted yesterday, leading to the inability to load `asdf-install` (or use it).  These have been fixed in the new release uploaded today.  If you now use `asdf-install` and choose a "system-wide" installation, the installed packages get saved in your Application bundle.  However, due to the way that `asdf-install` itself works, if you then move your application bundle to another directory, symbolic links in the `systems` directory will get broken.  So I recommend installing new packages into your home directory instead.
+
+Also, the sources for SBCL are now included, meaning that if you use `M-.` (jump to definition) and pick a function like `mapcar`, it will drop you into the source code for SBCL's `mapcar` implementation.
+
+The new version is available [here](ftp://ftp.newartisans.com/pub/lisp/ReadyLisp-1.0.12-10.5.1-2.dmg) (the old link still works, it is now a reference to that one).
+
+Lastly, I've created a new home page for the Ready Lisp project, which now lives [here](http://www.newartisans.com/software/readylisp.html).
+

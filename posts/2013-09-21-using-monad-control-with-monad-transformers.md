@@ -1,7 +1,10 @@
 ---
 title: Using monad-control with monad transformers
 description: desc here
-tags: haskell
+tags: 
+date: [2013-09-21 Sat 04:04]
+category: Haskell
+id: 455
 ---
 
 This article assumes familiarity with monads and monad transformers.  If
@@ -45,40 +48,44 @@ nested call to `runStateT` inside that `IO` block.  Further, we'd want to
 restore any changes made to the inner `StateT` within the outer `StateT`,
 after returning from the `IO` action:
 
-    import Control.Applicative
-    import Control.Monad.Trans.State
-    import Control.Monad.IO.Class
-    
-    main = do
-        let f = do { modify (+1); show <$> get } :: StateT Int IO String
-    
-        flip runStateT 0 $ do
-            x <- f
-            y <- get
-            y' <- liftIO $ do
-                print $ "x = " ++ show x   -- x = "1"
-    
-                (x',y') <- runStateT f y
-                print $ "x = " ++ show x'  -- x = "2"
-                return y'
-            put y'
+``` haskell
+import Control.Applicative
+import Control.Monad.Trans.State
+import Control.Monad.IO.Class
+
+main = do
+    let f = do { modify (+1); show <$> get } :: StateT Int IO String
+
+    flip runStateT 0 $ do
+        x <- f
+        y <- get
+        y' <- liftIO $ do
+            print $ "x = " ++ show x   -- x = "1"
+
+            (x',y') <- runStateT f y
+            print $ "x = " ++ show x'  -- x = "2"
+            return y'
+        put y'
+```
 
 ## A generic solution
 
 This works fine for `StateT`, but how can we write it so that it works for any
 monad tranformer over IO?  We'd need a function that might look like this:
 
-    foo :: MonadIO m => m String -> m String
-    foo f = do
-        x <- f
-        y <- getTheState
-        y' <- liftIO $ do
-            print $ "x = " ++ show x
-    
-            (x',y') <- runTheMonad f y
-            print $ "x = " ++ show x'
-            return y'
-        putTheState y'
+``` haskell
+foo :: MonadIO m => m String -> m String
+foo f = do
+    x <- f
+    y <- getTheState
+    y' <- liftIO $ do
+        print $ "x = " ++ show x
+
+        (x',y') <- runTheMonad f y
+        print $ "x = " ++ show x'
+        return y'
+    putTheState y'
+```
 
 But this is impossible, since we only know that `m` is a `Monad`.  Even with a
 `MonadState` constraint, we would not know about a function like
@@ -88,10 +95,12 @@ transformer within the base monad, and restoring the enclosing transformer's
 state upon returning from the base monad.  This is exactly what
 `MonadBaseControl` provides, from `monad-control`:
 
-    class MonadBase b m => MonadBaseControl b m | m -> b where
-        data StM m :: * -> *
-        liftBaseWith :: (RunInBase m b -> b a) -> m a
-        restoreM :: StM m a -> m a
+``` haskell
+class MonadBase b m => MonadBaseControl b m | m -> b where
+    data StM m :: * -> *
+    liftBaseWith :: (RunInBase m b -> b a) -> m a
+    restoreM :: StM m a -> m a
+```
 
 Taking this definition apart piece by piece:
 
@@ -115,29 +124,31 @@ Taking this definition apart piece by piece:
 With that said, here's the same example from above, but now generic for any
 transformer supporting `MonadBaseControl IO`:
 
-    {-# LANGUAGE FlexibleContexts #-}
-    
-    import Control.Applicative
-    import Control.Monad.Trans.State
-    import Control.Monad.Trans.Control
-    
-    foo :: MonadBaseControl IO m => m String -> m String
-    foo f = do
-        x <- f
-        y' <- liftBaseWith $ \runInIO -> do
-            print $ "x = " ++ show x   -- x = "1"
-    
-            x' <- runInIO f
-            -- print $ "x = " ++ show x'
-    
-            return x'
-        restoreM y'
-    
-    main = do
-        let f = do { modify (+1); show <$> get } :: StateT Int IO String
-    
-        (x',y') <- flip runStateT 0 $ foo f
-        print $ "x = " ++ show x'   -- x = "2"
+``` haskell
+{-# LANGUAGE FlexibleContexts #-}
+
+import Control.Applicative
+import Control.Monad.Trans.State
+import Control.Monad.Trans.Control
+
+foo :: MonadBaseControl IO m => m String -> m String
+foo f = do
+    x <- f
+    y' <- liftBaseWith $ \runInIO -> do
+        print $ "x = " ++ show x   -- x = "1"
+
+        x' <- runInIO f
+        -- print $ "x = " ++ show x'
+
+        return x'
+    restoreM y'
+
+main = do
+    let f = do { modify (+1); show <$> get } :: StateT Int IO String
+
+    (x',y') <- flip runStateT 0 $ foo f
+    print $ "x = " ++ show x'   -- x = "2"
+```
 
 One notable difference in this example is that the second `print` statement in
 `foo` becomes impossible, since the "monadic value" returned from the inner
@@ -151,19 +162,23 @@ transformer is being used.
 As a convenience, since calling `restoreM` after exiting `liftBaseWith` is so
 common, you can use `control` instead of `restoreM =<< liftBaseWith`:
 
-    y' <- restoreM =<< liftBaseWith (\runInIO -> runInIO f)
+``` haskell
+y' <- restoreM =<< liftBaseWith (\runInIO -> runInIO f)
 
-    -- becomes...
-    y' <- control $ \runInIO -> runInIO f
+-- becomes...
+y' <- control $ \runInIO -> runInIO f
+```
 
 Another common pattern is when you don't need to restore the inner
 transformer's state to the outer transformer, you just want to pass it down as
 an argument to some function in the base monad:
 
-    foo :: MonadBaseControl IO m => m String -> m String
-    foo f = do
-        x <- f
-        liftBaseDiscard forkIO $ f
+``` haskell
+foo :: MonadBaseControl IO m => m String -> m String
+foo f = do
+    x <- f
+    liftBaseDiscard forkIO $ f
+```
 
 In this example, the first call to `f` affects the state of `m`, while the
 inner call to `f`, though inheriting the state of `m` in the new thread, but
@@ -172,13 +187,17 @@ does not restore its effects to the parent monad transformer when it returns.
 Now that we have this machinery, we can use it to make any function in `IO`
 directly usable from any supporting transformer.  Take `catch` for example:
 
-    catch :: Exception e => IO a -> (e -> IO a) -> IO a
+``` haskell
+catch :: Exception e => IO a -> (e -> IO a) -> IO a
+```
 
 What we'd like is a function that works for any `MonadBaseControl IO m`,
 rather than just `IO`.  With the `control` function this is easy:
 
-    catch :: (MonadBaseControl IO m, Exception e) => m a -> (e -> m a) -> m a
-    catch f h = control $ \runInIO -> catch (runInIO f) (runInIO . h)
+``` haskell
+catch :: (MonadBaseControl IO m, Exception e) => m a -> (e -> m a) -> m a
+catch f h = control $ \runInIO -> catch (runInIO f) (runInIO . h)
+```
 
 You can find many function which are generalized like this in the packages
 `lifted-base` and `lifted-async`.

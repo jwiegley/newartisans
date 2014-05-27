@@ -1,0 +1,27 @@
+---
+title: Building a better pre-commit hook for Git
+description: desc here
+tags: commit, hook
+date: [2009-02-13 Fri 22:23]
+category: Uncategorized
+id: 212
+---
+
+Recently a friend turned me onto an [interesting article](http://fourkitchens.com/comment/reply/109) about a problem I had just recently discovered about Git and its pre-commit hook:
+
+> Committing in git with only some changes added to the staging area still results in an "atomic" revision *that may never have existed as a working copy and may not work*.
+
+
+<!--more-->
+As an example of this, I often find myself doing a whole flurry of changes all at once.  This is no problem with Git, because I have the wonderful tool [magit.el](http://zagadka.vm.bytemark.co.uk/magit/) to help sift out the many commits implied by those changes.  So I turn one big set of changes into many smaller commits, leaving only pending work in my working tree.  Then I push.
+
+My users pull those commits, only to find that lo! and behold, they will not build.  "What?", I think to myself, "how can that be?  I just ran the unit tests and everything was fine."  However, I *never ran the unit tests against that particular commit*.  Because those commits I just pushed never existed as independent working trees on my system.  In fact, they never existed at all, they were mere figments within the Git index, which Git happily made into immutable commits for me.
+
+What makes this all worse is that the `pre-commit` hook was something of a lie.  I thought that by adding `make check` to my `pre-commit` hook, I'd know for sure that every commit I checked in was safe and sound.  However, that `make check` was running against my *working tree*, not the proposed commit.  I still knew nothing about the correctness of what I just checked in, unless it happened to also represent the state of my working tree -- a rare occurrence indeed, given Git's culture's preference for frequent, smaller commits.
+
+The answer turned out to be a little complex.  What I needed was a `pre-commit` hook that would test the contents of my *Git index* before each commit, not my working tree.  And there happens to be no simple command in Git for "checking out your index".  Even if you do use `git checkout-index`, it resets the timestamps for every files that it creates, forcing `make check` to rebuild the entire app each time -- not just its most recent changes.  Assuming you have a Makefile system that works, such duplication of effort is wholly unnecessary.
+
+I came up with a solution that uses a secondary source tree, to hold the checked out index, and a temporary build tree, which gets updated with any changes since the last time the `pre-commit` hook was run.  The end result is that small changes pass or fail quickly, while large-scale changes sometimes require a full rebuild to confirm.
+
+The script itself can be viewed in my [git-script project on GitHub](http://github.com/jwiegley/git-scripts/blob/47a743a7aa519d6d677d800742e4db47570e1bc6/pre-commit.sh).  You will need to tailor it for your own project if you plan to use it, and then copy it to `.git/hooks/pre-commit`, and enable the executable bit.
+

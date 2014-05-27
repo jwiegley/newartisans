@@ -1,7 +1,10 @@
 ---
 title: Getting Started with Lenses
 description: desc here
-tags: haskell
+tags: 
+date: [2012-11-21 Wed 22:28]
+category: Haskell
+id: 401
 ---
 
 The following is the first in a series of articles I hope to write as a gentle

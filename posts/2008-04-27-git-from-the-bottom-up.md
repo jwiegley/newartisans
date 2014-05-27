@@ -1,0 +1,30 @@
+---
+title: Git from the bottom up
+description: desc here
+tags: 
+date: [2008-04-27 Sun 23:32]
+category: Uncategorized
+id: 167
+---
+
+In my pursuit to understand Git, it's been helpful for me to understand it from the bottom up -- rather than look at it only in terms of its high-level commands.  And since Git is so beautifully simple when viewed this way, I thought others might be interested to read what I've found, and perhaps avoid the pain I went through finding it.
+
+[The following article][] offers what I've learned on this journey so far.  I hope it can help others to comprehend this wonderful system, and discover some of the joy I've experienced in the past few weeks.  **NOTE**: After receiving more than fifty corrections by e-mail from very helpful readers, I've updated the PDF to reflect their input.  The date at the front should read "December 2009" if you have the latest version.
+
+Here is a summary from the table of contents:
+
+  * Introduction
+  * Repository: Directory content tracking
+  * Introducing the blob
+  * Blobs are stored in trees
+  * How trees are made
+  * The beauty of commits
+  * A commit by any other name...
+  * Branching and the power of rebase
+  * Index Cache: Meet the middle man
+  * Taking the index cache farther
+  * To reset, or not to reset
+  * Last links in the chain: Stashing and the reflog
+
+[The following article]: http://ftp.newartisans.com/pub/git.from.bottom.up.pdf
+
