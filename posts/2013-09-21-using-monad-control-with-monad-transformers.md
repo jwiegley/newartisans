@@ -1,7 +1,7 @@
 ---
 title: Using monad-control with monad transformers
 description: desc here
-tags: 
+tags: haskell
 date: [2013-09-21 Sat 04:04]
 category: Haskell
 id: 455
