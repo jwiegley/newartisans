@@ -1,5 +1,5 @@
-{-# LANGUAGE BangPatterns  #-}
-{-# LANGUAGE OverloadedStrings  #-}
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Main where
 
@@ -20,7 +20,6 @@ import           Data.Monoid
 import qualified Data.Text as T
 import           Data.Text.Lazy (unpack)
 import           Data.Time
-import           Debug.Trace
 import           Filesystem.Path.CurrentOS (decodeString)
 import           Hakyll
 import           Prelude hiding (concatMap, any, all)
@@ -39,6 +38,8 @@ import           Text.Pandoc (Block (CodeBlock), Pandoc, bottomUpM)
 import qualified Text.Pandoc as Pandoc
 import qualified Text.Pandoc.Walk as Pandoc
 import qualified Text.ParserCombinators.Parsec as Parsec
+
+--import Debug.Trace
 
 main :: IO ()
 main = hakyllWith config $ do
@@ -98,7 +99,7 @@ main = hakyllWith config $ do
 
     -- Render each and every post
     -- Match all files under posts directory and its subdirectories.
-    -- Turn posts into wordpress style url: year/month/date/title/index.html
+    -- Turn posts into wordpress style url: year/month/title/index.html
     forM_ [("posts/*",
             "templates/post.html",
             "templates/postfooter.html"
@@ -266,9 +267,7 @@ teaserBody item = do
         . replaceAll "</a>" (const "")
 
 config :: Configuration
-config = defaultConfiguration
-    { deployCommand = "rsync --checksum -ave 'ssh -p 2222' _site/* jaspervdj@jaspervdj.be:jaspervdj.be"
-    }
+config = defaultConfiguration { deployCommand = "./deploy" }
 
 feedConfiguration :: FeedConfiguration
 feedConfiguration = FeedConfiguration
@@ -326,8 +325,8 @@ isSlash _   = False
 wordpressRoute :: Routes
 wordpressRoute = gsubRoute "posts/" (const "")
     `composeRoutes` gsubRoute "pages/" (const "")
-    `composeRoutes` gsubRoute "^[0-9]{4}-[0-9]{2}-"
-                        (map replaceWithSlash)
+    `composeRoutes` gsubRoute "^[0-9]{4}-[0-9]{2}-[0-9]{2}-"
+        ((\x -> take 8 x ++ drop 11 x) . map replaceWithSlash)
     `composeRoutes` gsubRoute ".md" (const "/index.html")
     `composeRoutes` gsubRoute ".lhs" (const "/index.html")
   where
@@ -450,7 +449,7 @@ postList tags pattern preprocess' = do
 
 recentPostList :: Compiler String
 recentPostList = do
-    posts   <- fmap (take 10) . recentFirst =<< recentPosts
+    posts   <- fmap (take 6) . recentFirst =<< recentPosts
     itemTpl <- loadBody "templates/indexpostitem.html"
     applyTemplateList itemTpl defaultContext posts
 
@@ -657,14 +656,14 @@ formatInlineGhci path = runResourceT . bottomUpM go
   where
     go = onTag "ghci" formatGhciBlock return
 
-    formatGhciBlock attr src = do
+    formatGhciBlock _attr src = do
         results <- yieldMany (parseGhciInputs src)
             =$ mapC ghciEval
             =$ ghciProcessConduit path
             =$ mapC (formatGhciResult . stripGhciOutput)
             $$ sinkList
         return $ Pandoc.RawBlock "html"
-               $ "<pre><code>" ++ (intercalate "\n" results) ++ "</code></pre>"
+               $ "<pre><code>" ++ intercalate "\n" results ++ "</code></pre>"
 
 parseGhciInputs :: String -> [GhciInput]
 parseGhciInputs
