@@ -1,22 +1,32 @@
+{-# LANGUAGE BangPatterns  #-}
 {-# LANGUAGE OverloadedStrings  #-}
 
 module Main where
 
 import           Conduit
-import           Control.Applicative
+import           Control.Applicative hiding ((<|>), many)
+import           Control.Arrow (first)
 import           Control.Monad hiding (forM_)
+import           Data.Attoparsec.Text hiding (take, takeWhile)
 import           Data.Char
+import           Data.Conduit.Attoparsec
 import           Data.Conduit.Process
-import           Data.Conduit.Text (decodeUtf8)
-import           Data.Foldable
-import           Data.List
+import           Data.Conduit.Text (encodeUtf8, decodeUtf8)
+import           Data.Foldable hiding (elem)
+import           Data.List hiding (concatMap, any, all)
+import           Data.List.Split hiding (oneOf)
 import           Data.Maybe
 import           Data.Monoid
+import qualified Data.Text as T
 import           Data.Text.Lazy (unpack)
 import           Data.Time
+import           Debug.Trace
+import           Filesystem.Path.CurrentOS (decodeString)
 import           Hakyll
+import           Prelude hiding (concatMap, any, all)
 import           System.Directory
 import           System.FilePath
+import           System.IO
 import           System.IO.Unsafe (unsafePerformIO)
 import           System.Locale
 import           System.Process
@@ -25,9 +35,10 @@ import           Text.Blaze.Html.Renderer.String (renderHtml)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 import           Text.Blaze.Internal (preEscapedString)
-import qualified Text.BlogLiterately.Ghci as Literate
+import           Text.Pandoc (Block (CodeBlock), Pandoc, bottomUpM)
 import qualified Text.Pandoc as Pandoc
 import qualified Text.Pandoc.Walk as Pandoc
+import qualified Text.ParserCombinators.Parsec as Parsec
 
 main :: IO ()
 main = hakyllWith config $ do
@@ -59,18 +70,20 @@ main = hakyllWith config $ do
             >>= pdfToPng
 
     -- Compress CSS
-    match "css/*" $ do
+    match "css/*.css" $ do
         route idRoute
         -- compile compressCssCompiler
         compile yuiCompressor
 
     -- Compress and minify JavaScript
-    match "js/*" $ do
+    match "js/*.js" $ do
         route idRoute
         compile yuiCompressor
 
     -- Compress and minify Blueprint CSS
-    match "blueprint-css/blueprint/*" $ do
+    forM_ [ "blueprint-css/blueprint/*.css"
+          , "blueprint-css/blueprint/plugins/fancy-type/*.css"
+          ] $ \p -> match p $ do
         route idRoute
         compile yuiCompressor
 
@@ -140,33 +153,33 @@ main = hakyllWith config $ do
                 >>= loadAndApplyTemplate "templates/default.html" allCtx
                 >>= wordpressifyUrls
 
-    -- paginate 5 $ \index maxIndex itemsForPage -> do
-    --     let ident = fromFilePath $ "blog/page/" ++ show index ++ "/index.html"
-    --     create [ident] $ do
-    --         route idRoute
-    --         compile $ do
-    --             let allCtx =
-    --                     field "recent" (const recentPostList) <>
-    --                     defaultContext
-    --                 loadTeaser ident' = loadSnapshot ident' "teaser"
-    --                     >>= loadAndApplyTemplate "templates/teaser.html"
-    --                         (teaserCtx tags)
-    --                     >>= wordpressifyUrls
-    --             item1 <- loadTeaser (head itemsForPage)
-    --             item2 <- loadTeaser (last itemsForPage)
-    --             let body1 = itemBody item1
-    --                 body2 = if length itemsForPage == 1 then "" else itemBody item2
-    --                 postsCtx = constField "posts" (body1 ++ body2)
-    --                     <> field "navlinkolder"
-    --                         (const $ return $ indexNavLink index 1 maxIndex)
-    --                     <> field "navlinknewer"
-    --                         (const $ return $ indexNavLink index (-1) maxIndex)
-    --                     <> defaultContext
+    paginate 6 $ \index maxIndex itemsForPage -> do
+        let ident
+                | show index == "1" = fromFilePath "index.html"
+                | otherwise = fromFilePath $ "blog/page/" ++ show index ++ "/index.html"
+        create [ident] $ do
+            route idRoute
+            compile $ do
+                let allCtx =
+                        field "recent" (const recentPostList) <>
+                        defaultContext
+                    loadTeaser ident' = loadSnapshot ident' "teaser"
+                        >>= loadAndApplyTemplate "templates/teaser.html"
+                            (-- constField "title" "Lost in Technopolis" <> 
+                             teaserCtx tags)
+                        >>= wordpressifyUrls
+                items  <- mapM loadTeaser itemsForPage
+                let postsCtx = constField "posts" (concatMap itemBody items)
+                        <> field "navlinkolder"
+                            (const $ return $ indexNavLink index 1 maxIndex)
+                        <> field "navlinknewer"
+                            (const $ return $ indexNavLink index (-1) maxIndex)
+                        <> defaultContext
 
-    --             makeItem ""
-    --                 >>= loadAndApplyTemplate "templates/blogpage.html" postsCtx
-    --                 >>= loadAndApplyTemplate "templates/default.html" allCtx
-    --                 >>= wordpressifyUrls
+                makeItem ""
+                    >>= loadAndApplyTemplate "templates/blogpage.html" postsCtx
+                    >>= loadAndApplyTemplate "templates/default.html" allCtx
+                    >>= wordpressifyUrls
 
     -- Render RSS feed
     create ["rss.xml"] $ do
@@ -183,11 +196,9 @@ customPandocCompiler :: Compiler (Item String)
 customPandocCompiler = cached "Main.customPandocCompiler" $ do
     path <- getResourceFilePath
     body <- fmap fixBefore <$> getResourceBody
-    let hasGhci = False -- "[ghci]" `isInfixOf` itemBody body
-        doc     = readPandocWith ropt body
-        doc'    = Pandoc.walk (removeBirdTracks . hiddenBlocks) doc
-        doc''   = (if hasGhci then fmtGhci path else id) <$> doc'
-    return $ fixAfter <$> writePandocWith wopt doc''
+    let doc  = readPandocWith ropt body
+        doc' = Pandoc.walk (removeBirdTracks . hiddenBlocks) doc
+    return $ fixAfter <$> writePandocWith wopt (fmtGhci path body <$> doc')
   where
     fixBefore = fixCodeBlocks . fixHeaders . fixLineEndings
     fixAfter  = fixupTables
@@ -200,7 +211,10 @@ customPandocCompiler = cached "Main.customPandocCompiler" $ do
                           ++ "?config=TeX-AMS-MML_HTMLorMML"
         }
 
-    fmtGhci path = unsafePerformIO . Literate.formatInlineGhci path
+    fmtGhci path body
+        | "[ghci]" `isInfixOf` itemBody body
+            = unsafePerformIO . formatInlineGhci path
+        | otherwise = id
 
 postCtx :: Tags -> Context String
 postCtx tags = mconcat
@@ -220,12 +234,12 @@ teaserBody item = do
     extractTeaser :: String -> String
     extractTeaser [] = []
     extractTeaser xs@(x : xr)
-        | "<!-- more -->" `isPrefixOf` xs = []
-        | otherwise                       = x : extractTeaser xr
+        | "<!--more-->" `isPrefixOf` xs = []
+        | otherwise = x : extractTeaser xr
 
     maxLengthTeaser :: String -> String
     maxLengthTeaser s
-        | isNothing (findIndex (isPrefixOf "<!-- more -->") (tails s))
+        | isNothing (findIndex (isPrefixOf "<!--more-->") (tails s))
             = unwords (take 60 (words s))
         | otherwise = s
 
@@ -351,8 +365,7 @@ fixCodeBlocks =
         | otherwise = l
 
 fixupTables :: String -> String
-fixupTables txt = replace txt "<table>"
-                              "<table style=\"width: 70%; margin: 20px\">"
+fixupTables txt = replace txt "<table>" "<table style=\"width: 70%; margin: 20px\">"
 
 -- | Replace a sublist with another list.
 replace :: (Eq a) => [a] -> [a] -> [a] -> [a]
@@ -458,32 +471,29 @@ indexNavLink n d maxn = renderHtml ref
     refPage = if n + d < 1 || n + d > maxn
               then ""
               else case n + d of
-                1 -> "/blog/page/1/"
+                1 -> "/"
                 _ -> "/blog/page/" ++ show (n + d) ++ "/"
 
 paginate:: Int -> (Int -> Int -> [Identifier] -> Rules ()) -> Rules ()
 paginate itemsPerPage rules = do
     identifiers <- getMatches "posts/*"
     let sorted      = sortBy (flip byDate) identifiers
-        chunks      = chunk itemsPerPage sorted
+        chunks      = chunksOf itemsPerPage sorted
         maxIndex    = length chunks
         pageNumbers = take maxIndex [1..]
         process i   = rules i maxIndex
     zipWithM_ process pageNumbers chunks
   where
     byDate id1 id2 =
-        let fn1 = takeFileName $ toFilePath id1
-            fn2 = takeFileName $ toFilePath id2
-            parseTime' fn =
-                parseTime defaultTimeLocale "%Y-%m-%d"
-                    $ intercalate "-" $ take 3 $ splitAll "-" fn
+        let fn1 = takeFileName (toFilePath id1)
+            fn2 = takeFileName (toFilePath id2)
+            parseTime' fn
+                = parseTime defaultTimeLocale "%Y-%m-%d"
+                $ intercalate "-"
+                $ take 3
+                $ splitAll "-" fn
         in compare (parseTime' fn1 :: Maybe UTCTime)
                    (parseTime' fn2 :: Maybe UTCTime)
-
-chunk :: Int -> [a] -> [[a]]
-chunk _ [] = []
-chunk n xs = ys : chunk n zs
-    where (ys,zs) = splitAt n xs
 
 yuiCompressor :: Compiler (Item String)
 yuiCompressor = do
@@ -496,3 +506,218 @@ yuiCompressor = do
                ++ path
         fmap unpack $ runResourceT $
             sourceProcess (shell cmd) $= decodeUtf8 $$ sinkLazy
+
+{------------------------------------------------------------------------------}
+
+unTag :: String -> (Maybe String, String)
+unTag s = either (const (Nothing, s)) id $ Parsec.parse tag "" s
+  where
+    tag = do
+      tg <- Parsec.between (Parsec.char '[') (Parsec.char ']')
+          $ Parsec.many $ Parsec.noneOf "[]"
+      skipMany $ Parsec.oneOf " \t"
+      _   <- Parsec.string "\r\n" Parsec.<|> Parsec.string "\n"
+      txt <- Parsec.many Parsec.anyToken
+      Parsec.eof
+      return (Just tg, txt)
+
+onTag :: String -> (Pandoc.Attr -> String -> a) -> (Block -> a) -> Block -> a
+onTag t f def b@(CodeBlock attr@(_, as, _) s)
+  | lowercase t `elem` map lowercase (maybe id (:) tag as)
+    = f attr src
+  | otherwise = def b
+  where (tag, src) = unTag s
+onTag _ _ def b = def b
+
+lowercase :: String -> String
+lowercase = map toLower
+
+-- | Information about a running process: stdin, stdout, stderr, and a
+--   handle.
+type ProcessInfo = (Handle, Handle, Handle, ProcessHandle)
+
+-- | An input to ghci consists of an expression/command, possibly
+--   paired with an expected output.
+data GhciInput  = GhciInput String (Maybe String)
+  deriving Show
+
+-- | An output from ghci is either a correct output, or an incorrect
+--   (unexpected) output paired with the expected output.
+data GhciOutput = OK String
+                | Unexpected String String
+  deriving Show
+
+-- | A @GhciLine@ is a @GhciInput@ paired with its corresponding @GhciOutput@.
+data GhciLine = GhciLine GhciInput GhciOutput
+  deriving Show
+
+-- | Evaluate an expression using an external @ghci@ process.
+ghciEval :: GhciInput -> (GhciInput, String)
+ghciEval input@(GhciInput expr _) =
+    let script = "putStrLn " ++ show magic ++ "\n"
+              ++ expr ++ "\n"
+              ++ "putStrLn " ++ show magic ++ "\n"
+    in (input, script)
+
+stripGhciOutput :: GhciLine -> GhciLine
+stripGhciOutput (GhciLine input@(GhciInput _ expected) (OK out)) =
+    let !out' = strip out
+    in GhciLine input $ case expected of
+      Nothing -> OK out'
+      Just e
+          | out' == e -> OK out'
+          | otherwise -> Unexpected out' e
+stripGhciOutput x = x
+
+-- | Start an external ghci process, run a computation with access to
+--   it, and finally stop the process.
+ghciProcessConduit :: MonadResource m
+                   => FilePath -> Conduit (GhciInput, String) m GhciLine
+ghciProcessConduit path = do
+    isLit <- lift $ sourceFile (decodeString path)
+        $= linesUnboundedC
+        $$ anyC ("> " `isPrefixOf`)
+    awaitForever $ \(input, str) -> do
+        let cmd = proc "ghci" $ ["-v0", "-ignore-dot-ghci"] ++ [ path | isLit ]
+            magic' = T.pack magic
+        yield (T.pack str)
+            $= encodeUtf8
+            $= conduitProcess cmd
+            $= decodeUtf8
+            $= conduitParser
+                ( manyTill anyChar (try (string magic'))
+               *> manyTill anyChar (try (string magic'))
+               <* takeLazyText
+                )
+            $= mapC (GhciLine input . OK . snd)
+
+-- $extract
+-- To extract the answer from @ghci@'s output we use a simple technique
+-- which should work in most cases: we print the string @magic@ before
+-- and after the expression we are interested in. We assume that
+-- everything that appears before the first occurrence of @magic@ on the
+-- same line is the prompt, and everything between the first @magic@ and
+-- the second @magic@ plus prompt is the result we look for.
+
+-- | There is nothing magic about the magic string.
+magic :: String
+magic = "!@#$^&*"
+
+extract' :: GhciLine -> String
+extract' (GhciLine _ (OK l)) = l
+extract' _ = ""
+  --   fmap (extract . unlines) (readMagic 2)
+  -- where
+  --   readMagic :: Int -> IO [String]
+  --   readMagic 0 = return []
+  --   readMagic n = do
+  --     l <- hGetLine h
+  --     let n' | (null . snd . breaks (isPrefixOf magic)) l = n
+  --            | otherwise = n - 1
+  --     (l:) <$> readMagic n'
+
+extract :: String -> String
+extract s = v
+    where
+      (t, u) =  breaks (isPrefixOf magic) s
+      -- t contains everything up to magic, u starts with magic
+      -- |u'                      =  tail (dropWhile (/='\n') u)|
+      pre =  reverse . takeWhile (/='\n') . reverse $ t
+      prelength = if null pre then 0 else length pre + 1
+      -- pre contains the prefix of magic on the same line
+      u' = drop (length magic + prelength) u
+      -- we drop the magic string, plus the newline, plus the prefix
+      (v, _) = breaks (isPrefixOf (pre ++ magic)) u'
+      -- we look for the next occurrence of prefix plus magic
+
+breaks :: ([a] -> Bool) -> [a] -> ([a], [a])
+breaks _ [] =  ([], [])
+breaks p as@(a : as')
+    | p as = ([], as)
+    | otherwise = first (a:) $ breaks p as'
+
+-- | Given the path to the @.lhs@ source and its representation as a
+--   @Pandoc@ document, @formatInlineGhci@ finds any @[ghci]@ blocks
+--   in it, runs them through @ghci@, and formats the results as an
+--   interactive @ghci@ session.
+--
+--   Lines beginning in the first column of the block are interpreted
+--   as inputs.  Lines indented by one or more space are interpreted
+--   as /expected outputs/.  Consecutive indented lines are
+--   interpreted as one multi-line expected output, with a number of
+--   spaces removed from the beginning of each line equal to the
+--   number of spaces at the start of the first indented line.
+--
+--   If the output for a given input is the same as the expected
+--   output (or if no expected output is given), the result is typeset
+--   normally.  If the actual and expected outputs differ, the actual
+--   output is typeset first in red, then the expected output in blue.
+formatInlineGhci :: FilePath -> Pandoc -> IO Pandoc
+formatInlineGhci path = runResourceT . bottomUpM go
+  where
+    go = onTag "ghci" formatGhciBlock return
+
+    formatGhciBlock attr src = do
+        results <- yieldMany (parseGhciInputs src)
+            =$ mapC ghciEval
+            =$ ghciProcessConduit path
+            =$ mapC (formatGhciResult . stripGhciOutput)
+            $$ sinkList
+        return $ Pandoc.RawBlock "html"
+               $ "<pre><code>" ++ (intercalate "\n" results) ++ "</code></pre>"
+
+parseGhciInputs :: String -> [GhciInput]
+parseGhciInputs
+    = map mkGhciInput
+    . split
+      ( dropInitBlank
+      . dropFinalBlank
+      . keepDelimsL
+      $ whenElt (not . (" " `isPrefixOf`))
+      )
+    . lines
+
+mkGhciInput :: [String] -> GhciInput
+mkGhciInput []       = GhciInput "" Nothing
+mkGhciInput [i]      = GhciInput i Nothing
+mkGhciInput (i:expr) = GhciInput i (Just . unlines' . unindent $ expr)
+
+unlines' :: [String] -> String
+unlines' = intercalate "\n"
+
+strip :: String -> String
+strip = f . f
+  where f = dropWhile isSpace . reverse
+
+unindent :: [String] -> [String]
+unindent [] = []
+unindent (x:xs) = map (drop indentAmt) (x:xs)
+  where indentAmt = length . takeWhile (==' ') $ x
+
+indent :: Int -> String -> String
+indent n = unlines' . map (replicate n ' '++) . lines
+
+colored, coloredBlock :: String -> String -> String
+colored color txt = "<span style=\"color: " ++ color ++ ";\">" ++ txt ++ "</span>"
+coloredBlock color = unlines' . map (colored color) . lines
+
+ghciPrompt :: String
+ghciPrompt = colored "gray" "ghci&gt; "
+
+formatGhciResult :: GhciLine -> String
+formatGhciResult (GhciLine (GhciInput input _) (OK output))
+  | all isSpace output = ghciPrompt ++ esc input
+  | otherwise = ghciPrompt ++ esc input ++ "\n" ++ indent 2 (esc output) ++ "\n"
+formatGhciResult (GhciLine (GhciInput input _) (Unexpected output expr))
+  = ghciPrompt
+        ++ esc input
+        ++ "\n" ++ indent 2 (coloredBlock "red" (esc output))
+        ++ "\n" ++ indent 2 (coloredBlock "blue" (esc expr))
+        ++ "\n"
+
+esc :: String -> String
+esc = concatMap escapeOne
+  where
+    escapeOne '<' = "&lt;"
+    escapeOne '>' = "&gt;"
+    escapeOne  c  = [c]
