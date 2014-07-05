@@ -7,7 +7,7 @@ import           Conduit
 import           Control.Applicative hiding ((<|>), many)
 import           Control.Arrow (first)
 import           Control.Monad hiding (forM_)
-import           Data.Attoparsec.Text hiding (take, takeWhile)
+import           Data.Attoparsec.Text hiding (take, takeWhile, match)
 import           Data.Char
 import           Data.Conduit.Attoparsec
 import           Data.Conduit.Process
@@ -166,7 +166,7 @@ main = hakyllWith config $ do
                         defaultContext
                     loadTeaser ident' = loadSnapshot ident' "teaser"
                         >>= loadAndApplyTemplate "templates/teaser.html"
-                            (-- constField "title" "Lost in Technopolis" <> 
+                            (-- constField "title" "Lost in Technopolis" <>
                              teaserCtx tags)
                         >>= wordpressifyUrls
                 items  <- mapM loadTeaser itemsForPage
