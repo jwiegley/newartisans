@@ -101,7 +101,7 @@ dependency relationships, using at most N execution slots at a time.  The code
 is simple, efficient, and easy to reason about.  The first version is on
 Hackage now:
 
-    http://hackage.haskell.org/package/taskpool-0.0.1/docs/Data-TaskPool.html
+    http://hackage.haskell.org/package/taskpool/docs/Data-TaskPool.html
     
 Many thanks to Conal for his great presentation, and for changing the way I
 think about program design.  Taskpool only took one day to write, and yet
