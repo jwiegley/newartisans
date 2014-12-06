@@ -3,15 +3,14 @@
 
 module Main where
 
-import           Conduit
 import           Control.Applicative hiding ((<|>), many)
 import           Control.Arrow (first)
+import qualified Control.Foldl as L
+import           Control.Lens hiding (Context, pre)
 import           Control.Monad hiding (forM_)
+import           Control.Monad.Catch hiding (try)
 import           Data.Attoparsec.Text hiding (take, takeWhile, match)
 import           Data.Char
-import           Data.Conduit.Attoparsec
-import           Data.Conduit.Process
-import           Data.Conduit.Text (encodeUtf8, decodeUtf8)
 import           Data.Foldable hiding (elem)
 import           Data.List hiding (concatMap, any, all)
 import           Data.List.Split hiding (oneOf)
@@ -20,12 +19,20 @@ import           Data.Monoid
 import qualified Data.Text as T
 import           Data.Text.Lazy (unpack)
 import           Data.Time
-import           Filesystem.Path.CurrentOS (decodeString)
 import           Hakyll
+import           Pipes as P
+import           Pipes.Attoparsec as P
+import qualified Pipes.Group as P
+import qualified Pipes.Prelude as P
+import           Pipes.Safe hiding (try)
+import           Pipes.Shell
+import qualified Pipes.Text as Text
+import qualified Pipes.Text.IO as Text
+import qualified Pipes.Text.Encoding as Text
 import           Prelude hiding (concatMap, any, all)
 import           System.Directory
 import           System.FilePath
-import           System.IO
+import           System.IO hiding (utf8)
 import           System.IO.Unsafe (unsafePerformIO)
 import           System.Locale
 import           System.Process
@@ -154,10 +161,10 @@ main = hakyllWith config $ do
                 >>= loadAndApplyTemplate "templates/default.html" allCtx
                 >>= wordpressifyUrls
 
-    paginate 6 $ \index maxIndex itemsForPage -> do
+    paginate 6 $ \idx maxIndex itemsForPage -> do
         let ident
-                | show index == "1" = fromFilePath "index.html"
-                | otherwise = fromFilePath $ "blog/page/" ++ show index ++ "/index.html"
+                | show idx == "1" = fromFilePath "index.html"
+                | otherwise = fromFilePath $ "blog/page/" ++ show idx ++ "/index.html"
         create [ident] $ do
             route idRoute
             compile $ do
@@ -172,9 +179,9 @@ main = hakyllWith config $ do
                 items  <- mapM loadTeaser itemsForPage
                 let postsCtx = constField "posts" (concatMap itemBody items)
                         <> field "navlinkolder"
-                            (const $ return $ indexNavLink index 1 maxIndex)
+                            (const $ return $ indexNavLink idx 1 maxIndex)
                         <> field "navlinknewer"
-                            (const $ return $ indexNavLink index (-1) maxIndex)
+                            (const $ return $ indexNavLink idx (-1) maxIndex)
                         <> defaultContext
 
                 makeItem ""
@@ -499,12 +506,17 @@ yuiCompressor = do
     path <- getResourceFilePath
     makeItem $ unsafePerformIO $ do
         home <- getHomeDirectory
-        let cmd = "java -jar "
-               ++ (home </> ".nix-profile/lib/yuicompressor.jar")
-               ++ " "
-               ++ path
-        fmap unpack $ runResourceT $
-            sourceProcess (shell cmd) $= decodeUtf8 $$ sinkLazy
+        let javaCmd = "java -jar "
+                   ++ (home </> ".nix-profile/lib/yuicompressor.jar")
+                   ++ " "
+                   ++ path
+        -- Where there is no decoding failure, the return value of the text
+        -- stream will be an empty byte stream followed by its own return
+        -- value.  In all cases you must deal with the fact that it is a
+        -- 'ByteString' producer that is returned, even if it can be thrown
+        -- away with 'Control.Monad.void'
+        runSafeT $
+            unpack <$> Text.toLazyM (void (producerCmd' javaCmd ^. Text.utf8))
 
 {------------------------------------------------------------------------------}
 
@@ -570,25 +582,28 @@ stripGhciOutput x = x
 
 -- | Start an external ghci process, run a computation with access to
 --   it, and finally stop the process.
-ghciProcessConduit :: MonadResource m
-                   => FilePath -> Conduit (GhciInput, String) m GhciLine
-ghciProcessConduit path = do
-    isLit <- lift $ sourceFile (decodeString path)
-        $= linesUnboundedC
-        $$ anyC ("> " `isPrefixOf`)
-    awaitForever $ \(input, str) -> do
-        let cmd = proc "ghci" $ ["-v0", "-ignore-dot-ghci"] ++ [ path | isLit ]
-            magic' = T.pack magic
-        yield (T.pack str)
-            $= encodeUtf8
-            $= conduitProcess cmd
-            $= decodeUtf8
-            $= conduitParser
-                ( manyTill anyChar (try (string magic'))
-               *> manyTill anyChar (try (string magic'))
-               <* takeLazyText
-                )
-            $= mapC (GhciLine input . OK . snd)
+ghciProcess :: (MonadCatch m, MonadSafe m)
+            => FilePath -> Pipe (GhciInput, String) GhciLine m ()
+ghciProcess path = do
+    isLit <- lift $ runEffect $
+        P.any ("> " `T.isPrefixOf`)
+              (L.purely P.folds L.mconcat
+                        (Text.readFile path ^. Text.lines))
+    for cat $ \(input, str) -> do
+        let cmd = ["ghci", "-v0", "-ignore-dot-ghci"] ++ [ path | isLit ]
+        -- P.parsed ghciParser
+        --     (Text.decodeUtf8
+        --         (Text.encodeUtf8 (T.pack str)
+        --              >-> P.map Just
+        --              >-> pipeCmd' (unwords cmd)))
+        --     >-> P.map (GhciLine input . OK)
+        return ()
+  where
+    magic' = T.pack magic
+
+    ghciParser = manyTill anyChar (try (string magic'))
+              *> manyTill anyChar (try (string magic'))
+              <* takeLazyText
 
 -- $extract
 -- To extract the answer from @ghci@'s output we use a simple technique
@@ -652,16 +667,15 @@ breaks p as@(a : as')
 --   normally.  If the actual and expected outputs differ, the actual
 --   output is typeset first in red, then the expected output in blue.
 formatInlineGhci :: FilePath -> Pandoc -> IO Pandoc
-formatInlineGhci path = runResourceT . bottomUpM go
+formatInlineGhci path = bottomUpM go
   where
     go = onTag "ghci" formatGhciBlock return
 
     formatGhciBlock _attr src = do
-        results <- yieldMany (parseGhciInputs src)
-            =$ mapC ghciEval
-            =$ ghciProcessConduit path
-            =$ mapC (formatGhciResult . stripGhciOutput)
-            $$ sinkList
+        results <- runSafeT $ P.toListM $ P.each (parseGhciInputs src)
+            >-> P.map ghciEval
+            >-> ghciProcess path
+            >-> P.map (formatGhciResult . stripGhciOutput)
         return $ Pandoc.RawBlock "html"
                $ "<pre><code>" ++ intercalate "\n" results ++ "</code></pre>"
 
