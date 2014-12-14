@@ -1,0 +1,266 @@
+#+OPTIONS: ^:{}
+
+* Directory Naming Policies
+
+  It is useful to have a consistent directory naming policy throughout your
+  filesystem, and other databases, as it makes both your files easier to
+  navigate, and search result paths more meaningful.
+
+  :PROPERTIES:
+  :ID:       ED99AC73-6F56-4306-B29C-DED2BD00DB72
+  :VISIBILITY: folded
+  :CREATED:  [2011-02-15 Tue 13:57]
+  :VISIBILITY: all
+  :END:
+
+** Directory types
+
+   There are three basic kinds of directories used in this document:
+
+   - Topical :: A topical directory collects files and directories related by
+     a given topic, such as "C++", or "Science".  Some topics are conceptual
+     only, such as "Desktop" or "Downloads".
+
+   - Categorical :: A categorical directory relates a group of files by their
+     type, without regard to their content or subject, like separating Movies
+     from Music.  If files of a given type should be topcially related, create
+     a categorical directory beneath a topical one, for example:
+
+       Archives/Doctor Who/Music
+       Archives/Doctor Who/Movies
+
+   - Specific :: A specific directory gathers files that are directly related
+     to one another, such as source files within a software project.  Usually
+     a specific directory cannot be broken up without affecting the meaning or
+     usefulness of the contained files in some way.
+
+** Basic points
+
+   - Capitalize topical and categorical directory names.  "Documents" is
+     preferable to "doc".
+
+#+BEGIN_QUOTE
+Documents is a "specific" directory, containing documents that I'm
+working on.  "Docs" is a "topical" directory, containing any and all
+information related to a topic.  Having these two names be distinct makes it
+easier to know what I'm finding when I look at search result lists.
+
+And yes, I debated the inconsistency of this with myself for a long time, but
+they really are two different entities, so I wanted different names.  I just
+couldn't think of anything that was a nice replacement for "Docs", and
+"Documents" had already been picked by OS X.
+#+END_QUOTE
+
+   - Use spaces and punctuation within names to make the intention as clear as
+     possible.  Avoid : or /, as these are often illegal characters.  For
+     non-alphabetic special characters, make sure your tools are configured to
+     use UTF-8 encoding.
+
+   - Use symbolic links or aliases if you want a shorter way to name commonly
+     used directories.  Reference very common directories from ~/Favorites to
+     avoid repeating excessively long pathnames.
+
+   - Directory names should be descriptive and not overly abbreviated.
+     "Science" is preferable to "Sci", and "Languages" to "Lang".
+
+     The main reason for this is that some taxonomies can become huge and very
+     old, and others searching through them may not be in a position to see
+     the required context to understand a highly abbreviated name.  If the
+     directory "Uni" appeared in a search results, does it mean University,
+     Universal, Unity?
+
+   - Top-level directories, such as in one's home directory, or an archival
+     data pool, *should be categorical only*.  Topics appear at the second
+     level.
+
+   - For databases, like DEVONthink, this rule is reversed.  The top-level
+     should be topical only, with categories appearing under the topics.
+
+#+BEGIN_QUOTE
+Because the database itself is the "category", and what it contains are topics
+within the category.  When I have multiple databases open at once, then my
+left-hand window in DEVONthink shows a series of categories that look just
+like categorical directory names.
+#+END_QUOTE
+
+   - Nest topics and categories as much as necessary.  Here is a sample
+     directory from my own machine:
+
+     #+BEGIN_SRC foo
+       +------------------+--------+----------------------+---- categories
+       v                  V        v                      v
+
+     ~/Archives/Languages/C++/WG21/Meetings/2010 Fermilab/Docs/implicit_move
+
+                ^             ^             ^                  ^
+                +-------------+-------------+---- topics       +---- specific
+     #+END_SRC
+
+** Categorical directory names
+
+   Use a limited set of categorical names, and repeat them throughout your
+   topical trees.  For example, I have many, many "Documents" directories.
+   They are distinguished from one another by the topics they appear in.
+
+   Here is a list of all the categorical names I use, and their associated
+   policies:
+
+   - Docs :: Documentation related to the category.
+
+   - Manuals :: Specifically manuals related to the category.  These are the
+                primary reference material, and Docs sometimes grows too
+                large, so I sort out Manuals to make them always easy to find.
+
+   - Machines :: Virtual machines, usually archived images.  Active VMs are
+                 found in ~/Machines.
+
+   - Media :: Installer images and binary packages for the topic.
+
+#+BEGIN_QUOTE
+I used Packages for a little while but while .pkg files are truly
+packages, I didn't feel like ISOs were.  But this is arguable, and maybe
+Packages really is the better choice.
+#+END_QUOTE
+
+   - Mirrors :: Bulk copies of Internet resources, for offline and archival
+                access.
+
+   - Software :: Software related to the topic, both source and binary.
+
+#+BEGIN_QUOTE
+src is a symlink to Projects, which is specific.  Software is the "category"
+version Projects, found underneath topics.
+#+END_QUOTE
+
+   - Sources :: Source code version of the topic.
+
+#+BEGIN_QUOTE
+Sources are pure source code that I would have to build to use.  Software is
+pre-compiled stuff that is only _related_ to the topic (if it were the main
+installation media for the topic, it would be in Media).  This delineation
+starts making a lot more sense for Windows-related stuff, where Sources are
+much rarer than Software.  Also, sometimes I download *both* the source
+version of a program, and pre-built version for several platforms.  I wanted a
+way to keep those separate.
+
+Lastly, the contents of Sources is generally greppable, and the contents of
+Software aren't.
+#+END_QUOTE
+
+   - Videos ::
+
+** Specific directory names (root in $HOME)
+
+   - Archives :: Seldom accessed, mostly immutable.  Could be placed on very
+                 slow media without harm.  Tends to be rather large, and to
+                 grow and not shrink.
+
+   - Backups :: Rarely accessed, immutable.
+
+#+BEGIN_QUOTE
+A backup is a copy of something else, something that might still be living in
+another directory somewhere.  I *never* keep Backups on my laptop, as they
+take up too much space.  Archives are reference material, not found in any
+"Backup" directory generally, and I do keep a copy of all Archives on my
+laptop for reference sake.
+#+END_QUOTE
+
+   - Contracts :: Decrypted mount points for ongoing Contract work.
+
+   - Desktop :: Highly volatile, representing files that are in an immediate
+                queue to be dealt with.  Usually live less than a week.  After
+                that time, I either a) deal with the file, or b) move it to a
+                more appropriate place and create a reference in my org-mode
+                file to the new location.  It usually goes to Documents, or
+                gets archived as an org-mode attachment.
+
+#+BEGIN_QUOTE
+I don't do this as much now as when I wrote that document.  Rather than using
+org-mode attachment, my preference now is to throw things into a "Files"
+DEVONthink database, or into the file's appropriate place in ~/Archives.
+#+END_QUOTE
+
+   - Documents :: Frequently written as well as accessed.  Tends to grow and
+                  not shrink.  Contains primarily documents written by me,
+                  including work-in-process, such as the source documents for
+                  my websites.
+
+#+BEGIN_QUOTE
+I put committee papers in ~/Archives/Languages/C++/WG21.  However, if
+accessed frequently, I would put a "cpp" symlink into ~/Documents.
+#+END_QUOTE
+
+   - Downloads :: Frequently written to, but always resolved to zero size
+                  within 8 hours or so.  Once a file in Downloads is dealt
+                  with, it almost always moves to Archives or Sources.
+
+   - Library :: Contains user-specific settings, outside of the regular "dot
+                files".  Very frequently accessed (almost always within every
+                5 minutes).
+
+                I have ~/Library/Info, ~/Library/Java (for JAR files
+                that my apps need), ~/Library/TexPackages, etc.
+
+   - Library/Scripts :: Scripts used to drive the system in various ways.  Not
+                        real Applications in the sense that they typically
+                        have no UI, or exist solely to complement an
+                        Application in an auxiliary capacity. I symlink ~/bin
+                        to this directory.
+
+                        it's just for historical reasons that I still
+                        hang onto ~/bin.  It makes working on my scripts
+                        much easier most of the time.
+
+   - Movies :: Movies to watch, or that I have watched.  These are mostly
+               downloaded things, like screen casts.  Note that very large
+               media, such as ripped DVDs, are not kept here but in a "DVDs"
+               directory on an external hard drive.  Note that this directory
+               is just like Archives, just more frequently accessed and media
+               specific.
+
+   - Music :: All of my music and other audio files.  This is just like
+              Archives, just more frequently accessed and media specific.
+
+   - Pictures :: Another directory in the vein of Photos, Movies and Music,
+                 except that this one contains photographs and pictures, both
+                 taken by me (Pictures/My Photos), and taken by other people.
+                 This directory can get truly enormous, so the inactive parts
+                 of it -- such as digital negatives -- are kept on a related
+                 "Pictures" directory on an external hard drive.  This
+                 directory is only backed up weekly, with the external portion
+                 of it mirrored on two separate devices.
+
+   - Photos :: Like Pictures, except that I took these with my camera and I
+               may be working on them with Photoshop.
+
+   - Private :: Contains encrypted disk images and sparse bundles, which get
+                mounted in /Volumes or ~/Contracts.
+
+   - Products :: Build products.  This is a sort of /tmp directory, except
+                 that I want the build products kept around between reboots.
+                 It could be trashed at any time, however, without ill-effect.
+
+   - Projects :: Source code projects that I am either the author of, the
+                 principle maintainer, or very actively involved.  Projects
+                 that I merely contribute to are kept in ~/Sources.
+
+   - Public :: Contains files that are publically available to anyone within
+               range of my machine.  Note that this is an exact mirror of the
+               FTP directory on my public server.  I use "git push" to send
+               over permanent contents, and "scp" to send over transient
+               contents (because they'll be deleted on the next "git push -f
+               && ssh newartisans.com 'GIT_DIR=/srv/ftp/pub (git reset --hard
+               && git clean -fxd)'").  By versioning the contents I know that
+               nothing has been changed.
+
+               I'm not using this anymore, but maybe I should.
+
+   - Sites :: Contains published versions of all of my website, and serves as
+              a local mirror of the contents of /srv/httpd on my public
+              server.  Contents are deployed using git push as done for
+              Public.
+
+   - Torrents :: Analogous to Downloads, except that I never want to see its
+                 contents because they are always "in progress".  When a
+                 torrent is finished downloading, it gets moved to Downloads
+                 immediately and is seeded from there until I archive it.

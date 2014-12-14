@@ -17,6 +17,7 @@ import           Data.List.Split hiding (oneOf)
 import           Data.Maybe
 import           Data.Monoid
 import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
 import           Data.Text.Lazy (unpack)
 import           Data.Time
 import           Hakyll
@@ -46,7 +47,7 @@ import qualified Text.Pandoc as Pandoc
 import qualified Text.Pandoc.Walk as Pandoc
 import qualified Text.ParserCombinators.Parsec as Parsec
 
---import Debug.Trace
+import Debug.Trace
 
 main :: IO ()
 main = hakyllWith config $ do
@@ -206,7 +207,7 @@ customPandocCompiler = cached "Main.customPandocCompiler" $ do
     body <- fmap fixBefore <$> getResourceBody
     let doc  = readPandocWith ropt body
         doc' = Pandoc.walk (removeBirdTracks . hiddenBlocks) doc
-    return $ fixAfter <$> writePandocWith wopt (fmtGhci path body <$> doc')
+    return $ fixAfter <$> writePandocWith wopt doc' -- (fmtGhci path body <$> doc')
   where
     fixBefore = fixCodeBlocks . fixHeaders . fixLineEndings
     fixAfter  = fixupTables
@@ -589,18 +590,20 @@ ghciProcess path = do
         P.any ("> " `T.isPrefixOf`)
               (L.purely P.folds L.mconcat
                         (Text.readFile path ^. Text.lines))
-    for cat $ \(input, str) -> do
-        let cmd = ["ghci", "-v0", "-ignore-dot-ghci"] ++ [ path | isLit ]
-        -- P.parsed ghciParser
-        --     (Text.decodeUtf8
-        --         (Text.encodeUtf8 (T.pack str)
-        --              >-> P.map Just
-        --              >-> pipeCmd' (unwords cmd)))
-        --     >-> P.map (GhciLine input . OK)
+    for cat $ \(input, str) ->
         return ()
+        -- P.parsed ghciParser
+        --     (Text.decodeUtf8 $
+        --         Text.encodeUtf8 (T.pack str)
+        --             >-> P.map Just
+        --             >-> pipeCmd' (unwords (ghciCmd isLit)))
+        --     >-> P.map (GhciLine input . OK)
   where
+    ghciCmd isLit = ["ghci", "-v0", "-ignore-dot-ghci"] ++ [ path | isLit ]
+
     magic' = T.pack magic
 
+    ghciParser :: Parser String
     ghciParser = manyTill anyChar (try (string magic'))
               *> manyTill anyChar (try (string magic'))
               <* takeLazyText
@@ -672,10 +675,13 @@ formatInlineGhci path = bottomUpM go
     go = onTag "ghci" formatGhciBlock return
 
     formatGhciBlock _attr src = do
-        results <- runSafeT $ P.toListM $ P.each (parseGhciInputs src)
+        trace "formatGhciBlock..1" $ return ()
+        results <- runSafeT $ P.toListM $
+                P.each (parseGhciInputs src)
             >-> P.map ghciEval
             >-> ghciProcess path
             >-> P.map (formatGhciResult . stripGhciOutput)
+        trace "formatGhciBlock..2" $ return ()
         return $ Pandoc.RawBlock "html"
                $ "<pre><code>" ++ intercalate "\n" results ++ "</code></pre>"
 
