@@ -123,11 +123,14 @@ I need to represent in my types because if that happens, well, it really is an
 
 To summarize: Use ~Either~ and ~Maybe~ to write type-honest implementations,
 unless the circumstance you run into deserves returning an "error value" from
-the program as a whole.
+the program as a whole.  That is, if the error is almost always going to
+propagate out of the program anyway, why bother with Either; but if it's a
+value-thing the caller should always take into account, then exceptions are --
+at least from a type-correctness perspective -- morally wrong.
 
-Also, note that I have not addressed asynchronous exceptions, which are used
-both to communicate between threads, and to reflect external events into a
-Haskell program.  These have a different semantic meaning than the synchronous
-exceptions I've been talking about up above.  What I suggest to be avoided is
-the use of synchronous exceptions as lies to the type-checker, unless they are
-ultimately true for the "type" of the program itself.
+Lastly, I am not addressing asynchronous exceptions here, which are used both
+to communicate between threads, and to reflect external events into a Haskell
+program.  These have a different semantic than the synchronous exceptions I've
+discussed above.  What I suggest be avoided is simply the use of synchronous
+exceptions as lies to the type-checker, unless they are ultimately true for
+the "type" of the program itself.
