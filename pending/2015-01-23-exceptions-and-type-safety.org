@@ -27,7 +27,7 @@ head :: [a] -> a
 According to [[http://en.wikipedia.org/wiki/Parametricity][parametricity]], there can be no implementation of this function,
 because there is no proper answer to what happens in the case of an empty
 list.  If we tried to implement this function in a language without
-exceptions, we end up in the following situation:
+exceptions, we would end up in the following situation:
 
 #+begin_src haskell
 head (x:_) = x
@@ -35,37 +35,30 @@ head [] = ...
 #+end_src
 
 What can be done?  In a mathematical context, nothing at all.  The type of
-~head~ function is a quite literally a theorem which cannot be proven.  For
-the [[http://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence][Curry-Howard correspondence]] tells us that the proof of the theorem, in
+~head~ here is quite literally a theorem that cannot be proven.  For the
+[[http://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence][Curry-Howard correspondence]] tells us that the proof of the theorem, in
 programming, is equivalent to an implementation of its type, and we cannot
-implement the second branch of this function.
+implement the second branch of this function using only the arguments
+provided.
 
-In Haskell, there are three ways to lie in such circumstances:
+In Haskell, however, there are three ways to lie in such a case:
 
- - By not implementing the case, resulting in a runtime exception that case
-   analysis was inexhaustive if ~head~ is attempted on an empty list.
+ - By not implementing the empty case, resulting in a runtime exception that
+   case analysis was inexhaustive if ~head~ is passed an empty list.
    
  - By returning ~undefined~, resulting in a runtime exception that ~undefined~
-   was evaluated, if the user attempts to inspect the result (but not
-   otherwise).
+   was evaluated.
    
- - By throwing a more specific exception, as the Standard library does, except
-   that this exemption is only generated if, as with ~undefined~, the value is
-   actually evaluated.
+ - By throwing a more specific exception, as the standard library does.
    
-In a way, the first of these three alternatives is the most honest, because we
-receive the exception the moment we try to evaluate ~head []~, while in the
-other two cases we only see an exception if we attempt to evaluate whatever it
-is that ~head []~ returned.
-
-No matter which trick we pull, all of them are based on using exceptions to
-defer admitting to the impossibility of our implementation.  And this
-admission only comes at runtime, which means we've lied to the type checker
-completely.  Code has type-checked and compiled -- which to Curry-Howard means
-proof -- but it is not proof!  The best we can hope for now is that our lie is
-not discovered, which may actually be a worse situation, because it means that
-our lies may make their way into production code under a mistaken belief in
-their correctness.
+No matter which trick we pull, all are based on using exceptions to defer
+admitting the impossibility of our implementation.  This also defers the
+admission to runtime, meaning we've pulled the wool over the type checker's
+eyes.  Our code has type-checked and compiled -- which to Curry-Howard means
+proof -- but it was not a proof!  The best we can hope for is that our lie is
+not discovered; or it could be the worst, because it means that our lies may
+make its way into production code, hiding behind a mistaken belief in our
+code's correctness (as vouchsafed by the type checker).
 
 So if exceptions are equivalent to lying to the type checker, does it mean
 they should never be used?  Actually, I think there is a specific set of cases
@@ -89,30 +82,30 @@ of ~maybeHead~ to consider what they should do if it happens.  It's not that
 they could consider it, they have to, unless they in turn are willing to use
 exceptions and lie to the type-checker about their implementation.
 
-But what functions that must interact with the real world, such a function to
-read from a socket.  Should we always encode the possibility of errors into
-our types, requiring at compile-time that this possibility always be
-considered?
+But what about functions that must interact with the real world, such a
+reading from a socket?  Should we always encode the possibility of error into
+our types, requiring at compile-time that this possibility be considered by
+the caller?
 
-This approach can get laborious very quickly.  Often times, there is no
-appropriate response to an external error other than to exit, because we have
-no answer.  For example, if you execute ~rsync~ to transfer data from a remote
-host, and the network connection disappears (say your wireless router suddenly
-died), there is nothing ~rsync~ can do to recover from this.  It must aborts
-the abortion and report what happened to the user.
+This approach gets laborious very quickly.  Oftentimes there is no appropriate
+response to an external error other than to exit, because there is no answer.
+For example, if you execute ~rsync~ to transfer data from a remote host, and
+the network connection disappears (say your wireless router suddenly died),
+there is nothing ~rsync~ can do to recover from this.  It must aborts the
+operation and report what happened to the user.
 
 What this brings up is that, at the OS level, programs are by their nature
 "total", in that they always give an answer: either what they were created to
 do, or an exception, even if that exception is uninformative, like SIGSEGV.
 There is no "undefined" in the real world.
 
-This gives us an insight into when exceptions can be most useful in Haskell:
+This offers an insight as to when exceptions can be truly useful in Haskell:
 when they represent the answer to the type of the program as a whole, rather
 than a lie about the type of a particular function.  That is, when we throw an
 exception, we're effectively returning a ~Left~ value to the operating system.
-Thus, while it may still be a lie with respect to the type of the function
-throwing it, it is always a truthful response with respect to the "type" of
-the program as a whole.
+It may still be a lie with respect to the type of the function throwing it,
+but it is always a truthful response with respect to the "type" of the program
+as a whole.
 
 And so, exceptions are appropriate when the exceptional case is nothing that
 your program can respond to: if, had you used Either, the result would have
