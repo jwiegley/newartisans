@@ -1,7 +1,7 @@
-all:
-	./result/bin/newartisans rebuild
+site:
+	newartisans rebuild
 
-deploy:
+deploy: site
 	@echo Copying files...
 	rsync --checksum -av --delete _site/ jw2:/srv/newartisans/
 

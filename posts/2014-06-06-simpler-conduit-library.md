@@ -16,16 +16,13 @@ interesting simplifications.
 Before I jump in, let's review what any effectful streaming library should aim
 to accomplish.  The basics are:
 
-  1. Iterate over values within a structure, or produced by a computation.
-
-  2. Cleanup resources involved in that computation once they are no longer
-     needed.
-
-  3. Allow processing to be composed nicely, forming a "pipeline" from the
-     initial source to a final sink.
-
-  4. It would be nice if any part of the pipeline could decide when to
-     terminate.
+ 1. Iterate over values within a structure, or produced by a computation.
+ 2. Cleanup resources involved in that computation once they are no longer
+    needed.
+ 3. Allow processing to be composed nicely, forming a "pipeline" from the
+    initial source to a final sink.
+ 4. It would be nice if any part of the pipeline could decide when to
+    terminate.
 
 What I discovered during my exploration is that all four of these requirements
 can be captured using simple, monadic folds, like `foldM`. Here is the type of

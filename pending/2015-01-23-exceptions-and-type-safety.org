@@ -1,0 +1,140 @@
+---
+title: Exceptions and type-safety in Haskell
+description: desc here
+tags: 
+date: [2015-01-23 Fri 11:56]
+category: Haskell
+---
+
+There are several ways of representing errors in Haskell: by returning values
+wrapped by Either or Maybe; by using the context of an error propagating
+monad; or by exceptions.  And while this last approach is made use of quite a
+bit in the standard libraries, it is very rare to see the use of exceptions
+recommended to newcomers who ask about dealing with errors in their programs.
+
+I think the reason why many Haskellers take issue with exceptions comes down
+to a question of type safety.  They are a little white lie being told to the
+type checker, allowing partial functions to masquerade as if they were valid
+implementations of their type.
+
+Consider for example the ~head~ function from the standard library.  It has
+the following type:
+
+#+begin_src haskell
+head :: [a] -> a
+#+end_src
+
+According to [[http://en.wikipedia.org/wiki/Parametricity][parametricity]], there can be no implementation of this function,
+because there is no proper answer to what happens in the case of an empty
+list.  If we tried to implement this function in a language without
+exceptions, we end up in the following situation:
+
+#+begin_src haskell
+head (x:_) = x
+head [] = ...
+#+end_src
+
+What can be done?  In a mathematical context, nothing at all.  The type of
+~head~ function is a quite literally a theorem which cannot be proven.  For
+the [[http://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence][Curry-Howard correspondence]] tells us that the proof of the theorem, in
+programming, is equivalent to an implementation of its type, and we cannot
+implement the second branch of this function.
+
+In Haskell, there are three ways to lie in such circumstances:
+
+ - By not implementing the case, resulting in a runtime exception that case
+   analysis was inexhaustive if ~head~ is attempted on an empty list.
+   
+ - By returning ~undefined~, resulting in a runtime exception that ~undefined~
+   was evaluated, if the user attempts to inspect the result (but not
+   otherwise).
+   
+ - By throwing a more specific exception, as the Standard library does, except
+   that this exemption is only generated if, as with ~undefined~, the value is
+   actually evaluated.
+   
+In a way, the first of these three alternatives is the most honest, because we
+receive the exception the moment we try to evaluate ~head []~, while in the
+other two cases we only see an exception if we attempt to evaluate whatever it
+is that ~head []~ returned.
+
+No matter which trick we pull, all of them are based on using exceptions to
+defer admitting to the impossibility of our implementation.  And this
+admission only comes at runtime, which means we've lied to the type checker
+completely.  Code has type-checked and compiled -- which to Curry-Howard means
+proof -- but it is not proof!  The best we can hope for now is that our lie is
+not discovered, which may actually be a worse situation, because it means that
+our lies may make their way into production code under a mistaken belief in
+their correctness.
+
+So if exceptions are equivalent to lying to the type checker, does it mean
+they should never be used?  Actually, I think there is a specific set of cases
+where exceptions say exactly what they should: when the error encountered is
+outside the program's domain.
+
+For example, the type of ~head~ above implies totality, even if exceptions
+allow me to get away with a partial implementation.  As mentioned, by using an
+exception I've lied, and it is a lie that will likely catch up to me.  A
+better type would be:
+
+#+begin_src haskell
+maybeHead :: [a] -> Maybe a
+#+end_src
+
+This type can be implemented without use of exception, because it /encodes the
+exception in the type/.  We've effectively moved a runtime possibility into a
+compile-time, making our type more expressive and our implementation honest.
+And because this possibility is encoded in the type now, it forces the caller
+of ~maybeHead~ to consider what they should do if it happens.  It's not that
+they could consider it, they have to, unless they in turn are willing to use
+exceptions and lie to the type-checker about their implementation.
+
+But what functions that must interact with the real world, such a function to
+read from a socket.  Should we always encode the possibility of errors into
+our types, requiring at compile-time that this possibility always be
+considered?
+
+This approach can get laborious very quickly.  Often times, there is no
+appropriate response to an external error other than to exit, because we have
+no answer.  For example, if you execute ~rsync~ to transfer data from a remote
+host, and the network connection disappears (say your wireless router suddenly
+died), there is nothing ~rsync~ can do to recover from this.  It must aborts
+the abortion and report what happened to the user.
+
+What this brings up is that, at the OS level, programs are by their nature
+"total", in that they always give an answer: either what they were created to
+do, or an exception, even if that exception is uninformative, like SIGSEGV.
+There is no "undefined" in the real world.
+
+This gives us an insight into when exceptions can be most useful in Haskell:
+when they represent the answer to the type of the program as a whole, rather
+than a lie about the type of a particular function.  That is, when we throw an
+exception, we're effectively returning a ~Left~ value to the operating system.
+Thus, while it may still be a lie with respect to the type of the function
+throwing it, it is always a truthful response with respect to the "type" of
+the program as a whole.
+
+And so, exceptions are appropriate when the exceptional case is nothing that
+your program can respond to: if, had you used Either, the result would have
+been to simply propagate the ~Left~ value all the way back to the operating
+system anyway.  Thus they become a remarkable syntactic convenience (avoiding
+the boilerplate of plumbing Either values throughout the code), while no
+longer being quite the lie they are when used to write functions like ~head~.
+
+That ~head~ uses an exception to implement a partial function body is just
+wrong, in my opinion.  Empty lists are something that can and should be dealt
+with by the program.  But trying to write to a file on a filesystem that
+disappears because the disk was unplugged, is not necessarily a condition that
+I need to represent in my types because if that happens, well, it really is an
+/exception/, and one that my own program most likely can do nothing about.
+
+To summarize: Use ~Either~ and ~Maybe~ to write type-honest implementations,
+unless the circumstance you run into deserves returning an "error value" from
+the program as a whole.
+
+Also, note that I have not addressed asynchronous exceptions, which are used
+both to communicate between threads, and to reflect external events into a
+Haskell program.  These have a different semantic meaning than the synchronous
+exceptions I've been talking about up above.  What I suggest to be avoided is
+the use of synchronous exceptions as lies to the type-checker, unless they are
+ultimately true for the "type" of the program itself.

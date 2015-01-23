@@ -335,6 +335,7 @@ wordpressRoute = gsubRoute "posts/" (const "")
     `composeRoutes` gsubRoute "pages/" (const "")
     `composeRoutes` gsubRoute "^[0-9]{4}-[0-9]{2}-[0-9]{2}-"
         ((\x -> take 8 x ++ drop 11 x) . map replaceWithSlash)
+    `composeRoutes` gsubRoute ".org" (const "/index.html")
     `composeRoutes` gsubRoute ".md" (const "/index.html")
     `composeRoutes` gsubRoute ".lhs" (const "/index.html")
   where
