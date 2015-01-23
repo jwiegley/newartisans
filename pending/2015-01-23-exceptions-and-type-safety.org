@@ -6,16 +6,17 @@ date: [2015-01-23 Fri 11:56]
 category: Haskell
 ---
 
-There are several ways of representing errors in Haskell: by returning values
-wrapped by Either or Maybe; by using the context of an error propagating
-monad; or by exceptions.  And while this last approach is made use of quite a
-bit in the standard libraries, it is very rare to see the use of exceptions
-recommended to newcomers who ask about dealing with errors in their programs.
+There are several ways of representing errors in Haskell: by returning types
+wrapped in ~Either~ or ~Maybe~; by using the context of an error propagating
+monad like ~EitherT~; or by exceptions.  And while this last approach is made
+use of quite a bit in the standard libraries, it is very rare to see the use
+of exceptions recommended to newcomers when asking about how to deal with
+errors in their programs.
 
 I think the reason why many Haskellers take issue with exceptions comes down
-to a question of type safety.  They are a little white lie being told to the
-type checker, allowing partial functions to masquerade as if they were valid
-implementations of their type.
+to a question of type safety.  They are, in fact, a little white lie being
+told to the type checker, allowing partial functions to masquerade as if they
+were valid implementations of their type.
 
 Consider for example the ~head~ function from the standard library.  It has
 the following type:
@@ -25,9 +26,9 @@ head :: [a] -> a
 #+end_src
 
 According to [[http://en.wikipedia.org/wiki/Parametricity][parametricity]], there can be no implementation of this function,
-because there is no proper answer to what happens in the case of an empty
-list.  If we tried to implement this function in a language without
-exceptions, we would end up in the following situation:
+because there is no proper answer as to what happens in the case of an empty
+list.  If we try to implement this function in a language without exceptions,
+we end up in the following situation:
 
 #+begin_src haskell
 head (x:_) = x
@@ -35,9 +36,9 @@ head [] = ...
 #+end_src
 
 What can be done?  In a mathematical context, nothing at all.  The type of
-~head~ here is quite literally a theorem that cannot be proven.  For the
-[[http://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence][Curry-Howard correspondence]] tells us that the proof of the theorem, in
-programming, is equivalent to an implementation of its type, and we cannot
+~head~ is quite literally a theorem that cannot be proven, for the
+[[http://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence][Curry-Howard correspondence]] tells us: that the proof of a theorem, in
+programming, is equivalent to an implementation of its type.  We simply cannot
 implement the second branch of this function using only the arguments
 provided.
 
