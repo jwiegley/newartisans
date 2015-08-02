@@ -1,4 +1,5 @@
 {-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Main where
@@ -17,15 +18,15 @@ import           Data.List.Split hiding (oneOf)
 import           Data.Maybe
 import           Data.Monoid
 import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
+--import qualified Data.Text.Encoding as T
 import           Data.Text.Lazy (unpack)
 import           Data.Time
 import           Hakyll
 import           Pipes as P
-import           Pipes.Attoparsec as P
+--import           Pipes.Attoparsec as P
 import qualified Pipes.Group as P
 import qualified Pipes.Prelude as P
-import           Pipes.Safe hiding (try)
+import           Pipes.Safe
 import           Pipes.Shell
 import qualified Pipes.Text as Text
 import qualified Pipes.Text.IO as Text
@@ -35,7 +36,6 @@ import           System.Directory
 import           System.FilePath
 import           System.IO hiding (utf8)
 import           System.IO.Unsafe (unsafePerformIO)
-import           System.Locale
 import           System.Process
 import           Text.Blaze.Html ((!), toValue)
 import           Text.Blaze.Html.Renderer.String (renderHtml)
@@ -203,10 +203,10 @@ main = hakyllWith config $ do
 --   blocks.
 customPandocCompiler :: Compiler (Item String)
 customPandocCompiler = cached "Main.customPandocCompiler" $ do
-    path <- getResourceFilePath
+    _path <- getResourceFilePath
     body <- fmap fixBefore <$> getResourceBody
-    let doc  = readPandocWith ropt body
-        doc' = Pandoc.walk (removeBirdTracks . hiddenBlocks) doc
+    doc  <- readPandocWith ropt body
+    let doc' = Pandoc.walk (removeBirdTracks . hiddenBlocks) doc
     return $ fixAfter <$> writePandocWith wopt doc' -- (fmtGhci path body <$> doc')
   where
     fixBefore = fixCodeBlocks . fixHeaders . fixLineEndings
@@ -220,7 +220,7 @@ customPandocCompiler = cached "Main.customPandocCompiler" $ do
                           ++ "?config=TeX-AMS-MML_HTMLorMML"
         }
 
-    fmtGhci path body
+    _fmtGhci path body
         | "[ghci]" `isInfixOf` itemBody body
             = unsafePerformIO . formatInlineGhci path
         | otherwise = id
@@ -496,7 +496,7 @@ paginate itemsPerPage rules = do
         let fn1 = takeFileName (toFilePath id1)
             fn2 = takeFileName (toFilePath id2)
             parseTime' fn
-                = parseTime defaultTimeLocale "%Y-%m-%d"
+                = parseTimeM False defaultTimeLocale "%Y-%m-%d"
                 $ intercalate "-"
                 $ take 3
                 $ splitAll "-" fn
@@ -587,11 +587,11 @@ stripGhciOutput x = x
 ghciProcess :: (MonadCatch m, MonadSafe m)
             => FilePath -> Pipe (GhciInput, String) GhciLine m ()
 ghciProcess path = do
-    isLit <- lift $ runEffect $
+    _isLit <- lift $ runEffect $
         P.any ("> " `T.isPrefixOf`)
               (L.purely P.folds L.mconcat
                         (Text.readFile path ^. Text.lines))
-    for cat $ \(input, str) ->
+    for cat $ \(_input, _str) ->
         return ()
         -- P.parsed ghciParser
         --     (Text.decodeUtf8 $
@@ -600,12 +600,12 @@ ghciProcess path = do
         --             >-> pipeCmd' (unwords (ghciCmd isLit)))
         --     >-> P.map (GhciLine input . OK)
   where
-    ghciCmd isLit = ["ghci", "-v0", "-ignore-dot-ghci"] ++ [ path | isLit ]
+    _ghciCmd isLit = ["ghci", "-v0", "-ignore-dot-ghci"] ++ [ path | isLit ]
 
     magic' = T.pack magic
 
-    ghciParser :: Parser String
-    ghciParser = manyTill anyChar (try (string magic'))
+    _ghciParser :: Parser String
+    _ghciParser = manyTill anyChar (try (string magic'))
               *> manyTill anyChar (try (string magic'))
               <* takeLazyText
 
