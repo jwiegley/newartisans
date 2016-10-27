@@ -1,5 +1,13 @@
+HAKYLL = $(shell pwd)/result/bin/newartisans
+
+all: $(HAKYLL)
+	echo NewArtisans.com is built
+
+$(HAKYLL):
+	nix-build '<nixpkgs-next>' --fallback --show-trace -A haskell801Packages.newartisans
+
 site:
-	newartisans rebuild
+	$(HAKYLL) rebuild
 
 deploy: site
 	@echo Copying files...
