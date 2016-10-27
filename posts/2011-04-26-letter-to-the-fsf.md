@@ -2,7 +2,7 @@
 title: Letter to the Free Software Foundation
 description: desc here
 tags: 
-date: [2011-04-26 Tue 20:24]
+date: 2011-04-26 20:24
 category: Uncategorized
 id: 229
 ---

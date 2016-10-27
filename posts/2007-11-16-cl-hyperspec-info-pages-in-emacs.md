@@ -2,7 +2,7 @@
 title: CL HyperSpec Info pages in Emacs
 description: desc here
 tags: 
-date: [2007-11-16 Fri 00:03]
+date: 2007-11-16 00:03
 category: Uncategorized
 id: 178
 ---

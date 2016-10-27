@@ -2,7 +2,7 @@
 title: Ready Lisp version 20080428 now available
 description: desc here
 tags: SBCL, SLIME
-date: [2008-05-05 Mon 04:21]
+date: 2008-05-05 04:21
 category: Uncategorized
 id: 166
 ---

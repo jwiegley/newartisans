@@ -2,7 +2,7 @@
 title: Common Lisp on Mac OS X
 description: desc here
 tags: 
-date: [2007-10-20 Sat 09:37]
+date: 2007-10-20 09:37
 category: Uncategorized
 id: 191
 ---

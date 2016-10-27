@@ -2,7 +2,7 @@
 title: Diving into Git
 description: desc here
 tags: 
-date: [2008-04-14 Mon 02:40]
+date: 2008-04-14 02:40
 category: Uncategorized
 id: 168
 ---

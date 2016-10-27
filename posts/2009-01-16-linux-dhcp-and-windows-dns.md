@@ -2,7 +2,7 @@
 title: Linux DHCP and Windows DNS
 description: desc here
 tags: DHCP, DNS
-date: [2009-01-16 Fri 16:42]
+date: 2009-01-16 16:42
 category: Uncategorized
 id: 156
 ---

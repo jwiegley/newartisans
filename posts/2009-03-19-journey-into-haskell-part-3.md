@@ -2,7 +2,7 @@
 title: Journey into Haskell, part 3
 description: desc here
 tags: Ruby
-date: [2009-03-19 Thu 00:59]
+date: 2009-03-19 00:59
 category: Uncategorized
 id: 219
 ---

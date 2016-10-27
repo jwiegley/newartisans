@@ -2,7 +2,7 @@
 title: Omitting Git-ignored files in Emacs dired
 description: desc here
 tags: 
-date: [2008-08-12 Tue 06:22]
+date: 2008-08-12 06:22
 category: Uncategorized
 id: 162
 ---

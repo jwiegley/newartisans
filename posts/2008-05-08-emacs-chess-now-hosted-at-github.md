@@ -2,7 +2,7 @@
 title: Emacs Chess now hosted at GitHub
 description: desc here
 tags: 
-date: [2008-05-08 Thu 19:49]
+date: 2008-05-08 19:49
 category: Uncategorized
 id: 165
 ---

@@ -2,7 +2,7 @@
 title: Running a fully local Hoogle
 description: desc here
 tags: 
-date: [2012-09-05 Wed 03:09]
+date: 2012-09-05 03:09
 category: Haskell
 id: 355
 ---

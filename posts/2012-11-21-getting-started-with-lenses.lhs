@@ -2,7 +2,7 @@
 title: Getting Started with Lenses
 description: desc here
 tags: 
-date: [2012-11-21 Wed 22:28]
+date: 2012-11-21 22:28
 category: Haskell
 id: 401
 ---

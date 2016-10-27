@@ -2,7 +2,7 @@
 title: A Ledger success story
 description: desc here
 tags: 
-date: [2008-01-08 Tue 21:37]
+date: 2008-01-08 21:37
 category: Uncategorized
 id: 172
 ---

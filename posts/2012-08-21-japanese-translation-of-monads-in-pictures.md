@@ -2,7 +2,7 @@
 title: Japanese translation of "Monads in pictures"
 description: desc here
 tags: 
-date: [2012-08-21 Tue 19:47]
+date: 2012-08-21 19:47
 category: Haskell
 id: 291
 ---

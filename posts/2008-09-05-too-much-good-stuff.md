@@ -2,7 +2,7 @@
 title: Too much good stuff
 description: desc here
 tags: 
-date: [2008-09-05 Fri 21:46]
+date: 2008-09-05 21:46
 category: Uncategorized
 id: 161
 ---

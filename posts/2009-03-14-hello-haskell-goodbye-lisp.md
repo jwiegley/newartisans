@@ -2,7 +2,7 @@
 title: Hello Haskell, Goodbye Lisp
 description: desc here
 tags: 
-date: [2009-03-14 Sat 07:54]
+date: 2009-03-14 07:54
 category: Uncategorized
 id: 214
 ---

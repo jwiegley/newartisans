@@ -2,7 +2,7 @@
 title: Response to PG's "How to Do Philosophy"
 description: desc here
 tags: graham, philosophy
-date: [2009-05-13 Wed 19:04]
+date: 2009-05-13 19:04
 category: Uncategorized
 id: 225
 ---

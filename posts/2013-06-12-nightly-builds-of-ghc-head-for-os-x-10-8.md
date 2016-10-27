@@ -2,7 +2,7 @@
 title: Nightly builds of GHC HEAD for OS X 10.8
 description: desc here
 tags: 
-date: [2013-06-12 Wed 22:35]
+date: 2013-06-12 22:35
 category: Haskell
 id: 436
 ---

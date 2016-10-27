@@ -2,7 +2,7 @@
 title: Get Lisp running on OS X (easy version!)
 description: desc here
 tags: 
-date: [2007-10-24 Wed 08:09]
+date: 2007-10-24 08:09
 category: Uncategorized
 id: 158
 ---

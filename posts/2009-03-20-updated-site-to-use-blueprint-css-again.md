@@ -2,7 +2,7 @@
 title: Updated site to use Blueprint CSS again
 description: desc here
 tags: blueprint
-date: [2009-03-20 Fri 08:27]
+date: 2009-03-20 08:27
 category: Uncategorized
 id: 220
 ---

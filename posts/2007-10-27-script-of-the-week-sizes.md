@@ -1,8 +1,8 @@
 ---
-title: Script of the week: sizes
+title: "Script of the week: sizes"
 description: desc here
 tags: 
-date: [2007-10-27 Sat 10:39]
+date: 2007-10-27 10:39
 category: Uncategorized
 id: 186
 ---

@@ -2,7 +2,7 @@
 title: Using local DNS caching
 description: desc here
 tags: 
-date: [2005-03-26 Sat 00:14]
+date: 2005-03-26 00:14
 category: Uncategorized
 id: 157
 ---

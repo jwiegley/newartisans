@@ -2,7 +2,7 @@
 title: Using Git as a versioned data store in Python
 description: desc here
 tags: 
-date: [2008-05-15 Thu 02:00]
+date: 2008-05-15 02:00
 category: Uncategorized
 id: 164
 ---

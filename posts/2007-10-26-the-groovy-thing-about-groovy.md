@@ -2,7 +2,7 @@
 title: The groovy thing about Groovy
 description: desc here
 tags: 
-date: [2007-10-26 Fri 06:37]
+date: 2007-10-26 06:37
 category: Uncategorized
 id: 187
 ---

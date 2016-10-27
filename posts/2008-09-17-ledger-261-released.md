@@ -2,7 +2,7 @@
 title: Ledger 2.6.1 released
 description: desc here
 tags: 
-date: [2008-09-17 Wed 10:31]
+date: 2008-09-17 10:31
 category: Uncategorized
 id: 160
 ---

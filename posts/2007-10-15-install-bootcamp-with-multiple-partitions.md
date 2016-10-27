@@ -2,7 +2,7 @@
 title: Install BootCamp with multiple partitions
 description: desc here
 tags: 
-date: [2007-10-15 Mon 03:10]
+date: 2007-10-15 03:10
 category: Uncategorized
 id: 193
 ---

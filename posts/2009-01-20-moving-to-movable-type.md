@@ -2,7 +2,7 @@
 title: Moving to Movable Type
 description: desc here
 tags: 
-date: [2009-01-20 Tue 21:22]
+date: 2009-01-20 21:22
 category: Uncategorized
 id: 207
 ---

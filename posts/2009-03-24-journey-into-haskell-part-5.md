@@ -2,7 +2,7 @@
 title: Journey into Haskell, part 5
 description: desc here
 tags: Cabal
-date: [2009-03-24 Tue 13:00]
+date: 2009-03-24 13:00
 category: Uncategorized
 id: 223
 ---

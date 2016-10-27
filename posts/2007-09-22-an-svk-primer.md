@@ -2,7 +2,7 @@
 title: An SVK primer
 description: desc here
 tags: 
-date: [2007-09-22 Sat 03:38]
+date: 2007-09-22 03:38
 category: Uncategorized
 id: 200
 ---

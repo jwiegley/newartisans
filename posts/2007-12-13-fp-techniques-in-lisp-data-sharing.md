@@ -1,8 +1,8 @@
 ---
-title: FP techniques in Lisp: Data sharing
+title: "FP techniques in Lisp: Data sharing"
 description: desc here
 tags: 
-date: [2007-12-13 Thu 19:02]
+date: 2007-12-13 19:02
 category: Uncategorized
 id: 174
 ---

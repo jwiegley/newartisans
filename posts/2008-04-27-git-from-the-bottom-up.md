@@ -2,7 +2,7 @@
 title: Git from the bottom up
 description: desc here
 tags: 
-date: [2008-04-27 Sun 23:32]
+date: 2008-04-27 23:32
 category: Uncategorized
 id: 167
 ---

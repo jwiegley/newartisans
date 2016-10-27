@@ -2,7 +2,7 @@
 title: Temporary mirror of comonad.com
 description: desc here
 tags: 
-date: [2013-06-19 Wed 19:10]
+date: 2013-06-19 19:10
 category: Haskell
 id: 444
 ---

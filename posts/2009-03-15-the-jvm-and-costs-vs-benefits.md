@@ -2,7 +2,7 @@
 title: The JVM, and costs vs. benefits
 description: desc here
 tags: JVM
-date: [2009-03-15 Sun 23:28]
+date: 2009-03-15 23:28
 category: Uncategorized
 id: 216
 ---

@@ -2,7 +2,7 @@
 title: Just discovered pxz
 description: desc here
 tags: 
-date: [2012-09-06 Thu 08:01]
+date: 2012-09-06 08:01
 category: Uncategorized
 id: 359
 ---

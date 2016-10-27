@@ -2,7 +2,7 @@
 title: Fighting technology
 description: desc here
 tags: 
-date: [2006-05-26 Fri 02:14]
+date: 2006-05-26 02:14
 category: Uncategorized
 id: 205
 ---

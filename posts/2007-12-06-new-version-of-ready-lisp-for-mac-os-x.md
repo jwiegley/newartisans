@@ -2,7 +2,7 @@
 title: New version of Ready Lisp for Mac OS X
 description: desc here
 tags: SBCL, SLIME
-date: [2007-12-06 Thu 17:47]
+date: 2007-12-06 17:47
 category: Uncategorized
 id: 176
 ---

@@ -2,7 +2,7 @@
 title: Three examples of problems with Lazy I/O
 description: desc here
 tags: 
-date: [2013-05-13 Mon 01:44]
+date: 2013-05-13 01:44
 category: Haskell
 id: 428
 ---

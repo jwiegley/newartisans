@@ -2,7 +2,7 @@
 title: OpenSSH connection mastering
 description: desc here
 tags: 
-date: [2007-09-25 Tue 23:43]
+date: 2007-09-25 23:43
 category: Uncategorized
 id: 197
 ---

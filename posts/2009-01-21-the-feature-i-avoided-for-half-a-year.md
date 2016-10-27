@@ -2,7 +2,7 @@
 title: The feature I avoided for half a year
 description: desc here
 tags: algorithm, commodity
-date: [2009-01-21 Wed 21:15]
+date: 2009-01-21 21:15
 category: Uncategorized
 id: 208
 ---

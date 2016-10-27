@@ -2,7 +2,7 @@
 title: Life and times of a TCP packet
 description: desc here
 tags: 
-date: [2007-10-25 Thu 06:53]
+date: 2007-10-25 06:53
 category: Uncategorized
 id: 188
 ---

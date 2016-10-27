@@ -2,7 +2,7 @@
 title: Meta-programming with the Free Monad
 description: desc here
 tags: 
-date: [2012-08-27 Mon 13:00]
+date: 2012-08-27 13:00
 category: Haskell
 id: 281
 ---

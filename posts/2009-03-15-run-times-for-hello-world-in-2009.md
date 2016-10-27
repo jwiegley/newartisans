@@ -2,7 +2,7 @@
 title: Run times for Hello, World in 2009
 description: desc here
 tags: 
-date: [2009-03-15 Sun 14:50]
+date: 2009-03-15 14:50
 category: Uncategorized
 id: 215
 ---

@@ -2,7 +2,7 @@
 title: Simpler conduit library based on monadic folds
 description: desc here
 tags: haskell
-date: [2014-06-06 Fri 19:01]
+date: 2014-06-06 19:01
 category: Haskell
 ---
 

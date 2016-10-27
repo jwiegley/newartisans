@@ -2,7 +2,7 @@
 title: Using org-mode as a Day Planner
 description: desc here
 tags: 
-date: [2007-08-20 Mon 02:29]
+date: 2007-08-20 02:29
 category: Uncategorized
 id: 203
 ---

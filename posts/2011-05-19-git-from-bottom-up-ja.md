@@ -2,7 +2,7 @@
 title: Japanese translation of "Git From the Bottom Up"
 description: desc here
 tags: 
-date: [2011-05-19 Thu 22:59]
+date: 2011-05-19 22:59
 category: Git
 id: 238
 ---

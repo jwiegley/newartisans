@@ -2,7 +2,7 @@
 title: Branch policies with Git
 description: desc here
 tags: 
-date: [2009-10-29 Thu 03:05]
+date: 2009-10-29 03:05
 category: Uncategorized
 id: 226
 ---

@@ -2,7 +2,7 @@
 title: A new Ledger mailing list
 description: desc here
 tags: 
-date: [2008-07-16 Wed 23:02]
+date: 2008-07-16 23:02
 category: Uncategorized
 id: 163
 ---

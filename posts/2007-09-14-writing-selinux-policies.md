@@ -2,7 +2,7 @@
 title: Writing SELinux policies
 description: desc here
 tags: 
-date: [2007-09-14 Fri 01:24]
+date: 2007-09-14 01:24
 category: Uncategorized
 id: 202
 ---

@@ -2,7 +2,7 @@
 title: Journey into Haskell, part 4
 description: desc here
 tags: Cabal, HackPorts, MacPorts
-date: [2009-03-21 Sat 08:18]
+date: 2009-03-21 08:18
 category: Uncategorized
 id: 221
 ---

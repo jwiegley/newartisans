@@ -2,7 +2,7 @@
 title: A quick Hunchentoot primer
 description: desc here
 tags: Hunchentoot
-date: [2007-11-06 Tue 21:51]
+date: 2007-11-06 21:51
 category: Uncategorized
 id: 182
 ---

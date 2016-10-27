@@ -2,7 +2,7 @@
 title: The saga of rebase versus merge
 description: desc here
 tags: immutable, merge, rebase
-date: [2009-02-26 Thu 05:30]
+date: 2009-02-26 05:30
 category: Uncategorized
 id: 213
 ---

@@ -2,7 +2,7 @@
 title: Common Lisp docs for DEVONthink
 description: desc here
 tags: 
-date: [2007-10-23 Tue 22:28]
+date: 2007-10-23 22:28
 category: Uncategorized
 id: 189
 ---

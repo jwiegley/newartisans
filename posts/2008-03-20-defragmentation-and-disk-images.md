@@ -2,7 +2,7 @@
 title: Defragmentation and disk images
 description: desc here
 tags: 
-date: [2008-03-20 Thu 05:17]
+date: 2008-03-20 05:17
 category: Uncategorized
 id: 171
 ---

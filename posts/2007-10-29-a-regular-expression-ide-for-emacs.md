@@ -2,7 +2,7 @@
 title: A regular expression IDE for Emacs
 description: desc here
 tags: 
-date: [2007-10-29 Mon 07:48]
+date: 2007-10-29 07:48
 category: Uncategorized
 id: 185
 ---

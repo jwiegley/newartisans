@@ -2,7 +2,7 @@
 title: A C++ gotcha on Snow Leopard
 description: desc here
 tags: 
-date: [2009-10-30 Fri 09:35]
+date: 2009-10-30 09:35
 category: Uncategorized
 id: 227
 ---

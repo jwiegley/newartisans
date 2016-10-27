@@ -2,7 +2,7 @@
 title: Journey into Haskell, Part 1
 description: desc here
 tags: fibonacci, journal, tutorial
-date: [2009-03-16 Mon 17:12]
+date: 2009-03-16 17:12
 category: Uncategorized
 id: 217
 ---

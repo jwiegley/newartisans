@@ -2,7 +2,7 @@
 title: Fixed a few bugs in Ready Lisp
 description: desc here
 tags: SBCL, SLIME
-date: [2007-12-08 Sat 18:11]
+date: 2007-12-08 18:11
 category: Uncategorized
 id: 175
 ---

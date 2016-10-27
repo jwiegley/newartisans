@@ -2,7 +2,7 @@
 title: Securing the Buildbot
 description: desc here
 tags: 
-date: [2007-01-17 Wed 06:34]
+date: 2007-01-17 06:34
 category: Uncategorized
 id: 204
 ---

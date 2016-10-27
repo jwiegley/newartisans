@@ -1,8 +1,8 @@
 ---
-title: Script of the week: linkdups
+title: "Script of the week: linkdups"
 description: desc here
 tags: 
-date: [2008-03-28 Fri 04:40]
+date: 2008-03-28 04:40
 category: Uncategorized
 id: 170
 ---

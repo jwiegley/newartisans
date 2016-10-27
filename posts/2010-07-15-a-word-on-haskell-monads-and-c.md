@@ -2,7 +2,7 @@
 title: A word on Haskell Monads and C++
 description: desc here
 tags: 
-date: [2010-07-15 Thu 12:20]
+date: 2010-07-15 12:20
 category: C++, Haskell
 id: 228
 ---

@@ -1,8 +1,8 @@
 ---
-title: Hunchentoot: Persisting across reboots
+title: "Hunchentoot: Persisting across reboots"
 description: desc here
 tags: Hunchentoot
-date: [2007-11-09 Fri 05:01]
+date: 2007-11-09 05:01
 category: Uncategorized
 id: 180
 ---

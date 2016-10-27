@@ -1,8 +1,8 @@
 ---
-title: Script of the week: verify
+title: "Script of the week: verify"
 description: desc here
 tags: 
-date: [2008-01-07 Mon 01:09]
+date: 2008-01-07 01:09
 category: Uncategorized
 id: 173
 ---

@@ -2,7 +2,7 @@
 title: Running Common Lisp behind Apache
 description: desc here
 tags: Hunchentoot
-date: [2007-11-05 Mon 23:25]
+date: 2007-11-05 23:25
 category: Uncategorized
 id: 183
 ---

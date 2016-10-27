@@ -2,7 +2,7 @@
 title: Unicode support on the cheap
 description: desc here
 tags: 
-date: [2009-01-23 Fri 20:57]
+date: 2009-01-23 20:57
 category: Uncategorized
 id: 209
 ---

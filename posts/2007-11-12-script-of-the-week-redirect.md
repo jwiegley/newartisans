@@ -1,8 +1,8 @@
 ---
-title: Script of the week: redirect
+title: "Script of the week: redirect"
 description: desc here
 tags: 
-date: [2007-11-12 Mon 05:59]
+date: 2007-11-12 05:59
 category: Uncategorized
 id: 179
 ---

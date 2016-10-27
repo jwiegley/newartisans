@@ -1,8 +1,8 @@
 ---
-title: Script of the week: bzdmg
+title: "Script of the week: bzdmg"
 description: desc here
 tags: 
-date: [2007-11-05 Mon 03:04]
+date: 2007-11-05 03:04
 category: Uncategorized
 id: 184
 ---

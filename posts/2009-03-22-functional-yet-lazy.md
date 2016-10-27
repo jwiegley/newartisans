@@ -2,7 +2,7 @@
 title: How laziness changes thinking in Haskell
 description: desc here
 tags: laziness, lazy
-date: [2009-03-22 Sun 06:06]
+date: 2009-03-22 06:06
 category: Uncategorized
 id: 222
 ---

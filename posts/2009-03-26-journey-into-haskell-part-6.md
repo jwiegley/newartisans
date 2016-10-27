@@ -2,7 +2,7 @@
 title: Journey into Haskell, part 6
 description: desc here
 tags: infinity
-date: [2009-03-26 Thu 13:00]
+date: 2009-03-26 13:00
 category: Uncategorized
 id: 224
 ---

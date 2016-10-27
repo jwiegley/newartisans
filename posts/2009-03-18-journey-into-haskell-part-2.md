@@ -2,7 +2,7 @@
 title: Journey into Haskell, part 2
 description: desc here
 tags: Example, Monad, Schroedinger, tutorial
-date: [2009-03-18 Wed 07:07]
+date: 2009-03-18 07:07
 category: Uncategorized
 id: 218
 ---

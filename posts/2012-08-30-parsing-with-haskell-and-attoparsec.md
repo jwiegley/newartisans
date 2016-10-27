@@ -2,7 +2,7 @@
 title: Parsing with Haskell and Attoparsec
 description: desc here
 tags: 
-date: [2012-08-30 Thu 05:27]
+date: 2012-08-30 05:27
 category: Haskell
 id: 340
 ---

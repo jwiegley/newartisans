@@ -2,7 +2,7 @@
 title: The Symbolics Lisp Machine on Linux
 description: desc here
 tags: 
-date: [2007-10-23 Tue 09:07]
+date: 2007-10-23 09:07
 category: Uncategorized
 id: 190
 ---

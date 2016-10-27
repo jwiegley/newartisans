@@ -2,7 +2,7 @@
 title: Arrows are simpler than they appear
 description: desc here
 tags: 
-date: [2012-10-20 Sat 15:56]
+date: 2012-10-20 15:56
 category: Haskell
 id: 370
 ---

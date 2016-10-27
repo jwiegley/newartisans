@@ -2,7 +2,7 @@
 title: Update of gitlib libraries on Hackage, plus git-monitor
 description: desc here
 tags: 
-date: [2013-06-30 Sun 02:19]
+date: 2013-06-30 02:19
 category: Haskell
 id: 447
 ---

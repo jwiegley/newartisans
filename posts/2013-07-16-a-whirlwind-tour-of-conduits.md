@@ -2,7 +2,7 @@
 title: A whirlwind tour of conduits
 description: desc here
 tags: 
-date: [2013-07-16 Tue 18:16]
+date: 2013-07-16 18:16
 category: Haskell
 id: 450
 ---

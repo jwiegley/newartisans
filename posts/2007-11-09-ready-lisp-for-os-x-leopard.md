@@ -2,7 +2,7 @@
 title: Ready Lisp for OS X Leopard
 description: desc here
 tags: SBCL, SLIME
-date: [2007-11-09 Fri 00:45]
+date: 2007-11-09 00:45
 category: Uncategorized
 id: 181
 ---

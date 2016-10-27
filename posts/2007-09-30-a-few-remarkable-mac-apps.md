@@ -2,7 +2,7 @@
 title: A few remarkable Mac apps
 description: desc here
 tags: 
-date: [2007-09-30 Sun 23:37]
+date: 2007-09-30 23:37
 category: Uncategorized
 id: 196
 ---

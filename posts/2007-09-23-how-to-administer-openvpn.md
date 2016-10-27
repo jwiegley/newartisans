@@ -2,7 +2,7 @@
 title: How to administer OpenVPN
 description: desc here
 tags: 
-date: [2007-09-23 Sun 23:15]
+date: 2007-09-23 23:15
 category: Uncategorized
 id: 199
 ---

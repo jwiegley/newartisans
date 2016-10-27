@@ -2,7 +2,7 @@
 title: Simple class for walking char arrays as istreams
 description: desc here
 tags: 
-date: [2009-02-04 Wed 02:46]
+date: 2009-02-04 02:46
 category: Uncategorized
 id: 211
 ---

@@ -2,7 +2,7 @@
 title: The fix combinator and recursive lambdas
 description: desc here
 tags: 
-date: [2012-09-03 Mon 13:00]
+date: 2012-09-03 13:00
 category: Haskell
 id: 299
 ---

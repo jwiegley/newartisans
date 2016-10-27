@@ -2,7 +2,7 @@
 title: Using Archiveopteryx on the Mac
 description: desc here
 tags: Archiveopteryx, Gnus, IMAP, PostgreSQL, fetchmail, procmail
-date: [2007-10-11 Thu 07:19]
+date: 2007-10-11 07:19
 category: Uncategorized
 id: 194
 ---

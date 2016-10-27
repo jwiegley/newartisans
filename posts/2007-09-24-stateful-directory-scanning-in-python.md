@@ -2,7 +2,7 @@
 title: Stateful directory scanning in Python
 description: desc here
 tags: 
-date: [2007-09-24 Mon 03:26]
+date: 2007-09-24 03:26
 category: Uncategorized
 id: 198
 ---

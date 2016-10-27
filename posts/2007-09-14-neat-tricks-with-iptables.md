@@ -2,7 +2,7 @@
 title: Neat tricks with iptables
 description: desc here
 tags: 
-date: [2007-09-14 Fri 19:33]
+date: 2007-09-14 19:33
 category: Uncategorized
 id: 201
 ---

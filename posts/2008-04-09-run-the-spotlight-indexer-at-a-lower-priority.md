@@ -2,7 +2,7 @@
 title: Run the Spotlight indexer at a lower priority
 description: desc here
 tags: 
-date: [2008-04-09 Wed 01:25]
+date: 2008-04-09 01:25
 category: Uncategorized
 id: 169
 ---

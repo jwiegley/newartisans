@@ -2,7 +2,7 @@
 title: A day for nostalgia
 description: desc here
 tags: 
-date: [2009-01-19 Mon 20:36]
+date: 2009-01-19 20:36
 category: Uncategorized
 id: 206
 ---

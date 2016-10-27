@@ -2,7 +2,7 @@
 title: Nightly builds of GHC HEAD for Ubuntu 12.04.2 LTS
 description: desc here
 tags: 
-date: [2013-06-19 Wed 01:32]
+date: 2013-06-19 01:32
 category: Haskell
 id: 441
 ---

@@ -2,7 +2,7 @@
 title: Serving up Mercurial using mod_python
 description: desc here
 tags: 
-date: [2007-10-19 Fri 08:09]
+date: 2007-10-19 08:09
 category: Uncategorized
 id: 192
 ---

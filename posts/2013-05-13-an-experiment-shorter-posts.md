@@ -1,8 +1,8 @@
 ---
-title: An experiment: shorter posts
+title: "An experiment: shorter posts"
 description: desc here
 tags: 
-date: [2013-05-13 Mon 01:43]
+date: 2013-05-13 01:43
 category: Uncategorized
 id: 426
 ---

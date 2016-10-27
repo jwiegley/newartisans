@@ -2,7 +2,7 @@
 title: Building a better pre-commit hook for Git
 description: desc here
 tags: commit, hook
-date: [2009-02-13 Fri 22:23]
+date: 2009-02-13 22:23
 category: Uncategorized
 id: 212
 ---

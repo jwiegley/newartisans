@@ -2,7 +2,7 @@
 title: Common Lisp web servers
 description: desc here
 tags: Hunchentoot
-date: [2007-12-01 Sat 17:49]
+date: 2007-12-01 17:49
 category: Uncategorized
 id: 177
 ---
