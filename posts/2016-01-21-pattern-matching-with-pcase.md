@@ -1,0 +1,249 @@
+---
+title: "Emacs: Pattern Matching with pcase"
+description: desc here
+tags: emacs
+date: 2016-01-21 22:21
+category: Emacs
+---
+
+This is a tutorial on how to use the `pcase` macro in modern flavors of GNU
+Emacs.
+
+<!-- more -->
+
+# Exact matches
+
+All data fits into some kind of pattern. The most explicit pattern is a
+description of the data itself. Let's consider the following value as a
+running example:
+
+    '(1 2 (4 . 5) "Hello")
+
+Explicitly stated, this is a list of four elements, where the first two
+elements are the integers 1 and 2, the third is a cons consisting of a `car`
+of 4 and a `cdr` of 5, and the fourth is the string `"Hello"`. This states an
+explicit pattern we can match against using an equality test:
+
+    (equal value '(1 2 (4 . 5) "Hello"))
+
+# Pattern matches
+
+Where patterns become useful is when we want to generalize a bit. Let's say we
+want to do a similar equality test, but we don't care what the final string's
+contents are, only that it's a string. Even though it's simply state, this
+becomes quite difficult using an equality test:
+
+    (and (equal (subseq value 0 3) '(1 2 (4 .5)))
+         (stringp (nth 3 value)))
+
+What we would prefer is a more direct language for encoding our description of
+the *family of values we'd like to match against*. The way we said in English
+was: the first three elements exactly so, and the last element, any string.
+This is how we'd phrase that using `pcase':
+
+    (pcase value
+      (`(1 2 (4 . 5) ,(pred stringp))
+        (message "It matched!")))
+
+Think of `pcase` as a form of `cond`, where instead of evaluating each test
+for non-`nil`, it compares a series of *patterns* against the value under
+consideration (often called the "scrutinee" in the literature). There can be
+many patterns, and the first one wins, as with cond.
+
+# Capturing matches
+
+But `pcase` can go one step further: Not only can we compare a candidate value
+against a family of possible values described by their pattern, we can also
+"capture" sub-values from that pattern for later use. Continuing from the last
+example, let's say we want to print the string that match, even though we
+didn't care about the contents of the string for the sake of the match:
+
+    (pcase value
+      (`(1 2 (4 . 5) ,(and (pred stringp) foo))
+        (message "It matched, and the string was %s" foo)))
+
+Whenever a naked symbol like `foo` occurs as a logical pattern (see next
+section), the part of the value being matched at that position is bound to a
+local variable of the same name.
+
+# Logical and literal patterns
+
+To master `pcase`, there are two types of patterns you must know: Logical
+patterns, and literal, or quoted, patterns. Logical patterns describe the kind
+of data we'd like to match against, and other special actions to take when it
+matches; and quoted patterns are the "literal" aspect, stating the exact form
+of a particular match.
+
+Literal patterns are by far the easiest to think about. To match against any
+atom, string, or list of the same, the corresponding literal pattern is that
+exact value. So the literal pattern `"foo"` matches the string `"foo"`, `1`
+matches the atom `1`, etc.
+
+`pcase` matches against a list of logical patterns, so to use a literal
+pattern, we must quote it, unless it consists entirely of self-quoting atoms:
+
+    (pcase value
+      ('sym (message "Matched the symbol `sym'"))
+      ((1 2) (message "Matched the list (1 2)")))
+
+Literal patterns may also be introduced using a backquote, in which case
+commas may be used to place logical patterns within them, in exactly the same
+way that quoting and anti-quoting works for macros. For example:
+
+    (pcase value
+      (`(1 2 ,(or 3 4))
+       (message "Matched either the list (1 2 3) or (1 2 4)")))
+
+# More on logical patterns
+
+There are many special logical patterns. Let's consider them one by one.
+
+## Underscore `_`
+
+To match against anything whatsoever, no matter its type or value, use
+underscore. Thus to match against a list containing anything at all at its
+head, we'd use:
+
+    (pcase value
+      (`(,_ 1 2)
+       (message "Matched a list of anything followed by (2 3)")))
+
+## Symbol
+
+When performing a match, if a symbol occurs within a logical pattern, it binds
+whatever was found at that position to a local symbol of the same name. Some
+examples will help to make this clearer:
+
+    (pcase value
+      (`(1 2 ,foo 3)
+       (message "Matched 1, 2, something now bound to foo, and 3"))
+      (foo
+       (message "Match anything at all, and bind it to foo!"))
+      (`(,the-car . ,the-cdr))
+       (message "Match any cons cell, binding the car and cdr locally"))
+
+The reason for doing this is two-fold: Either to refer to a previous match
+later in the pattern (where it is compared using `eq`), or to make use of a
+matched value within the related code block:
+
+    (pcase value
+      (`(1 2 ,foo ,foo 3)
+       (message "Matched (1 2 %s %s 3)" foo)))
+
+## `(or PAT ...)` and `(and PAT ...)`
+
+We can express boolean logic within a pattern match using the `or` and `and`
+Patterns:
+
+    (pcase value
+      (`(1 2 ,(or 3 4)
+         ,(and (pred stringp)
+               (pred (string> "aaa"))
+               (pred (lambda (x) (> (length x) 10)))))
+       (message "Matched 1, 2, 3 or 4, and a long string "
+                "that is lexically greater than 'aaa'")))
+
+## `pred` predicates
+
+Arbitrary predicates can be applied to matched elements, where the predicate
+will be passed the object that matched. As in the previous example, lambdas
+can be used to form arbitrarily complex predicates, with their own logic. See
+above for examples.
+
+## guard expressions
+
+At any point within a match, you may assert that something is true by
+inserting a guard. This might consult some other variable to confirm the
+validity of a pattern at a given time, or it might reference a local symbol
+that was earlier bound by the match itself, as described above:
+
+    (pcase value
+      (`(1 2 ,foo ,(guard (and (not (numberp foo)) (/= foo 10)))
+       (message "Matched 1, 2, anything, and then anything again, "
+                "but only if the first anything wasn't the number 10"))))
+
+Note that in this example, the guard occurs at a match position, so even
+though the guard doesn't refer to what is being matched, if it passes, then
+whatever occurs at that position (the fourth element of the list), would be an
+unnamed successful matched. This is rather bad form, so we can be more
+explicit about the logic here:
+
+    (pcase value
+      (`(1 2 ,(and foo (guard (and (not (numberp foo)) (/= foo 10)))) _)
+       (message "Matched 1, 2, anything, and then anything again, "
+                "but only if the first anything wasn't the number 10"))))
+
+This means the same, but associates the guard with the value it tests, and
+makes it clear that we don't care what the fourth element is, only that it
+exists.
+
+## Pattern let bindings
+
+Within a pattern we can match sub-patterns, using a special form of let that
+has a meaning specific to `pcase':
+
+    (pcase value
+      (`(1 2 ,(and foo (let 3 foo)))
+       (message "A weird way of matching (1 2 3)")))
+
+This example is a bit contrived, but it allows us to build up complex guard
+patterns that might match against values captured elsewhere in the surrounding
+code:
+
+    (pcase value1
+      (`(1 2 ,foo)
+       (pcase value2
+         (`(1 2 ,(and (let (or 3 4) foo) bar))
+          (message "A nested pcase depends on the results of the first")))))
+
+Here the third value of `value2` -- which must be a list of exactly three
+elements, starting with `1` and `2` -- is being bound to the local variable
+`bar`, but only if `foo` was a `3` or `4`. There are many other ways this
+logic could be expressed, but this gives you a test of how flexibly you can
+introduce arbitrary pattern matching of other values within any logical
+pattern.
+
+# `pcase-let` and `pcase-let*`
+
+That's all there is to know about `pcase`! The other two utilities you might
+like to use are `pcase-let` and `pcase-let*`, which do similar things to their
+logical pattern counter-part `let`, but as regular Lisp forms:
+
+    (pcase-let ((`(1 2 ,foo) value1)
+                (`(3 4 ,bar) value2))
+      (message "value1 is a list of (1 2 %s); value2 ends with %s"
+               foo bar))
+
+Note that `pcase-let` does not fail, and always executes the correspond forms
+unless there is a type error. That is, `value1` above is not required to fit
+the form of the match exactly. Rather, every binding that can paired is bound
+to its corresponding element, but every binding that cannot is bound to `nil`:
+
+    (pcase-let ((`(1 2 ,foo) '(10)))
+      (message "foo = %s" foo))   => prints "foo = nil"
+
+    (pcase-let ((`(1 2 ,foo) 10))
+      (message "foo = %s" foo))   => Lisp error, 10 is not a list
+
+    (pcase-let ((`(1 2 ,foo) '(3 4 10)))
+      (message "foo = %s" foo))   => prints "foo = 10"
+
+Thus, `pcase-let` can be thought of as a more expressive form of
+`destructuring-bind`.
+
+The `pcase-let*` variant, like `let*`, allows you to reference bound local
+symbols from prior matches.
+
+    (pcase-let* ((`(1 2 ,foo) '(1 2 3))
+                 (`(3 4 ,bar) (list 3 4 foo)))
+      (message "foo = %s, bar = %s" foo bar))  => foo = 3, bar = 3
+
+However, if you name a symbol with same name in a later logical pattern, it is not
+used as an `eq` test, but rather shadows that symbol:
+
+    (pcase-let* ((`(1 2 ,foo) '(1 2 3))
+                 (`(3 4 ,foo) '(3 4 5)))
+      (message "1 2 %s" foo))
+
+This prints out `"1 2 5"`, rather than the current match.
+
