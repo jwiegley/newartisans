@@ -27,7 +27,7 @@ import           Pipes as P
 import qualified Pipes.Group as P
 import qualified Pipes.Prelude as P
 import           Pipes.Safe
-import           Pipes.Shell
+-- import           Pipes.Shell
 import qualified Pipes.Text as Text
 import qualified Pipes.Text.IO as Text
 import qualified Pipes.Text.Encoding as Text
@@ -82,19 +82,19 @@ main = hakyllWith config $ do
     match "css/*.css" $ do
         route idRoute
         -- compile compressCssCompiler
-        compile yuiCompressor
+        -- compile yuiCompressor
 
     -- Compress and minify JavaScript
     match "js/*.js" $ do
         route idRoute
-        compile yuiCompressor
+        -- compile yuiCompressor
 
     -- Compress and minify Blueprint CSS
     forM_ [ "blueprint-css/blueprint/*.css"
           , "blueprint-css/blueprint/plugins/fancy-type/*.css"
           ] $ \p -> match p $ do
         route idRoute
-        compile yuiCompressor
+        -- compile yuiCompressor
 
     -- Render the /tmp index page
     match "tmp/index.html" $ do
@@ -503,6 +503,7 @@ paginate itemsPerPage rules = do
         in compare (parseTime' fn1 :: Maybe UTCTime)
                    (parseTime' fn2 :: Maybe UTCTime)
 
+{-
 yuiCompressor :: Compiler (Item String)
 yuiCompressor = do
     path <- getResourceFilePath
@@ -519,6 +520,7 @@ yuiCompressor = do
         -- away with 'Control.Monad.void'
         runSafeT $
             unpack <$> Text.toLazyM (void (producerCmd' javaCmd ^. Text.utf8))
+-}
 
 {------------------------------------------------------------------------------}
 
