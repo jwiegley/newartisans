@@ -1,30 +1,161 @@
 /* @override 
 	http://127.0.0.1:8000/css/site.css */
 
-h1 {
-  font-size: x-large;
+body {
+    background-color: rgba(21, 92, 180, 0.27);
 }
 
-h2 {
-  font-size: large;
-}
-
-h3 {
-  font-size: medium;
+#container {
+    margin: 1in;
+    margin-top: 6ex;
+    padding: 1em;
+    padding-top: 5ex;
+    font-family: Palatino, serif;
+    font-size: 130%;
+    background-color: #ffffff;
 }
 
 #title {
-  font: xx-large Georgia, "Times New Roman", Times, serif;
-  font-variant: small-caps;
+    font-size: 160%;
+    font-weight: bold;
+    padding-bottom: 2ex;
 }
 
-#titlebox {
-  margin-top: 25px;
-  margin-bottom: 25px;
+#header {
+    border-bottom: 1px solid #333;
 }
 
-#author {
-  font: Georgia, "Times New Roman", Times, serif;
-  font-variant: small-caps;
-  margin-top: 6ex;
+#header, #footer {
+    text-align: center;
+}
+
+#menu {
+    font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+    font-variant: small-caps;
+}
+
+#menu ul {
+    list-style: none;
+}
+
+#menu li {
+    display: inline-block;
+    padding-right: 1em;
+}
+
+.article {
+    margin: 2em;
+}
+
+.article-title {
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.article-date {
+    float: right;
+    padding-right: 1em;
+}
+
+.article-content {
+    margin: 2em;
+    margin-top: 1.5em;
+    margin-right: 3em;
+    line-height: 3ex;
+    text-align: justify;
+}
+
+.article-content h1 {
+    margin-top: 2ex;
+    font-size:  160%;
+}
+
+.article-content h2 {
+    margin-top: 3ex;
+    font-size:  140%;
+}
+
+.teaser {
+    margin: 2em;
+    margin-top: 2em;
+    margin-bottom:  1.5em;
+    border-bottom: 1px solid #ccc;
+}
+
+.teaser-title {
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.teaser-date {
+    float: right;
+    padding-right: 1em;
+}
+
+.teaser-body {
+    margin: 2em;
+    margin-top: 1.5em;
+    margin-right: 3em;
+    margin-bottom:1em;
+    line-height: 3ex;
+    text-align: justify;
+}
+
+#archive-list {
+    margin: 2em;
+}
+
+.archive {
+    margin-bottom: 1ex;
+}
+
+.archive-title {
+    font-size: 100%;
+}
+
+.archive-title a {
+    color: blue; 
+    text-decoration: none;
+}
+
+.archive-date {
+    float: right;
+    padding-right: 1em;
+}
+
+.archive-date a {
+    color: black; 
+    text-decoration: none;
+}
+
+#footer {
+    border-top: 1px solid #333;
+    font-style: italic;
+    padding-top: 2ex;
+    text-align: center;
+}
+
+blockquote {
+	font-family: Palatino, serif;
+	font-style: italic;
+}
+
+pre {
+    padding: 2em;
+    padding-top: 1ex;
+    padding-bottom: 1ex;
+    background-color: rgba(239, 215, 107, 0.17);
+}
+
+code {
+    font-family: "Courier New", Courier, mono;
+    font-size:  90%;
+}
+
+#navlinks {
+	margin: 1em;
+}
+
+#navlinkolder {
+	float:  right;
 }

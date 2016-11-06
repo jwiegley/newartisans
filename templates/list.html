@@ -1,0 +1,27 @@
+$for(posts)$
+  <div class="teaser">
+    <div class="teaser-date"><a href="/archives/index.html#$year$">$month$ $day$, $year$</a></div>
+    <div class="teaser-title"><a href="$url$" rel="bookmark">$title$</a></div>
+    <div class="teaser-body">$teaser$ [...]</div>
+  </div>
+$endfor$
+<div id="navlinks">
+<div id="navlinkolder">
+  $if(isLast)$
+    &nbsp;
+  $else$
+    <a href="/page/$nextIndex$">Older Entries &raquo;</a>
+  $endif$
+</div>
+<div id="navlinknewer">
+  $if(isFirst)$
+    &nbsp;
+  $else$
+    $if(isSecond)$
+      <a href="/">&laquo; Newer Entries</a>
+    $else$
+      <a href="/page/$prevIndex$">&laquo; Newer Entries</a>
+    $endif$
+  $endif$
+</div>
+</div>

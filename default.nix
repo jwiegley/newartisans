@@ -1,7 +1,7 @@
-{ mkDerivation, attoparsec, base, binary, blaze-html, blaze-markup
+{ mkDerivation, base, binary
 , directory, exceptions, filepath, foldl, hakyll, lens, old-locale
-, pandoc, pandoc-types, parsec, pipes, pipes-attoparsec
-, pipes-bytestring, pipes-group, pipes-safe# , pipes-shell
+, pandoc, pandoc-types, parsec, pipes
+, pipes-bytestring, pipes-group, pipes-safe, pipes-shell
 , pipes-text, process, split, stdenv, strict, temporary, text, time
 , transformers, yuicompressor
 }:
@@ -12,11 +12,10 @@ mkDerivation {
   isLibrary = false;
   isExecutable = true;
   buildDepends = [
-    attoparsec base binary blaze-html blaze-markup directory exceptions
+    base binary directory exceptions
     filepath foldl hakyll lens old-locale pandoc pandoc-types parsec
-    pipes pipes-attoparsec pipes-bytestring pipes-group pipes-safe
-    # pipes-shell
-     pipes-text process split strict temporary text time
+    pipes pipes-bytestring pipes-group pipes-safe
+    pipes-shell pipes-text process split strict temporary text time
     transformers yuicompressor
   ];
   homepage = "http://newartisans.com/";

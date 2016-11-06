@@ -1,13 +1,16 @@
 HAKYLL = $(shell pwd)/result/bin/newartisans
 
-all: $(HAKYLL)
-	echo NewArtisans.com is built
+all: build
+	echo Newartisans.com is built
 
-$(HAKYLL):
-	nix-build '<nixpkgs-next>' --fallback --show-trace -A haskell801Packages.newartisans
+build:
+	nix-build '<nixpkgs>' -A haskell801Packages.newartisans
 
 site:
 	$(HAKYLL) rebuild
+
+watch:
+	$(HAKYLL) watch
 
 deploy: site
 	@echo Copying files...

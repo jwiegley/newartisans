@@ -99,9 +99,20 @@ The `P.map_induction` induction principle treats each intermediate map as an
 `_bis` variant expresses the same information as successive calls to `add`
 down to an `empty` map.
 
-`P.fold_rec` should be applied to the goal has the form of a `fold` over a
-map. If you use this, be sure to `revert` into the goal any hypotheses
-referring to that same map, if you want to use those facts in the proof.
+`P.fold_rec` should be applied if the goal has the form of a call to `M.fold`
+over a map. If you use this, be sure to `revert` into the goal any hypotheses
+referring to the same map, since you'll likely want to use those facts as part
+of the induction.
+
+Note that these two sets of principles are used somewhat differently from each
+other:
+
+    -- Applies to any evidence in the context involving [m].
+    induction m using P.map_induction bis.
+
+    -- Applies only to evidence in the goal, thus sometimes
+    -- requiring use of [revert].
+    apply P.fold_rec.
 
 ## Rewriting with maps
 
@@ -125,16 +136,17 @@ Now you can `rewrite` the arguments in a `map_operation`, provided you know
 they are `Equal`.
 
 Also, if you find yourself facing difficulties using `rewrite` with folds,
-note that in addition to establish a proof that the fold function is `Proper`
-over its argument and result, you must also show that its computed result is
-independent of the order of evaluation, since it's not known from the `FMap`
-interface whether the contents of a map are reordered during insertion or not.
+note that in addition to establishing a proof that the fold function is
+`Proper` for its arguments and result, you must also show that the final
+result is independent of the order of evaluation, since it's not known from
+the `FMap` interface whether the contents of a map are reordered during
+insertion or not.
 
 ## Abstracting the map implementation
 
 Often when using maps, it's not necessary to pick an implementation, you just
 need the map interface over a known key type. To do this, you just need to
-place your code to a module that itself requires and passes along the
+place your code in a module that itself requires and passes along the
 implementation module:
 
     Require Import
@@ -148,7 +160,7 @@ implementation module:
     ...
     End MyModule.
 
-To later instantiate this module functor using a map implementation, you'd
+To later instantiate such a module functor using a map implementation, you'd
 write:
 
     Require Import
@@ -167,8 +179,8 @@ that it's decidable? Often the latter suffices, making the algorithm even more
 general.
 
 In both cases, you may refer to the key type as either `E.key` or `M.key`
-(since the `M` module re-exports `key`), and you check for key equality using
-`E.eq`:
+(since the `M` module re-exports `key`), and you can check for key equality
+using `E.eq`:
 
     Require Import
       Coq.FSets.FMapFacts
@@ -183,7 +195,7 @@ In both cases, you may refer to the key type as either `E.key` or `M.key`
 
     End MoreFacts.
 
-To require an ordered type (which makes `E.lt` available), use:
+To require an ordered type, which makes `E.lt` available, use:
 
     Require Import
       Coq.FSets.FMapFacts
