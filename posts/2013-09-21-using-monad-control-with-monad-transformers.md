@@ -9,7 +9,7 @@ id: 455
 
 This article assumes familiarity with monads and monad transformers.  If
 you've never had an occasion to use `lift` yet, you may want to come back to
-it later.  It is also available on the School of Haskell: [https://www.fpcomplete.com/user/jwiegley/monad-control](https://www.fpcomplete.com/user/jwiegley/monad-control).
+it later.
 
 ## The Problem
 

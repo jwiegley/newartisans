@@ -21,11 +21,13 @@ Very often, one maps from a known, ordered type, like `nat`, to some other
 type, using one of the concrete structures offered by the `FMap` library. In
 that case, the code you want to start with looks like this:
 
-    Require Import
-      Coq.FSets.FMapList
-      Coq.Structures.OrderedTypeEx.
+``` coq
+Require Import
+  Coq.FSets.FMapList
+  Coq.Structures.OrderedTypeEx.
 
-    Module Import M := FMapList.Make(Nat_as_OT).
+Module Import M := FMapList.Make(Nat_as_OT).
+```
 
 You can now create a map using `M.t A`, where `A` is your value type. You can
 prefix the map-related functions with `M.`, or just call them directly. Some
@@ -57,11 +59,13 @@ map membership:
 In order to complete most proofs concerning maps, there are additional lemmas
 and functions you'll want to include:
 
-    Require Import
-      Coq.FSets.FMapFacts.
+``` coq
+Require Import
+  Coq.FSets.FMapFacts.
 
-    Module P := WProperties_fun N_as_OT M.
-    Module F := P.F.
+Module P := WProperties_fun N_as_OT M.
+Module F := P.F.
+```
 
 This provides two new prefixes, `P.` and `F.`, which bring into scope many
 more helper functions and lemmas:
@@ -107,12 +111,14 @@ of the induction.
 Note that these two sets of principles are used somewhat differently from each
 other:
 
-    -- Applies to any evidence in the context involving [m].
-    induction m using P.map_induction bis.
+``` coq
+-- Applies to any evidence in the context involving [m].
+induction m using P.map_induction bis.
 
-    -- Applies only to evidence in the goal, thus sometimes
-    -- requiring use of [revert].
-    apply P.fold_rec.
+-- Applies only to evidence in the goal, thus sometimes
+-- requiring use of [revert].
+apply P.fold_rec.
+```
 
 ## Rewriting with maps
 
@@ -121,16 +127,20 @@ rewriting can sometimes be a little confusing. Equality between maps is
 expressed by the equivalence `Equal`, which states that anything found in the
 first map is found at the same key in the second map.  In other words:
 
-    forall k v, M.MapsTo k v m1 <-> M.MapsTo k v m2
+``` coq
+forall k v, M.MapsTo k v m1 <-> M.MapsTo k v m2
+```
 
 This isn't a problem if the terms you're rewriting involve functions from the
 `FMap` modules, but if you create a new function that operates on maps, you'll
 need to accompany it with a proof relating it to `Equal`.  For example:
 
-    Definition map_operation `(m : M.t A) : M.t A := ...
+``` coq
+Definition map_operation `(m : M.t A) : M.t A := ...
 
-    Lemma map_operation_Proper :
-      Proper (Equal ==> Equal) map_operation.
+Lemma map_operation_Proper :
+  Proper (Equal ==> Equal) map_operation.
+```
 
 Now you can `rewrite` the arguments in a `map_operation`, provided you know
 they are `Equal`.
@@ -149,26 +159,30 @@ need the map interface over a known key type. To do this, you just need to
 place your code in a module that itself requires and passes along the
 implementation module:
 
-    Require Import
-      Coq.FSets.FMapFacts
-      Coq.Structures.OrderedTypeEx.
+``` coq
+Require Import
+  Coq.FSets.FMapFacts
+  Coq.Structures.OrderedTypeEx.
 
-    Module MyModule (M : WSfun Nat_as_OT).
-    
-    Module P := WProperties_fun Nat_as_OT M.
-    Module F := P.F.
-    ...
-    End MyModule.
+Module MyModule (M : WSfun Nat_as_OT).
+
+Module P := WProperties_fun Nat_as_OT M.
+Module F := P.F.
+...
+End MyModule.
+```
 
 To later instantiate such a module functor using a map implementation, you'd
 write:
 
-    Require Import
-      Coq.FSets.FMapFacts
-      MyModule.
+``` coq
+Require Import
+  Coq.FSets.FMapFacts
+  MyModule.
 
-    Module Import M := FMapList.Make(Nat_as_OT).
-    Module Import MyMod := MyModule M.
+Module Import M := FMapList.Make(Nat_as_OT).
+Module Import MyMod := MyModule M.
+```
 
 ## Abstracting over both map and key
 
@@ -182,28 +196,32 @@ In both cases, you may refer to the key type as either `E.key` or `M.key`
 (since the `M` module re-exports `key`), and you can check for key equality
 using `E.eq`:
 
-    Require Import
-      Coq.FSets.FMapFacts
-      Coq.Structures.DecidableTypeEx.
-    
-    Module MoreFacts (E : DecidableType) (M : WSfun E).
+``` coq
+Require Import
+  Coq.FSets.FMapFacts
+  Coq.Structures.DecidableTypeEx.
 
-    Global Program Instance filter_Proper {elt} : forall P,
-      Proper (E.eq ==> eq ==> eq) P
-        -> Proper (M.Equal (elt:=elt) ==> M.Equal) (@P.filter elt P).
-    ...
+Module MoreFacts (E : DecidableType) (M : WSfun E).
 
-    End MoreFacts.
+Global Program Instance filter_Proper {elt} : forall P,
+  Proper (E.eq ==> eq ==> eq) P
+    -> Proper (M.Equal (elt:=elt) ==> M.Equal) (@P.filter elt P).
+...
+
+End MoreFacts.
+```
 
 To require an ordered type, which makes `E.lt` available, use:
 
-    Require Import
-      Coq.FSets.FMapFacts
-      Coq.Structures.OrderedTypeEx.
-    
-    Module MoreFacts (E : OrderedType) (M : WSfun E).
-    ...
-    End MoreFacts.
+``` coq
+Require Import
+  Coq.FSets.FMapFacts
+  Coq.Structures.OrderedTypeEx.
+
+Module MoreFacts (E : OrderedType) (M : WSfun E).
+...
+End MoreFacts.
+```
 
 ## Putting it all together
 
@@ -211,19 +229,21 @@ Since you probably came here just wondering how to construct a map, add stuff
 to it, and then search for what you added, here is a complete example you can
 cut and paste to start off with:
 
-    Require Import
-      Coq.FSets.FMapAVL
-      Coq.FSets.FMapFacts
-      Coq.Structures.OrderedTypeEx
-      PeanoNat.
-    
-    Module Import M := FMapAVL.Make(Nat_as_OT).
-    
-    Module P := WProperties_fun Nat_as_OT M.
-    Module F := P.F.
-    
-    Compute M.find 1 (M.add 1 10 (M.empty _)).
-    Compute P.for_all (fun k _ => k <? 10) (M.add 1 10 (M.empty _)).
+``` coq
+Require Import
+  Coq.FSets.FMapAVL
+  Coq.FSets.FMapFacts
+  Coq.Structures.OrderedTypeEx
+  PeanoNat.
+
+Module Import M := FMapAVL.Make(Nat_as_OT).
+
+Module P := WProperties_fun Nat_as_OT M.
+Module F := P.F.
+
+Compute M.find 1 (M.add 1 10 (M.empty _)).
+Compute P.for_all (fun k _ => k <? 10) (M.add 1 10 (M.empty _)).
+```
 
 Also note that there is `N_as_OT`, which is much faster to compute with if you
 are using large constants, but it requires familiarity with the `NArith`
