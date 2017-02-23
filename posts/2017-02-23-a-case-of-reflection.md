@@ -67,7 +67,7 @@ value provided by the user? Since `Arbitrary` does not allow the use of
 above? And without using global `IORef`s or `unsafePerformIO`?
 
 The `reflection` library allows us to reify a runtime value into a type (whose
-name we'll never know, meaningi we can reference it through a type variable),
+name we'll never know, requiring us to reference it through a type variable),
 and then communicate that type via a constraint, such that we can reflect the
 value back out as needed. If this sounds a bit confusing, maybe an example can
 make it clearer:
