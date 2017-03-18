@@ -1,10 +1,6 @@
 ---
 title: How to administer OpenVPN
-description: desc here
-tags: 
-date: 2007-09-23 23:15
 category: Uncategorized
-id: 199
 ---
 
 This document describes how to administrate OpenVPN on a Debian

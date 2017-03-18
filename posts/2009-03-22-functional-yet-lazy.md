@@ -1,10 +1,6 @@
 ---
 title: How laziness changes thinking in Haskell
-description: desc here
-tags: laziness, lazy
-date: 2009-03-22 06:06
 category: Uncategorized
-id: 222
 ---
 
 As I explore Haskell, I'm discovering that one of its trickiest aspects is not structuring things functionally, but the lazy evaluation.  It turns out lazy evaluation comes with both great benefits, and significant difficulties.  I'd like to point a few of these out, as they're becoming clearer to me.

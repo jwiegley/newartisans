@@ -1,10 +1,6 @@
 ---
 title: Meta-programming with the Free Monad
-description: desc here
-tags: 
-date: 2012-08-27 13:00
 category: Haskell
-id: 281
 ---
 
 The Free Monad is something I've been having a great deal of difficulty wrapping my head around. It's one of those Haskell concepts that ends up being far simpler than any of the articles on the Net would have you think. So, here's a whirlwind tour of this Monad and how it can be super handy.

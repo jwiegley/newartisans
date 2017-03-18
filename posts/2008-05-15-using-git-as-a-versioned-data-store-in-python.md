@@ -1,10 +1,6 @@
 ---
 title: Using Git as a versioned data store in Python
-description: desc here
-tags: 
-date: 2008-05-15 02:00
 category: Uncategorized
-id: 164
 ---
 
 Git has sometimes been described as a versioning file-system which happens to support the underlying notions of version control.  And while most people do simply use Git as a version control system, it remains true that it can be used for other tasks as well.

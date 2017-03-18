@@ -1,10 +1,6 @@
 ---
 title: "Script of the week: linkdups"
-description: desc here
-tags: 
-date: 2008-03-28 04:40
 category: Uncategorized
-id: 170
 ---
 
 It's been a while since I've posted a script; life has been distracting lately.  I also wanted to let this current script mature a lot more before sharing it, as it has the potential to be destructive.  Use wisely!

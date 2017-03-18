@@ -1,10 +1,6 @@
 ---
 title: Journey into Haskell, part 6
-description: desc here
-tags: infinity
-date: 2009-03-26 13:00
 category: Uncategorized
-id: 224
 ---
 
 Another thing to be learned down the Haskell rabbit-hole: Thinking in infinites.  Today someone posed a puzzle which I tried to solve in a straight-forward, recursive manner: Building a list of primes.  The requested algorithm was plain enough:

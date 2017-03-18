@@ -1,10 +1,6 @@
 ---
 title: Serving up Mercurial using mod_python
-description: desc here
-tags: 
-date: 2007-10-19 08:09
 category: Uncategorized
-id: 192
 ---
 
 The following information resulted from several hours of battling with SELinux and Apache, attempting to find some way of serving up my Mercurial repository (now at [http://hg.newartisans.com](http://hg.newartisans.com)) over HTTP.  In short, I found that `cgi-bin` would not work at all with SELinux, for reasons I couldn't figure out (it didn't generate any AVC messages once I extended Apache's permissions -- it just wouldn't serve any data).

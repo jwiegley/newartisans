@@ -1,10 +1,6 @@
 ---
 title: Creating a home directory policy
-description: desc here
-tags: 
-date: 2009-01-17 01:22
 category: Uncategorized
-id: 159
 ---
 
 # `/Applications`

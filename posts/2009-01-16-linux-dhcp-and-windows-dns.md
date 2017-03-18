@@ -1,10 +1,6 @@
 ---
 title: Linux DHCP and Windows DNS
-description: desc here
-tags: DHCP, DNS
-date: 2009-01-16 16:42
 category: Uncategorized
-id: 156
 ---
 
 I feel a need to blog about this today because it took several days to figure out, but the solution was trivial.

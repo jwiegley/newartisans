@@ -1,10 +1,6 @@
 ---
 title: The saga of rebase versus merge
-description: desc here
-tags: immutable, merge, rebase
-date: 2009-02-26 05:30
 category: Uncategorized
-id: 213
 ---
 
 Following on my last entry, where I built a better `pre-commit` hook to ensure every commit in my Git history passed `make check` with flying colors, I realized something today about my good friend, `rebase`.

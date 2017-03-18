@@ -1,10 +1,6 @@
 ---
 title: The fix combinator and recursive lambdas
-description: desc here
-tags: 
-date: 2012-09-03 13:00
 category: Haskell
-id: 299
 ---
 
 The `fix` combinator is a higher order function that can turn any function into a potentially recursive one. It can be a bit difficult to wrap your head around, since neither the definition nor the documentation is very clear on what you might use it for. However, I've found one handy use case: creating recursive lambdas.

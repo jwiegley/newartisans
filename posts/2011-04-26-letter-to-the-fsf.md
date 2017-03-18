@@ -1,10 +1,6 @@
 ---
 title: Letter to the Free Software Foundation
-description: desc here
-tags: 
-date: 2011-04-26 20:24
 category: Uncategorized
-id: 229
 ---
 
 The following is an amalgam of several letters I sent to Richard Stallman,

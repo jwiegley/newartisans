@@ -1,10 +1,6 @@
 ---
 title: Using local DNS caching
-description: desc here
-tags: 
-date: 2005-03-26 00:14
 category: Uncategorized
-id: 157
 ---
 
 I've found a very easy way to use local DNS caching on the Mac: simply setup Internet sharing from one device you don't use, to another you don't use.  Since I almost always get my Internet access through wireless, I've setup my system to share my Fireware port to anyone connected to my Ethernet port.

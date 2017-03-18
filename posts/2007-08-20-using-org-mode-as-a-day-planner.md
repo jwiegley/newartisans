@@ -1,10 +1,6 @@
 ---
 title: Using org-mode as a Day Planner
-description: desc here
-tags: 
-date: 2007-08-20 02:29
 category: Uncategorized
-id: 203
 ---
 
 The following document describes how to use Carsten Dominik's excellent `org-mode` Emacs package after the fashion of a pen-and-paper day planner.

@@ -1,10 +1,6 @@
 ---
 title: Simple class for walking char arrays as istreams
-description: desc here
-tags: 
-date: 2009-02-04 02:46
 category: Uncategorized
-id: 211
 ---
 
 This has probably been written countless times before, but I found myself needing it today and it was quick to write.  It lets you read characters from a char array in C++ via the istream interface:

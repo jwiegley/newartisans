@@ -1,10 +1,6 @@
 ---
 title: Install BootCamp with multiple partitions
-description: desc here
-tags: 
-date: 2007-10-15 03:10
 category: Uncategorized
-id: 193
 ---
 
 Just as a note to others who were dismayed by the inability to have multiple partitions and to use BootCamp at the same time, here are instructions for how to do so. I gathered these from various sources, and it worked great for me, so hopefully you'll have success with it too.

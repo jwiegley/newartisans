@@ -1,10 +1,6 @@
 ---
 title: Arrows are simpler than they appear
-description: desc here
-tags: 
-date: 2012-10-20 15:56
 category: Haskell
-id: 370
 ---
 
 I have found that arrows in Haskell are far simpler than they might appear

@@ -1,10 +1,6 @@
 ---
 title: "Script of the week: verify"
-description: desc here
-tags: 
-date: 2008-01-07 01:09
 category: Uncategorized
-id: 173
 ---
 
 This week's script uses Leopard's new `xattr` tool to store MD5 checksum information alongside any file you wish.  Later, you can run the same script to ensure that the checksum has not changed.

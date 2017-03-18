@@ -1,10 +1,6 @@
 ---
 title: Too much good stuff
-description: desc here
-tags: 
-date: 2008-09-05 21:46
 category: Uncategorized
-id: 161
 ---
 
 I have been somewhat lax with blogging lately, because I’ve been too absorbed in playing with too many new things (and busy at work, with real life, and etc).  So thought I’d just make a quick list today to share some of the exciting stuff I’ve been finding...

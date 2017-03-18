@@ -1,10 +1,6 @@
 ---
 title: Running Common Lisp behind Apache
-description: desc here
-tags: Hunchentoot
-date: 2007-11-05 23:25
 category: Uncategorized
-id: 183
 ---
 
 It's hard for me to think of a more ideal platform for web design than Common Lisp.  Imagine having a system that runs indefinitely, with the ability to "snapshot" its running state and restore exactly where you left off, and where updates can be applied live, at functional-level granularity, from anywhere.  Oh, and let's not forget the remote debugging and inspection capabilities!  And I thought Visual Studio with ASP.NET was nice.

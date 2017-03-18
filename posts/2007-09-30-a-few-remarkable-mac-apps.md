@@ -1,10 +1,6 @@
 ---
 title: A few remarkable Mac apps
-description: desc here
-tags: 
-date: 2007-09-30 23:37
 category: Uncategorized
-id: 196
 ---
 
 The following is a list of some of the Mac applications I live in every day.  They are the precious few I couldn't live without, and that contribute to my Joy of Mac each day.  They are listed roughly in order of affection.

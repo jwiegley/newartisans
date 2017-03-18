@@ -1,10 +1,6 @@
 ---
 title: A day for nostalgia
-description: desc here
-tags: 
-date: 2009-01-19 20:36
 category: Uncategorized
-id: 206
 ---
 
 After tracking it down on a public domain mirror, and installing an

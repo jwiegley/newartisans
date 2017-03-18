@@ -1,7 +1,5 @@
 ---
 title: Understanding continuations
-tags: haskell
-date: 2013-05-13 04:04
 category: Haskell
 ---
 

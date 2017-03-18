@@ -1,7 +1,5 @@
 ---
 title: Notes on Free monads
-tags: haskell
-date: 2013-09-23 04:04
 category: Haskell
 ---
 

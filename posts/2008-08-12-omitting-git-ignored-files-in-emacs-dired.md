@@ -1,10 +1,6 @@
 ---
 title: Omitting Git-ignored files in Emacs dired
-description: desc here
-tags: 
-date: 2008-08-12 06:22
 category: Uncategorized
-id: 162
 ---
 
 Adding the following snippet to your `.emacs` file will cause Emacs’ dired mode to omit all files ignored by Git.  This only works if you have dired-omit-mode on, which is ordinarily bound to `Meta-o`.

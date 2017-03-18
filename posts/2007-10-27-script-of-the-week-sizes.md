@@ -1,10 +1,6 @@
 ---
 title: "Script of the week: sizes"
-description: desc here
-tags: 
-date: 2007-10-27 10:39
 category: Uncategorized
-id: 186
 ---
 
 For the next few months, I will have a "script of the week" each week: just some tiny little scripts I've developed over the years that I happen to find particularly useful.

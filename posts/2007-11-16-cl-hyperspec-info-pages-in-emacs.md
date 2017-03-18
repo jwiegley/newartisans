@@ -1,10 +1,6 @@
 ---
 title: CL HyperSpec Info pages in Emacs
-description: desc here
-tags: 
-date: 2007-11-16 00:03
 category: Uncategorized
-id: 178
 ---
 
 I just discovered the [following blog article][] by Bill Clementson, from way back in 2003.  Luckily, the links still worked, so I was able to get Info pages today for the Common Lisp HyperSpec courtesy of the [GCL][] project.

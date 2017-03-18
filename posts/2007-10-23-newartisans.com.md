@@ -1,10 +1,6 @@
 ---
 title: The Symbolics Lisp Machine on Linux
-description: desc here
-tags: 
-date: 2007-10-23 09:07
 category: Uncategorized
-id: 190
 ---
 
 Out there on the Net somewhere (may Google be with you) there are binaries to be found for running a Symbolics Open Genera 2.0 Lisp Machine under Linux.  I can't quite tell you where to get these tasty binaries, but if you happen to find them, here are the steps you'll need to get everything working.  The HOWTOs that I read were a little sparse, so I'm hoping this will give a more complete summary of what's needed.

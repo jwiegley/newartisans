@@ -1,8 +1,5 @@
 ---
 title: Using the FMap library in Coq
-description: desc here
-tags: coq
-date: 2016-10-27 13:49
 category: Coq
 ---
 

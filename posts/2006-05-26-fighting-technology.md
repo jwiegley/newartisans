@@ -1,10 +1,6 @@
 ---
 title: Fighting technology
-description: desc here
-tags: 
-date: 2006-05-26 02:14
 category: Uncategorized
-id: 205
 ---
 
 My apologies to anyone still reading this blog, but a technical hiccup caused me to get quite depressed with the mechanics used for posting this site (an ASP.NET 2.0 application I wrote last year).  After that I didn't have the heart to go in, debug the problem, and resume posting.  Turns out it was something fairly simple and took only a few minutes of looking-in-to to get fixed.

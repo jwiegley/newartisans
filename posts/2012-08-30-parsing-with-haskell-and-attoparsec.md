@@ -1,10 +1,6 @@
 ---
 title: Parsing with Haskell and Attoparsec
-description: desc here
-tags: 
-date: 2012-08-30 05:27
 category: Haskell
-id: 340
 ---
 
 In an effort to better understand parsing in the Haskell world, I decided to port a hand-crafted parser I'd written for Subversion dump files in [C++11](https://github.com/jwiegley/subconvert/blob/master/src/svndump.cpp) into a Haskell version. It's not that the old parser didn't work well, but I wanted to see what Haskell could make of the problem with its laziness and combinator-oriented parsing libraries.

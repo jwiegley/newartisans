@@ -1,10 +1,6 @@
 ---
 title: "Script of the week: redirect"
-description: desc here
-tags: 
-date: 2007-11-12 05:59
 category: Uncategorized
-id: 179
 ---
 
 This week's script of the week is so simple, it doesn't really deserve to be called a script.  But since it's highly useful and comes as a surprise to many people that it can be done so easily, here it is.

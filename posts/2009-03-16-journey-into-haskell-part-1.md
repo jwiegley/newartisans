@@ -1,10 +1,6 @@
 ---
 title: Journey into Haskell, Part 1
-description: desc here
-tags: fibonacci, journal, tutorial
-date: 2009-03-16 17:12
 category: Uncategorized
-id: 217
 ---
 
 Having just begun my descent down the rabbit hole, I thought I'd try journaling about what I discover along the way, so that those who are merely curious can play the part of language voyeur.  I've always wanted to do that: to see how someone dives into Erlang or O'Caml or Forth -- or Haskell.  Here's your chance.

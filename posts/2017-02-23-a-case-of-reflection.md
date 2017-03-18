@@ -1,8 +1,5 @@
 ---
 title: A case of reflection
-description: desc here
-tags: haskell
-date: 2017-02-23 11:46
 category: Haskell
 ---
 

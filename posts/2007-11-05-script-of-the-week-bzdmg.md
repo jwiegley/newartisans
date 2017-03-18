@@ -1,10 +1,6 @@
 ---
 title: "Script of the week: bzdmg"
-description: desc here
-tags: 
-date: 2007-11-05 03:04
 category: Uncategorized
-id: 184
 ---
 
 I haven't written much this past week because I've been upgrading all the home's machines to Leopard.  So far it's gone very smoothly, and I like the new OS!

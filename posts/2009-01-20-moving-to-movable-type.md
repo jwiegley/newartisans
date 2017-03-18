@@ -1,10 +1,6 @@
 ---
 title: Moving to Movable Type
-description: desc here
-tags: 
-date: 2009-01-20 21:22
 category: Uncategorized
-id: 207
 ---
 
 The blog has now fully moved over to Movable Type, including all past articles and their comments.  It took a bit of Perl, Python and mucking with SQL, but now the transfer is complete.

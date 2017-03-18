@@ -1,8 +1,5 @@
 ---
 title: "Emacs: Pattern Matching with pcase"
-description: desc here
-tags: emacs
-date: 2016-01-21 22:21
 category: Emacs
 ---
 

@@ -1,10 +1,6 @@
 ---
 title: Fixed a few bugs in Ready Lisp
-description: desc here
-tags: SBCL, SLIME
-date: 2007-12-08 18:11
 category: Uncategorized
-id: 175
 ---
 
 A couple of pathname issues were discovered in the release of Ready Lisp that was posted yesterday, leading to the inability to load `asdf-install` (or use it).  These have been fixed in the new release uploaded today.  If you now use `asdf-install` and choose a "system-wide" installation, the installed packages get saved in your Application bundle.  However, due to the way that `asdf-install` itself works, if you then move your application bundle to another directory, symbolic links in the `systems` directory will get broken.  So I recommend installing new packages into your home directory instead.

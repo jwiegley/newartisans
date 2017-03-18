@@ -1,10 +1,6 @@
 ---
 title: Running a fully local Hoogle
-description: desc here
-tags: 
-date: 2012-09-05 03:09
 category: Haskell
-id: 355
 ---
 
 Today I finally succeeded at getting a fully local version of Hoogle running on my machine, with filesystem links for all packages that I have installed, and remote links for those I don't. Since this was definitely a non-trivial exercise, I wanted to capture the knowledge here for anyone else trying to do the same.

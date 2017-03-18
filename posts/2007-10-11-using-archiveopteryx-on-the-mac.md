@@ -1,10 +1,6 @@
 ---
 title: Using Archiveopteryx on the Mac
-description: desc here
-tags: Archiveopteryx, Gnus, IMAP, PostgreSQL, fetchmail, procmail
-date: 2007-10-11 07:19
 category: Uncategorized
-id: 194
 ---
 
 The following instructions are for a Mac running OS X 10.4.  Your mileage may vary.  It's not much different for running on Linux, which I've done too.

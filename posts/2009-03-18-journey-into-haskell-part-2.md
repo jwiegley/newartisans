@@ -1,10 +1,6 @@
 ---
 title: Journey into Haskell, part 2
-description: desc here
-tags: Example, Monad, Schroedinger, tutorial
-date: 2009-03-18 07:07
 category: Uncategorized
-id: 218
 ---
 
 Everybody talks about Monads when they mention Haskell, so I got a bit ahead of myself and wanted to see something of what they're about.  No, don't worry, I'm not aspiring to yet another Monad tutorial.  I feel I have a ways to go before I'm ready to craft my own light-saber.

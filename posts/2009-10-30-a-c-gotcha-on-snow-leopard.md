@@ -1,10 +1,6 @@
 ---
 title: A C++ gotcha on Snow Leopard
-description: desc here
-tags: 
-date: 2009-10-30 09:35
 category: Uncategorized
-id: 227
 ---
 
 I've seen this issue mentioned in some random and hard to reach places on the Net, so I thought I'd re-express it here for those who find Google sending them this way.

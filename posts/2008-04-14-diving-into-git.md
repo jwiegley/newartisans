@@ -1,10 +1,6 @@
 ---
 title: Diving into Git
-description: desc here
-tags: 
-date: 2008-04-14 02:40
 category: Uncategorized
-id: 168
 ---
 
 This week I decided to convert my Ledger repository over to Git.  Previously I'd been using Subversion for about 4 years, and CVS for 1 year before that.  There was a brief flirt with Darcs, and Mercurial, but neither ever attracted me enough to convert the repository officially.

@@ -1,7 +1,5 @@
 ---
 title: A whirlwind tour of conduits
-tags: 
-date: 2013-07-16 18:16
 category: Haskell
 ---
 

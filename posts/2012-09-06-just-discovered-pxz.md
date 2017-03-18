@@ -1,10 +1,6 @@
 ---
 title: Just discovered pxz
-description: desc here
-tags: 
-date: 2012-09-06 08:01
 category: Uncategorized
-id: 359
 ---
 
 To show just how significant parallelized algorithms can be, today I

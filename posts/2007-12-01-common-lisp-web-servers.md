@@ -1,10 +1,6 @@
 ---
 title: Common Lisp web servers
-description: desc here
-tags: Hunchentoot
-date: 2007-12-01 17:49
 category: Uncategorized
-id: 177
 ---
 
 Recently at work my manager asked me to create a server solution that was both, "Fun, and easy for me to get things running quickly in."  Well, to me that's a roundabout way of saying Common Lisp, so I started looking at possible solutions based on that platform.  The solution will run as a webserver in a potentially high-demand scenario, so I figured it would pay to compare the options available to me.
