@@ -1,6 +1,5 @@
 ---
 title: OpenSSH connection mastering
-category: Uncategorized
 ---
 
 I just discovered a very cool feature of SSH today: control mastering.  It lets you multiplex a single ssh connection so you don't have to open multiple TCP connections to the remote host; instead, all your SSH/SCP commands "share" the initial connection.  This speeds up subsequent connections to the same host, and also means you don't have to enter your password more than once for hosts who don't know your public key yet.  I use this feature to implement a script for setting up new remote accounts.

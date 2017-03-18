@@ -1,6 +1,5 @@
 ---
 title: Building a better pre-commit hook for Git
-category: Uncategorized
 ---
 
 Recently a friend turned me onto an [interesting article](http://fourkitchens.com/comment/reply/109) about a problem I had just recently discovered about Git and its pre-commit hook:

@@ -1,6 +1,5 @@
 ---
 title: Journey into Haskell, part 3
-category: Uncategorized
 ---
 
 Today I need a wrapper script to drop arguments from a command-line.  I instinctively reached for `bash`, but then thought it would be a good exercise for my infant Haskell knowledge.

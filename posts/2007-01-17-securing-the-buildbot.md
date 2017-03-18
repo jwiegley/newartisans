@@ -1,6 +1,5 @@
 ---
 title: Securing the Buildbot
-category: Uncategorized
 ---
 
 One of the services I'm setting up on `newartisans.com` is [Buildbot][], so that every time changes get checked in the Ledger source tree, they'll be automatically built and tested on every platform I have access to.  Automatically.  Without any intervention on my part whatsoever.

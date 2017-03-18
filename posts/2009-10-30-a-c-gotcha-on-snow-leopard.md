@@ -1,6 +1,5 @@
 ---
 title: A C++ gotcha on Snow Leopard
-category: Uncategorized
 ---
 
 I've seen this issue mentioned in some random and hard to reach places on the Net, so I thought I'd re-express it here for those who find Google sending them this way.

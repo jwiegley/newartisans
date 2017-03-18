@@ -1,6 +1,6 @@
 ---
 title: Update of gitlib libraries on Hackage, plus git-monitor
-category: Haskell
+tags: haskell
 ---
 
 I've decided after many months of active development to release version 1.0.1 of gitlib and its related libraries to Hackage.  There is still more code review to done, and *much* documentation to be written, but this gets the code out there, which has been working very nicely at FP Complete for about six months now.

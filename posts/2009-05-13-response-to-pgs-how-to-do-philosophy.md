@@ -1,6 +1,5 @@
 ---
 title: Response to PG's "How to Do Philosophy"
-category: Uncategorized
 ---
 
 Back in late 2007, Paul Graham put up an essay titled "How to Do Philosophy", in which Mr. Graham hoped to elucidate where Philosophy went wrong and why the field, as now practiced, must be renovated to remain useful.  In fact, he goes so far as to suggest that much of philosophy has no benefit whatsoever:

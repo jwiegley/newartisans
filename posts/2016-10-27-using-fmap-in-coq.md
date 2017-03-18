@@ -1,6 +1,6 @@
 ---
 title: Using the FMap library in Coq
-category: Coq
+tags: coq
 ---
 
 One of the most common structures used in programming are key/value maps, also

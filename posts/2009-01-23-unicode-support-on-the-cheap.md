@@ -1,6 +1,5 @@
 ---
 title: Unicode support on the cheap
-category: Uncategorized
 ---
 
 I'd been avoiding adding full Unicode support to Ledger for some time, since both times I tried it ended up in a veritable spaghetti of changes throughout the code, which it seemed would take forever to "prove".  One branch I started used libICU to handle Unicode strings throughout, while an earlier attempted using regular wide-string support in C++.  Both were left on the cutting floor.

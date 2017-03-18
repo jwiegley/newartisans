@@ -1,6 +1,6 @@
 ---
 title: Monads in Pictures
-category: Haskell
+tags: haskell
 ---
 
 This is not a tutoral on monads, nor will I use any math terms here.  This is

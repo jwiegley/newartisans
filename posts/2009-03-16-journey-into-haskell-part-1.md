@@ -1,6 +1,5 @@
 ---
 title: Journey into Haskell, Part 1
-category: Uncategorized
 ---
 
 Having just begun my descent down the rabbit hole, I thought I'd try journaling about what I discover along the way, so that those who are merely curious can play the part of language voyeur.  I've always wanted to do that: to see how someone dives into Erlang or O'Caml or Forth -- or Haskell.  Here's your chance.

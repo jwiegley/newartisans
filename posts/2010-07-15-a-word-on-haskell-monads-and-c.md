@@ -1,6 +1,6 @@
 ---
 title: A word on Haskell Monads and C++
-category: C++, Haskell
+tags: c++, haskell
 ---
 
 After spending a good while trying to understand monads in Haskell, and why the Haskell world is so fascinated by them, I finally understand why they aren't as exciting to other languages, or why they are completely missing from languages like C++: because they're mostly already there.

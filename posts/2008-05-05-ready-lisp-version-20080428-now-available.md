@@ -1,6 +1,5 @@
 ---
 title: Ready Lisp version 20080428 now available
-category: Uncategorized
 ---
 
 There is a new version of Ready Lisp for Mac OS X available.  This version is based on SBCL 1.0.16, and requires OS X Leopard 10.5.  The most notable change from the previous version is that 64-bit mode and experimental threading are no longer supported, since both have been known to have issues on OS X, while the purpose of Ready Lisp is to smoothly introduce Common Lisp to new users.

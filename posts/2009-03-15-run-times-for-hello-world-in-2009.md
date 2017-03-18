@@ -1,6 +1,5 @@
 ---
 title: Run times for Hello, World in 2009
-category: Uncategorized
 ---
 
 Someone recently asked what my issue was regarding the JVM, since at the moment it prevents me from falling too much in love with [Clojure](http://clojure.org) -- a language with the double-benefits of functional programming, and Lisp syntax and macros.

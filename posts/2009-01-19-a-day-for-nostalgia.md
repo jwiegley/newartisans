@@ -1,6 +1,5 @@
 ---
 title: A day for nostalgia
-category: Uncategorized
 ---
 
 After tracking it down on a public domain mirror, and installing an

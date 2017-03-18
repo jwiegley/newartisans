@@ -1,6 +1,5 @@
 ---
 title: Applescript and UTF-8 arguments
-category: Uncategorized
 ---
 
 The following tip is based on a hint by **mzs** found on MacOSXHints.com.  And **note:** this article relates only to Tiger.  This issue has been resolved in OS X Leopard and Applescript 2.0.

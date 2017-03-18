@@ -1,6 +1,5 @@
 ---
 title: Run the Spotlight indexer at a lower priority
-category: Uncategorized
 ---
 
 I realized the other day that on OS X, the Spotlight indexing process is started using `launchd`.  This makes it very easy to modify the `launchd` configuration script to insure that background indexing uses the least amount of CPU and I/O bandwidth possible.

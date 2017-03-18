@@ -1,6 +1,5 @@
 ---
 title: Journey into Haskell, part 2
-category: Uncategorized
 ---
 
 Everybody talks about Monads when they mention Haskell, so I got a bit ahead of myself and wanted to see something of what they're about.  No, don't worry, I'm not aspiring to yet another Monad tutorial.  I feel I have a ways to go before I'm ready to craft my own light-saber.

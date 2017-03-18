@@ -1,6 +1,5 @@
 ---
 title: Stateful directory scanning in Python
-category: Uncategorized
 ---
 
 This article describes how to utilize the stateful directory scanning module I've written for Python.  But why did I write it?  Understanding the problem I aimed to solve will help show why such a module is useful, and give you ideas how you might put it to use for yourself.

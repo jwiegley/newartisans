@@ -1,6 +1,5 @@
 ---
 title: Journey into Haskell, part 6
-category: Uncategorized
 ---
 
 Another thing to be learned down the Haskell rabbit-hole: Thinking in infinites.  Today someone posed a puzzle which I tried to solve in a straight-forward, recursive manner: Building a list of primes.  The requested algorithm was plain enough:

@@ -1,6 +1,5 @@
 ---
 title: Neat tricks with iptables
-category: Uncategorized
 ---
 
 The past few months have seen me digging deep into the world of TCP/IP and firewalls.  It has been a fascinating journey into packet queueing and TCP headers, three-way handshakes and ICMP broadcasts.

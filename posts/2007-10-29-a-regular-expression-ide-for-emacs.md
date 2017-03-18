@@ -1,6 +1,5 @@
 ---
 title: A regular expression IDE for Emacs
-category: Uncategorized
 ---
 
 I've started work on a new mode for Emacs, which intends to be something like an "IDE" for regular expressions.  There are similar tools out there, such as [Reggy][] for OS X and [The Regex Coach][] for Windows.  But the former doesn't show me subgroup matches, and the latter won't run on OS X.  Which made me wonder, wouldn't this be easy to do in Emacs?  Three hours later says yes.

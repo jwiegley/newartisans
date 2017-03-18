@@ -1,6 +1,5 @@
 ---
 title: Too much good stuff
-category: Uncategorized
 ---
 
 I have been somewhat lax with blogging lately, because I’ve been too absorbed in playing with too many new things (and busy at work, with real life, and etc).  So thought I’d just make a quick list today to share some of the exciting stuff I’ve been finding...

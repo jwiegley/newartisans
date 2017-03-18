@@ -1,6 +1,5 @@
 ---
 title: Writing SELinux policies
-category: Uncategorized
 ---
 
 I started the adventure of writing an SELinux security policy from scratch today.  This is on CentOS 5, which uses the new policy modules approach rather than the older scheme involved a huge number of policies and a Makefile.`

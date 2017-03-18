@@ -1,6 +1,5 @@
 ---
 title: A Ledger success story
-category: Uncategorized
 ---
 
 Over the Christmas break I went on Bahá'í pilgrimage to the holy sites in Haifa, Israel.  It was a nine day stay in Haifa, with three extra days spent traveling and resting in Tel Aviv.

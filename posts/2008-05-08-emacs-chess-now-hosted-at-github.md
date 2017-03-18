@@ -1,6 +1,5 @@
 ---
 title: Emacs Chess now hosted at GitHub
-category: Uncategorized
 ---
 
 Emacs Chess is a fully featured chess client written entirely in Emacs Lisp.  You can use it to play against other people on freechess.org, or against popular chess engines like gnuchess and crafty.  It supports graphical rendering of chess boards within Emacs (in 2D), ASCII displays, and even electronic chess boards, or producing output appropriate  braille for readers.  Adding a new back-end is trivial.  It also comes with a library for inspecting and reasoning about chess positions.

@@ -1,6 +1,5 @@
 ---
 title: Ready Lisp version 20090130 now available
-category: Uncategorized
 ---
 
 There is a new version of Ready Lisp for Mac OS X available.  This version is based on SBCL 1.0.24 and Aquamacs Emacs 1.6, and requires OS X Leopard 10.5.  The only changes in this version are upgrades of many of the dependent packages.

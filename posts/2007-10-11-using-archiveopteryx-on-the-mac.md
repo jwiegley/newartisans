@@ -1,6 +1,5 @@
 ---
 title: Using Archiveopteryx on the Mac
-category: Uncategorized
 ---
 
 The following instructions are for a Mac running OS X 10.4.  Your mileage may vary.  It's not much different for running on Linux, which I've done too.

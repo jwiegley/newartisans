@@ -1,6 +1,5 @@
 ---
 title: Git from the bottom up
-category: Uncategorized
 ---
 
 In my pursuit to understand Git, it's been helpful for me to understand it from the bottom up -- rather than look at it only in terms of its high-level commands.  And since Git is so beautifully simple when viewed this way, I thought others might be interested to read what I've found, and perhaps avoid the pain I went through finding it.

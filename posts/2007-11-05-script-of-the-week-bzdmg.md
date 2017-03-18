@@ -1,6 +1,5 @@
 ---
 title: "Script of the week: bzdmg"
-category: Uncategorized
 ---
 
 I haven't written much this past week because I've been upgrading all the home's machines to Leopard.  So far it's gone very smoothly, and I like the new OS!

@@ -1,6 +1,5 @@
 ---
 title: The JVM, and costs vs. benefits
-category: Uncategorized
 ---
 
 In a [recent entry](/2009/03/hello-haskell-goodbye-lisp.html) on differences between Haskell and Lisp, one of the Lisp community's long-time members, Daniel Weinreb, asked about my stated aversion to JVM-based languages for everyday computing (sometimes referred to as "scripting").  Specifically, it was asked in relation to Clojure, and why I hasn't been immediately taken by that language -- despite it's having so many features I respect and admire.

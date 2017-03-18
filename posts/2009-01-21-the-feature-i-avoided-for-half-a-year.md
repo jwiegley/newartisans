@@ -1,6 +1,5 @@
 ---
 title: The feature I avoided for half a year
-category: Uncategorized
 ---
 
 The other day I finally implemented a feature in Ledger which I'd avoided doing for a full half-year.  The reason?  Every time I thought about it, my brain kept shutting down.  It seems my brain doesn't care for math much, or for mathy problems, so it always seemed as if something better needed doing...

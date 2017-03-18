@@ -1,6 +1,5 @@
 ---
 title: Updated site to use Blueprint CSS again
-category: Uncategorized
 ---
 
 Recently I changed how the content on this site was generated, from using the standalone OS X application [RapidWeaver](http://www.realmacsoftware.com/rapidweaver/), to the server-side publishing platform [Movable Type](http://www.movabletype.org/).  During that transition I changed the site's style to the minimalist default offered by MT, which uses its own CSS for column layout and typography.

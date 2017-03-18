@@ -1,6 +1,5 @@
 ---
 title: Letter to the Free Software Foundation
-category: Uncategorized
 ---
 
 The following is an amalgam of several letters I sent to Richard Stallman,

@@ -1,6 +1,5 @@
 ---
 title: "Script of the week: sizes"
-category: Uncategorized
 ---
 
 For the next few months, I will have a "script of the week" each week: just some tiny little scripts I've developed over the years that I happen to find particularly useful.

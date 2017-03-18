@@ -1,6 +1,5 @@
 ---
 title: "Script of the week: linkdups"
-category: Uncategorized
 ---
 
 It's been a while since I've posted a script; life has been distracting lately.  I also wanted to let this current script mature a lot more before sharing it, as it has the potential to be destructive.  Use wisely!

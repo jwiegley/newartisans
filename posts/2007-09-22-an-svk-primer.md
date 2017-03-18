@@ -1,6 +1,5 @@
 ---
 title: An SVK primer
-category: Uncategorized
 ---
 
 Today’s entry is a little primer I wrote for some co-workers at CEG, on setting up SVK to do remote development.  We continue to use a central Subversion repository, but I often find myself working in cafés where I don’t have immediate access to the server.  Also, I like to branch and check-in much more frequently than would be sane to do with Subversion -- I also like the distinction between a “check-in” being a simple, quick snapshot, and an `svk push` as the real deal.

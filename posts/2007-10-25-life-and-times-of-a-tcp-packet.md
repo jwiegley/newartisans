@@ -1,6 +1,5 @@
 ---
 title: Life and times of a TCP packet
-category: Uncategorized
 ---
 
 Have you ever wondered how data reaches your computer from all over the world as you browse the Internet?  You may have heard of TCP/IP, but what exactly is it doing to reach that single Web server over in France, all the way from the United States?  How does that information reach you?

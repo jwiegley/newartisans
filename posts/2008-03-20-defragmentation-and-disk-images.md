@@ -1,6 +1,5 @@
 ---
 title: Defragmentation and disk images
-category: Uncategorized
 ---
 
 There has been a small debate among some Mac users about whether defragmenting your disks is necessary for the smooth operation of OS X.  I've always been in the camp of those who do it regularly, because I've seen what my disk ends up looking like after a few weeks of not doing it (and how pretty the graph looks afterwards).  It could all be psychological, but I find the progress bar rather hypnotizing, and my wife has been known to find me staring at it for hours on end.  Ok, very psychological.

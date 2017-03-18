@@ -1,6 +1,6 @@
 ---
 title: Nightly builds of GHC HEAD for OS X 10.8
-category: Haskell
+tags: haskell
 ---
 
 Since mid-January, I've been running nightly builds of GHC on my Mac Pro for 10.8.x, 64-bit.  I've decided to make these results publically downloadable here: [http://ghc.newartisans.com](http://ghc.newartisans.com).

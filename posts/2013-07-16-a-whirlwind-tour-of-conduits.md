@@ -1,6 +1,6 @@
 ---
 title: A whirlwind tour of conduits
-category: Haskell
+tags: haskell
 ---
 
 While talking with people on IRC, I've encountered enough confusion around

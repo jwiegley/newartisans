@@ -1,6 +1,6 @@
 ---
 title: Getting Started with Lenses
-category: Haskell
+tags: haskell
 ---
 
 The following is the first in a series of articles I hope to write as a gentle

@@ -1,6 +1,5 @@
 ---
 title: Moving to Movable Type
-category: Uncategorized
 ---
 
 The blog has now fully moved over to Movable Type, including all past articles and their comments.  It took a bit of Perl, Python and mucking with SQL, but now the transfer is complete.

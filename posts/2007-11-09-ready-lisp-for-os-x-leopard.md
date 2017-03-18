@@ -1,6 +1,5 @@
 ---
 title: Ready Lisp for OS X Leopard
-category: Uncategorized
 ---
 
 After upgrading my system to Leopard this weekend, I decided to refresh Ready Lisp as well.  It now contains both 32-bit and 64-bit builds of SBCL (which has been bumped to 1.0.11), so if you have a Core 2 Duo machine, you'll be running Lisp at full 64-bit!  Alas, Emacs itself cannot support 64-bit as a Carbon app, because there are no 64-bit Carbon libraries.  SLIME has also been updated, to CVS latest as of today.  Aquamacs is still the same version at 1.2a.

@@ -1,6 +1,5 @@
 ---
 title: Journey into Haskell, part 4
-category: Uncategorized
 ---
 
 I've been reading [Real World Haskell](http://book.realworldhaskell.org/) now, after having finished the delightful [Learn You a Haskell](http://learnyouahaskell.com/) Tutorial.  I'm up to chapter 6, about to dive into Typeclasses.  In the meantime, I've picked a toy project that also has a taste of usefulness: a script to convert the Hackage database into MacPorts Portfiles, respecting inter-package and external library dependencies.  I call it [HackPorts](http://github.com/jwiegley/hackports), of course.

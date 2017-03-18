@@ -1,6 +1,6 @@
 ---
 title: A case of reflection
-category: Haskell
+tags: haskell
 ---
 
 A while back, Edward Kmett wrote a library called `reflection`, based on

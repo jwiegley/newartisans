@@ -1,6 +1,5 @@
 ---
 title: The groovy thing about Groovy
-category: Uncategorized
 ---
 
 One of my favorite languages this year is [Groovy](http://groovy.codehaus.org/), a scripting language for the Java VM.  It has a nice, clean syntax, in combination with some very powerful ideas, like it's brand of closures.  It can be close enough to Java as to be nearly indistinguishable -- which is good, if you're selling it to Java programmers; and close enough to Python that it seems like a first cousin.

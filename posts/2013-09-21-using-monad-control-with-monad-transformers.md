@@ -1,6 +1,6 @@
 ---
 title: Using monad-control with monad transformers
-category: Haskell
+tags: haskell
 ---
 
 This article assumes familiarity with monads and monad transformers.  If

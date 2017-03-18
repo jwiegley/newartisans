@@ -1,6 +1,6 @@
 ---
 title: Notes on Free monads
-category: Haskell
+tags: haskell
 ---
 
 The following article is just a few notes on the nature of the Free monad.

@@ -1,6 +1,5 @@
 ---
 title: Just discovered pxz
-category: Uncategorized
 ---
 
 To show just how significant parallelized algorithms can be, today I

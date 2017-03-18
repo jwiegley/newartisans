@@ -1,6 +1,5 @@
 ---
 title: Linux DHCP and Windows DNS
-category: Uncategorized
 ---
 
 I feel a need to blog about this today because it took several days to figure out, but the solution was trivial.

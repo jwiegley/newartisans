@@ -1,6 +1,5 @@
 ---
 title: Journey into Haskell, part 5
-category: Uncategorized
 ---
 
 Haskell may be difficult to start out with, but once things start rolling, they roll fast.  Yesterday (real world time, these blog entries are staggered) I had started the first lines of HackPorts, but now things are getting close to done for the first version.  It's not that I've written much code, but that it was simple to integrate with other people's code.

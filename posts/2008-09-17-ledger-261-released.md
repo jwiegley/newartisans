@@ -1,6 +1,5 @@
 ---
 title: Ledger 2.6.1 released
-category: Uncategorized
 ---
 
 Ledger 2.6.1 is released today.  This is a bug fix release only, which fixes some blocking issues relating to the `-p` and `-e` options.  It is a recommended upgrade for all Ledger users.  It may be downloaded [here][]

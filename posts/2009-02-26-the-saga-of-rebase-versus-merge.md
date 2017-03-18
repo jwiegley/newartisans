@@ -1,6 +1,5 @@
 ---
 title: The saga of rebase versus merge
-category: Uncategorized
 ---
 
 Following on my last entry, where I built a better `pre-commit` hook to ensure every commit in my Git history passed `make check` with flying colors, I realized something today about my good friend, `rebase`.

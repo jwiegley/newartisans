@@ -1,6 +1,6 @@
 ---
 title: Understanding continuations
-category: Haskell
+tags: haskell
 ---
 
 In this tutorial I would like to talk all about continuations, to attempt to

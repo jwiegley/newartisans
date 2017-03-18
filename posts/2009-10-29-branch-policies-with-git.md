@@ -1,6 +1,5 @@
 ---
 title: Branch policies with Git
-category: Uncategorized
 ---
 
 I've been managing my [Ledger](http://wiki.github.com/jwiegley/ledger) project with Git for some time now, and I've finally settled into a comfortable groove concerning branches and where to commit stuff.

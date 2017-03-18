@@ -1,6 +1,6 @@
 ---
 title: Simpler conduit library based on monadic folds
-category: Haskell
+tags: haskell
 ---
 
 Recently I was playing around with the core types in the `conduit` library
