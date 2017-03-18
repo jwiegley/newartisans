@@ -1,5 +1,6 @@
 ---
 title: Common Lisp docs for DEVONthink
+tags: lisp
 ---
 
 **NOTE**: I have removed the pre-built tarball of these links form my Lisp repository due to possible copyright concerns.  I recommend that if you want to collect these documents into one place (for searching in programs like DEVONthink), that you use the tools available in such programs to download these resources from the Web:

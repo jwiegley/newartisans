@@ -1,5 +1,6 @@
 ---
 title: Get Lisp running on OS X (easy version!)
+tags: lisp
 ---
 
 A few days ago I posted instructions for getting a freeware based Common Lisp installation running on your Mac.  I have since discovered a better alternative: just install [LispWorks Personal Edition][], a free environment with a superb set of debugging and profiling tools.  Note that it does have the restriction that it will only run for five hours at a time.  Once you hit the four hour mark, it gives you a warning, after which you should shutdown and restart the environment.  But really, if you're Lisping for more than four hours every day, that's great news.

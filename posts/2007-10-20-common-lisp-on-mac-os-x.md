@@ -1,5 +1,6 @@
 ---
 title: Common Lisp on Mac OS X
+tags: lisp
 ---
 
 You could be having fun with Common Lisp on your Mac right now; you know that, don't you? ;)

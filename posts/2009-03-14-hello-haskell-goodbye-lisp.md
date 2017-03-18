@@ -1,5 +1,6 @@
 ---
 title: Hello Haskell, Goodbye Lisp
+tags: haskell, lisp
 ---
 
 As some one who has enjoyed the Lisp language (in several flavors) for about 15 years now, I wanted to express some of my reactions at recently discovering Haskell, and why it has supplanted Lisp as the apple of my eye.  Perhaps it will encourage others to explore this strange, wonderful world, where it looks like some pretty damn cool ideas are starting to peek over the horizon.

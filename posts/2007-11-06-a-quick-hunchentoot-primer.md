@@ -1,5 +1,6 @@
 ---
 title: A quick Hunchentoot primer
+tags: lisp
 ---
 
 I wrote yesterday about setting up Hunchentoot, a Common Lisp web server running behind Apache, for rendering dynamic web pages in Lisp.  What I neglected to mention was how one goes about coding such pages.  Fortunately, that's the easiest part of all, so I wanted to provide a very short primer on getting your first Lisp web pages up and running.

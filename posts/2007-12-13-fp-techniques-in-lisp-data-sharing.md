@@ -1,5 +1,6 @@
 ---
 title: "FP techniques in Lisp: Data sharing"
+tags: lisp
 ---
 
 Common Lisp has often been called a "multi-paradigm" language, in that it allows you to program in many different styles, sometimes simultaneously: imperative, object-oriented, functional, statically typed, etc.  It depends on what style you want to adopt, how your code will look.
