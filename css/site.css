@@ -50,8 +50,8 @@ body {
     margin: 2em;
 }
 
-.article-title {
-    font-size: 120%;
+.article-title h1 {
+    font-size: 130%;
     font-weight: bold;
 }
 
