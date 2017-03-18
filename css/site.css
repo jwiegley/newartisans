@@ -1,4 +1,4 @@
-/* @override 
+/* @override
     http://127.0.0.1:8000/css/site.css
     http://newartisans.com/css/site.css
 	http://johnwiegley.com/css/site.css */
@@ -104,6 +104,21 @@ body {
     text-align: justify;
 }
 
+#archive-tags {
+    margin:2em;
+    border-bottom: 1px solid #333;
+}
+
+#archive-tags ul {
+    list-style-type: none;
+    line-height: 3ex;
+}
+
+#archive-tags a {
+    color: blue;
+    text-decoration: none;
+}
+
 #archive-list {
     margin: 2em;
 }
@@ -117,17 +132,16 @@ body {
 }
 
 .archive-title a {
-    color: blue; 
+    color: blue;
     text-decoration: none;
 }
 
 .archive-date {
     float: right;
-    padding-right: 1em;
 }
 
 .archive-date a {
-    color: black; 
+    color: black;
     text-decoration: none;
 }
 
@@ -186,5 +200,5 @@ pre {
 }
 
 @media print {
-	
+
 }

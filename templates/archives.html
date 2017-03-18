@@ -1,3 +1,12 @@
+<div id="archive-tags">
+  <h2>Archive categories</h2>
+  <ul>
+    <li><a href="/archives">all</a></li>
+    $for(tags)$
+      <li><a href="/tags/$path$">$path$</a></li>
+    $endfor$
+  </ul>
+</div>
 <div id="archive-list">
   $for(posts)$
     <div class="archive">
