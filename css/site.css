@@ -1,6 +1,6 @@
 /* @override 
-	http://127.0.0.1:8000/css/site.css
-	http://newartisans.com/css/site.css */
+    http://127.0.0.1:8000/css/site.css
+    http://newartisans.com/css/site.css */
 
 body {
     background-color: rgba(21, 92, 180, 0.27);
@@ -133,12 +133,17 @@ body {
     border-top: 1px solid #333;
     font-style: italic;
     padding-top: 2ex;
-    text-align: center;
+    text-align: left;
+
+}
+
+#subscribe {
+    float:  right;
 }
 
 blockquote {
-	font-family: Palatino, serif;
-	font-style: italic;
+    font-family: Palatino, serif;
+    font-style: italic;
 }
 
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre
@@ -170,9 +175,9 @@ pre {
 }
 
 #navlinks {
-	margin: 1em;
+    margin: 1em;
 }
 
 #navlinkolder {
-	float:  right;
+    float:  right;
 }
