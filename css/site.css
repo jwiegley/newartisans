@@ -1,7 +1,9 @@
 /* @override 
     http://127.0.0.1:8000/css/site.css
-    http://newartisans.com/css/site.css */
+    http://newartisans.com/css/site.css
+	http://johnwiegley.com/css/site.css */
 
+@media screen {
 body {
     background-color: rgba(21, 92, 180, 0.27);
 }
@@ -180,4 +182,9 @@ pre {
 
 #navlinkolder {
     float:  right;
+}
+}
+
+@media print {
+	
 }
