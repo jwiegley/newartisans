@@ -77,6 +77,15 @@ And the result, also showing the equation submitted to Z3:
 Now with one function, I have either a predicate function I can use in
 Haskell, or an input for Z3 to find arguments for which it is true!
 
+Note that the typical approach of deeply embedding a DSL, and writing
+evaluators, requires those evaluators to know the intimate details of both
+semantic domains. What the categorical compilation approach does is to
+introduce the *lingua franca* of category theory, so that both domains only
+have to agree on a common abstract language. This means that every time you
+write a new set of instances, you've automatically created an interpreter for
+every input domain renderable into CCCs. It's like a toolbox whose power
+multiplies with each new set of instances.
+
 In addition to using Conal's work in Haskell, I'm also working on
 a
 [Coq rendering](https://github.com/jwiegley/category-theory/blob/master/Tools/Abstraction.v) of
