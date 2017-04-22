@@ -15,5 +15,8 @@ the
 [slides for this talk are on GitHub](https://github.com/jwiegley/putting-lenses-to-work).
     
 The code in the slides are taken directly (using Emacs) from a test file in
-that same repository, `Lenses.hs`, to serve as a way of preserving helpful
-examples, and to make it easy to cargo cult specific patterns into your code.
+that same
+repository,
+[Lenses.hs](https://github.com/jwiegley/putting-lenses-to-work/blob/master/Lenses.hs),
+to serve as a way of preserving helpful examples, and to make it easy to cargo
+cult specific patterns into your code.
