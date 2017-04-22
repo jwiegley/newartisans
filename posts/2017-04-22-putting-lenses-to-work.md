@@ -9,10 +9,9 @@ specifically avoided any theory about lenses, or the complex types, or the
 many operators, to show that at its core, lens is a truly invaluable library:
 
 The
-[videos are now available on YouTube](https://www.youtube.com/watch?v=QZy4Yml3LTY),
+[video is now available on YouTube](https://www.youtube.com/watch?v=QZy4Yml3LTY),
 and
-the
-[slides for this talk are on GitHub](https://github.com/jwiegley/putting-lenses-to-work).
+[slides for the talk are on GitHub](https://github.com/jwiegley/putting-lenses-to-work).
     
 The code in the slides are taken directly (using Emacs) from a test file in
 that same
