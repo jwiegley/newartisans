@@ -75,6 +75,10 @@ but not vice versa. Further, the mapping between tuple and `Tuple` must be a
 isomorphism. This leaves me free to choose either as the product object for
 the Haskell category.
 
+Note: Cartesian categories are not used in the final result, I just want to
+clarify the difference between this, and a product category. Cartesian can be
+seen as an internal product, and product categories as an external product.
+
 ### Product categories
 
 Whereas cartesion categories tell us more about the internal structure of some
