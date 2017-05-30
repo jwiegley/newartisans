@@ -9,5 +9,4 @@ via the following services:
 
 - [E-mail](mailto:jwiegley@gmail.com)
 - [Twitter](https://twitter.com/jwiegley)
-- [Facebook](https://www.facebook.com/zuck)
 - [LinkedIn](https://www.linkedin.com/in/jwiegley/)
