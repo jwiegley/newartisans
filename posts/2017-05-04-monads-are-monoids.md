@@ -11,7 +11,7 @@ just now proved, in a completely general setting, the following statement:
 
 The proof, using no axioms,
 is
-[here](https://github.com/jwiegley/category-theory/blob/db6a58855268ea771218e191820ac617740c1778/Monad/Monoid.v#L19).
+[here](https://github.com/jwiegley/category-theory/blob/master/Isomorphism/Monoid/Monad.v#L22).
 
 Now, just how much category theory was needed to establish this fact?
 

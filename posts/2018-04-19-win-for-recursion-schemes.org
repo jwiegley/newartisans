@@ -1,0 +1,518 @@
+---
+title: "Program Reduction: A Win for Recursion Schemes"
+---
+
+I first encountered the "recursion schemes" idea in Haskell while attending an
+excellent [[https://youtu.be/Zw9KeP3OzpU][presentation]] given by Tim Williams in 2013. His ideas in that talk
+made a deep impression on me, and I resolved to find a way to prove the
+potential he promised in my own work.
+
+Now, the basic idea of recursion schemes goes back at least as far as the 1991
+paper entitled [[https://research.utwente.nl/en/publications/functional-programming-with-bananas-lenses-envelopes-and-barbed-w][Functional Programming with Bananas, Lenses, Envelopes and Barbed Wire]],
+by Meijer, Hughes, Fokkinga and Paterson. In the years since,
+many excellent blog articles have sprung up that delve neatly into the theory
+and application of recursion schemes, as well as recorded talks and
+presentations, and even a library entitled [[http://hackage.haskell.org/package/recursion-schemes][recursion-schemes]] by the esteemable
+Edward Kmett.
+
+However, despite my enchantment with the beautiful theory -- and especially
+it's connections with category theory -- it took a while before the promise of
+these abstraction really paid off. And pay off it did. In fact, what happened
+in [[https://github.com/jwiegley/hnix][hnix]] last night was such a revelation, I felt the time had come to tell the
+story here.
+
+Note that I'm not going to explain recursion schemes here, or how they work.
+Instead, I recommend you start with [[http://blog.sumtypeofway.com/an-introduction-to-recursion-schemes/][an introduction like this one]], and then
+come back to this article once the basics are familiar.
+
+** Starting the experiment: hnix
+
+The [[https://github.com/jwiegley/hnix][hnix]] project, which aims to provide another, complete implementation of
+[[https://nixos.org/nix/manual/][the Nix language]], began in 2014. Since Nix is itself a pure, functional,
+lazily evaluated language, it seemed only natural to implement it using
+Haskell, which also shares these properties.
+
+The first step was to write a parser, to read the Nix source code into an
+abstract syntax tree (AST) for the purposes of pretty printing and evaluation.
+Since the language is highly recursive (that is, expressions may contain
+expressions), what better time to see whether recursion schemes would fit the
+bill.
+
+This decision was made purely because I liked the idea, and not for any
+immediate practical advantage. In fact, there is a slight cost when you start
+using recursion schemes: the management of =Fix= type wrapper layers, which
+appear everywhere throughout the resulting tree (though, see the end of this
+article for a way to avoid this).
+
+For the sake of exposition, here's what the core expression type for =hnix=
+looks like, minus a few of its supporting types. As you can see, there are
+many places in the structure where recursion is possible, each identified by
+the type variable =r=:
+
+#+begin_src haskell
+data NExprF r
+  = NConstant NAtom
+  | NStr (NString r)
+  | NSym VarName
+  | NList [r]
+  | NSet [Binding r]
+  | NRecSet [Binding r]
+  | NLiteralPath FilePath
+  | NEnvPath FilePath
+  | NUnary NUnaryOp r
+  | NBinary NBinaryOp r r
+  | NSelect r (NAttrPath r) (Maybe r)
+  | NHasAttr r (NAttrPath r)
+  | NAbs (Params r) r
+  | NLet [Binding r] r
+  | NIf r r r
+  | NWith r r
+  | NAssert r r
+  deriving (Show, Functor)
+
+newtype Fix f = Fix { unFix :: f (Fix f) }
+
+-- The type of recursive expression trees is the
+-- least fixed-point of the expression functor above.
+-- Recursion naturally terminates at symbols and atomic
+-- values: any construction that doesn't reference the
+-- type variable, or only uses it conditionally.
+type NExpr = Fix NExprF
+#+end_src
+
+The use of =Fix= here to express recursion allows separating the information
+stored at each layer of the AST from the recursive structure of that tree.
+This separation gives us some freedoms that will become clearer in a moment,
+but essentially the trick is that we now use a generic function =cata= (for
+*catamorphism*) to recurse over syntax trees, passing it a function that defines
+how each "data layer" separately reduces:
+
+#+begin_src haskell
+cata :: Functor f => (f a -> a) -> Fix f -> a
+cata f (Fix x) = f (fmap (cata f) x)
+
+-- A silly evaluator
+evaluate :: NExpr -> Int
+evaluate = cata $ \case
+  NConstant (NInt n)  -> n
+  NConstant (NBool b) -> if b then 1 else 0
+
+  -- Thanks to 'cata', c, t and e are all Ints
+  -- by the time we reach here.
+  NIf c t e -> if c /= 0 then t else e
+
+  -- And also thanks to 'cata', even though we're
+  -- ignoring the recursive cases, the recursion
+  -- still happens just as you'd expect.
+  _ -> 0
+#+end_src
+
+** Annotated expression trees
+
+The first moment when this recursion scheme went from an interesting idea to a
+good design decision was when someone created an issue on GitHub, asking to
+add location information to the expression tree. Ordinarily, this would have
+required extending the type of the tree to include such information, but with
+the scheme above we were able to simply define a new fixed-point type:
+
+#+begin_src haskell
+type NExprLoc = Fix (Compose ((,) SrcSpan) NExprF)
+#+end_src
+
+Then we had to enrich the parser to create these annotated expressions, by
+extending what we'd written before for regular ones:
+
+#+begin_src haskell
+annotateLocation :: Parser a -> Parser (Ann SrcSpan a)
+annotateLocation p = do
+  begin <- getPosition
+  res   <- p
+  end   <- getPosition
+  pure (SrcSpan begin end, res)
+
+annotateLocation1 :: Parser (NExprF NExprLoc) -> Parser NExprLoc
+annotateLocation1 = fmap (Fix . Compose) . annotateLocation
+#+end_src
+
+And finally, we wrap each parser for plain expressions so they become parsers
+for annotated expressions:
+
+#+begin_src haskell
+nixIf :: Parser NExprLoc
+nixIf = annotateLocation1 (NIf
+  <$> (reserved "if" *> nixExprLoc)
+  <*> (reserved "then" *> nixToplevelForm)
+  <*> (reserved "else" *> nixToplevelForm)
+  <?> "if")
+#+end_src
+
+Note that the parsing code is the only module that needs to be modified
+invasively, since it is expressed using direct recursion. This requires us to
+inject the new data layer (the one containing the annotation information) at
+each step. However, for algorithms that are not directly recursive, such as
+the reduction steps passed to =cata=, there is a better way...
+
+** Abstract Definitional Interpreters
+
+While at [[https://conf.researchr.org/home/icfp-2017][ICFP 2017]], I attended a very interesting lecture titled
+[[https://arxiv.org/abs/1707.04755][Abstracting Definition Interpreters]] (ADI) by David Darais. It showed how
+recursive code, such as traditional evaluators, could be rewritten to inject
+new behavior at each layer of the recursion -- even changing the logic of the
+recursion in arbitrary ways.
+
+But wait... aren't recursion schemes all about sifting data apart from
+recursion so we can manage the layers in a general way too? Only ADI does it
+for /behavior/, while recursion schemes apply the idea to data. Surely there's a
+duality to be explored here.
+
+While pondering this, I sat down with [[http://conal.net/][Conal Elliott]] during the break, and
+together we found a way to unify the two ideas: to apply the ADI approach to
+catamorphism-based evaluators operating on fixed-point data structures. The
+result was the following pair of functions:
+
+#+begin_src haskell
+adi :: Functor f
+    => (f a -> a)
+    -> ((Fix f -> a) -> Fix f -> a)
+    -> Fix f -> a
+adi f g = g (f . fmap (adi f g) . unFix)
+
+adiM :: (Traversable t, Monad m)
+     => (t a -> m a)
+     -> ((Fix t -> m a) -> Fix t -> m a)
+     -> Fix t -> m a
+adiM f g = g ((f <=< traverse (adiM f g)) . unFix)
+#+end_src
+
+These functions can used as replacements for =cata= and =cataM=, while modify the
+algorithm they're passed in =f= using the transformation given in =g=. We'll see
+how this was put to use in each of the following sections.
+
+** Error reporting with context
+
+In the first version of the =hnix= evaluator, error messages were reported to
+the user with nice location information, using the [[http://hackage.haskell.org/package/trifecta][trifecta]] library to show
+the source context of the error. We later moved to [[http://hackage.haskell.org/package/megaparsec][megaparsec]] to resolve some
+performance issues, but still the errors were flat in this respect. To capture
+a sense of where things really go wrong during evaluation, we need to see a
+trace of all the evaluation steps leading up to that point, similar to what
+Nix itself offers when you supply the =--show-trace= option.
+
+This is the first place I thought the =adi= function could help, and indeed we
+were able to implement full contextual error reporting in just two lines of
+code, by extending the original evaluator to append "stack frames" within a
+=MonadReader= context around each evaluation step (some of this code has been
+simplified to omit extraneous detail):
+
+#+begin_src haskell
+framedEvalExpr :: Framed e m
+               => (NExprF (m v) -> m v)
+               -> NExprLoc -> m v
+framedEvalExpr eval =
+  adi (eval . snd . getCompose) psi
+ where
+  psi k v = withExprContext v (k v)
+
+withExprContext :: Framed e m
+                => NExprLoc -> m r -> m r
+withExprContext expr = local (expr :)
+#+end_src
+
+The =framedEvalExpr= function takes monadic f-algebras for the original
+expression functor -- those including a monad =m=, so we can use =Framed e m= to
+require a =MonadReader= instance providing a list of frames -- and transforms it
+into an f-algebra for location-annotated expression trees that reports all the
+locations leading up to an error whenever an exception is thrown.
+
+The rest of the logic happens in =throwError=, which queries the =MonadReader=
+instance for the current list of frames, and reports all the positions to the
+user including whatever we knew about the expression trees at those points in
+time. All without adding a single line to the original algorithm, or teaching
+the existing evaluator anything more about location-annotated trees.
+
+This sort of abstraction also supports a better division of labor: The core
+evaluator, where most of the work is done, works on the simplest type: trees
+without any annotations, just =Fix ExprF=. All of the additional enrichments for
+things like error reporting happen outside of this logic, reducing the overall
+complexity by localizing each bit of functionality to its own module.
+
+** Adding tracing to any evaluator
+
+The second application of this technique used =adiM= to introduce both =Reader=
+and =IO= effects, to produce a tracing report during evaluation showing which
+parts of the tree we're working on as we go. Again, without modifying the
+original evaluator, or even knowing anything about which evaluator we end up
+extending:
+
+#+begin_src haskell
+tracingEvalExpr
+    :: (MonadIO m,
+        MonadIO n, Alternative n)
+    => (NExprF (m v) -> m v)
+    -> NExpr -> n (m v)
+tracingEvalExpr eval =
+  flip runReaderT (0 :: Int)
+    . adiM (pure <$> eval) psi
+ where
+  psi k v = do
+    depth <- ask
+    guard (depth < 200)
+    local succ $ do
+      action <- k v
+      return $ do
+        liftIO $ putStrLn $ "eval: "
+          ++ replicate (depth * 2) ' ' ++ show v
+        res <- action
+        liftIO $ putStrLn $ "eval: "
+          ++ replicate (depth * 2) ' ' ++ "."
+        return res
+#+end_src
+
+** Reducing programs to test cases
+
+Finally we come to the motivation for this article. Although the above
+expressiveness and flexibility was enough to convince me of the potential in
+the recursion schemes approach, I still hadn't found its "killer app":
+something that recursion schemes is able to make so much easier that it's well
+worth whatever boilerplate the technique induces. But yesterday I think I
+found that example.
+
+A problem with evaluating lazy functional languages, like nix or Haskell, is
+that it allows for self-referential structures by way of [[https://wiki.haskell.org/Tying_the_Knot][tying the knot]]. This
+is great for writing compact and elegant code, but extremely tricky if you
+happen to get the evaluation semantics wrong, which was the case in =hnix=
+yesterday. It ended up that somewhere deep within the evaluation of =nixpkgs=, I
+ended up forcing a thunk that I was already in the process of forcing. This
+means that somewhere in the evaluation =hnix= was either being too eager, or I'd
+gotten the scoping wrong and a self-reference was occurring where it shouldn't
+have.
+
+Either way, it ended up proving very difficult to delve deep into the
+thousands of lines of highly recursive, lazy, higher-order code. How was I
+going to find the root cause of the problem?
+
+It occurred to me that even though the expression tree involved were massive,
+I'd only evaluated a fraction of it before encountering the bug. So why can't
+I just output that fragment along with the failure, to make it easier to see
+what was actually involved in producing the problem? The algorithm seemed
+simple enough:
+
+  1. Start with an unadorned expression tree.
+
+  2. Annotate it with mutable booleans at every layer, to indicate whether
+     we've forced the evaluation of that layer or not (i.e., whether it
+     contributed to the final outcome).
+
+  3. Strip away from the tree anything that was never referenced.
+
+  4. Further compact the tree based on the logical consequences of step 3. For
+     example, if we force the true branch of an if, but never the false, we
+     can replace the if statement expression with just the true branch.
+
+The tree that results from this winnowing should yield exactly the same
+behavior, but be potentially much smaller and simpler. After all, there are
+over 1.2 million lines of code already in =nixpkgs=, and it's hard to know due
+to the lazy nature of Nix how much of it we actually touched during
+evaluation. There has to be a better way!
+
+At first I thought this would be a typical hard problem: That is, easy to
+imagine a solution for, but many long hours of elbow grease to make it happen.
+I logged a bug in the tracker describing the idea, wondering how many days it
+would take to realize, and how much the code would have to change to make it
+possible.
+
+Two hours later, it was working: thanks to both recursion schemes and abstract
+definitional interpreters.
+
+This was accomplished by first defining the type of boolean-flagged trees,
+which extend whatever other kind of tree (given by the functor =f=) we might be
+working with:
+
+#+begin_src haskell
+newtype FlaggedF f r
+  = FlaggedF { flagged :: (IORef Bool, f r) }
+  deriving (Functor, Foldable, Traversable)
+
+type Flagged f = Fix (FlaggedF f)
+#+end_src
+
+Then a function in IO that takes a given expression tree, and enriches it with
+all the booleans set to =False=, to mean unvisited:
+
+#+begin_src haskell
+flagExprLoc :: (MonadIO n, Traversable f)
+            => Fix f -> n (Flagged f)
+flagExprLoc = cataM $ \x -> do
+  flag <- liftIO $ newIORef False
+  pure $ Fix $ FlaggedF (flag, x)
+#+end_src
+
+Of course we also need a way to strip away the annotations later. =cata= makes
+this one really easy:
+
+#+begin_src haskell
+stripFlags :: Functor f => Flagged f -> Fix f
+stripFlags = cata $ Fix . snd . flagged
+#+end_src
+
+Now using =adiM= we can fold in the =IO= monad, allowing us to toggle these =IORef=
+boolean as we evaluate. For these function we need to know the types of the
+trees involved, so that we can reduce this appropriately in =pruneTree=.
+
+#+begin_src haskell
+flaggedEvalExpr
+    :: (Framed e m, Exception r,
+       MonadCatch m, MonadIO m,
+       MonadCatch n, MonadIO n)
+    => (NExprF (m v) -> m v)
+    -> NExprLoc
+    -> n (m (NExprLoc, Either r v))
+flaggedEvalExpr eval expr = do
+  expr' <- flagExprLoc expr
+  res <- adiM (pure <$> eval
+                . snd . getCompose
+                . snd . flagged) psi expr'
+  return $ do
+    eres   <- catch (Right <$> res) (pure . Left)
+    expr'' <- pruneTree expr'
+    return (fromMaybe nNull expr'', eres)
+ where
+  psi k v@(Fix (FlaggedF (b, _))) =
+      (liftIO (writeIORef b True) *>) <$> k v
+#+end_src
+
+That I can insert this whole function here in a blog post is, to me, a
+testament to the power of the abstractions involved. This is all we needed to
+color the tree with the locations where we actually performed evaluation!
+
+The last step is to cull the tree of its dead wood, by applying logical
+transforms wherever lack of evaluation implies a reduction in the size of the
+tree. This function is the only genuinely complex part and is a bit too long
+to include here. But it's also a pure function, making it easier to verify and
+test. Here's an excerpt of what it looks like:
+
+#+begin_src haskell
+pruneTree :: MonadIO n
+          => Flagged NExprLocF
+          -> n (Maybe NExprLoc)
+pruneTree = cataM $ \(FlaggedF (b, Compose x)) -> do
+  used <- liftIO $ readIORef b
+  pure $ if used
+         then Fix . Compose <$> traverse prune x
+         else Nothing
+ where
+  prune = \case
+    NLet binds (Just body@(Fix (Compose (Ann _ x)))) ->
+      Just $ case mapMaybe pruneBinding binds of
+        [] -> x
+        xs -> NLet xs body
+
+    -- These are the only short-circuiting binary operators
+    NBinary NAnd (Just (Fix (Compose (Ann _ larg)))) _
+      -> Just larg
+    NBinary NOr  (Just (Fix (Compose (Ann _ larg)))) _
+      -> Just larg
+
+    -- If the function was never called, it means its
+    -- argument was in a thunk that was forced elsewhere.
+    NBinary NApp Nothing (Just _) -> Nothing
+
+    -- If the scope of a with was never referenced,
+    -- it's not needed
+    NWith Nothing (Just (Fix (Compose (Ann _ body))))
+      -> Just body
+
+    -- ... more logic here ...
+
+    NIf _ Nothing (Just (Fix (Compose (Ann _ f)))) -> Just f
+    NIf _ (Just (Fix (Compose (Ann _ t)))) Nothing -> Just t
+
+    -- Let the semantics of the Maybe monad handle the rest
+    x -> sequence x
+#+end_src
+
+And that's pretty much it. Now I can input a program like this:
+
+#+begin_src haskell
+let x = { z = 80 + 20; w = 123; };
+    y = "Hello";
+    z = "Goodbye";
+in assert 1 == 1; if x.z == 100 then y else 3
+#+end_src
+
+And automatically reduce it to a smaller program producing the same result:
+
+#+begin_src haskell
+let
+  x = {
+    z = 80 + 20;
+    w = null;
+  };
+  y = "Hello";
+in y
+#+end_src
+
+It even works for my huge thunk recursion problem in =nixpkgs=, reducing that
+large amount of code spread across many files, to a single file containing
+less than 10k lines of code with very few imports remaining (those that could
+not be statically determined).
+
+** Conclusion
+
+In the four years I've been using recursion schemes in this project and
+elsewhere, I haven't really encountered many downsides, while reaping many
+benefits. The worst aspect is definitely the extra boilerplate needed to
+define and work with the types (see my [[https://github.com/jwiegley/parsec-free/blob/master/Text/Parsec/Free.hs][parsec-free]] library for a rather
+extreme case of this).
+
+However, using modern GHC with bidirectional pattern synonyms, you can easily
+hide this boilerplate from your users. For example, if you're using the =Free=
+type instead of =Fix= -- because your functor doesn't have its own base case --
+you would have code like that follows this general pattern:
+
+#+begin_src haskell
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE PatternSynonyms #-}
+
+module Main where
+
+import Control.Monad.Free
+
+data TeletypeF r
+  = GetF (String -> r) | PutF String r
+  deriving Functor
+
+type Teletype = Free TeletypeF
+
+pattern Get
+  :: (String -> Teletype a) -> Teletype a
+pattern Get x = Free (GetF x)
+
+pattern Put
+  :: String -> Teletype a -> Teletype a
+pattern Put s r = Free (PutF s r)
+
+-- Note that the 'Free' constructor is not
+-- seen in any of the code below.
+main :: IO ()
+main = iterM phi prog
+ where
+  prog =
+    Get $ \x ->
+    Get $ \y ->
+      Put x (Put y (pure ()))
+  phi  = \case
+    GetF k -> k =<< readLn
+    PutF s k -> putStrLn s >> k
+#+end_src
+
+In conclusion: I highly recommend the recursion schemes approach. Even if you
+start using it just because it sounds cool, it's a sound design decision to
+include at the beginning of a project that could potentially lead to big wins
+down the line. Had the [[https://github.com/jwiegley/hnix][hnix]] project started with traditional recursive types,
+it would have much harder at this point to retrofit it with fixed-points of
+functors; but since that decision was made from the start, we're able to keep
+extending its functionality in ways like those I've described above, but where
+each new layer of functionality is almost entirely self-contained and
+separately testable and reviewable.
