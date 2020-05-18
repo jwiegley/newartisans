@@ -184,7 +184,7 @@ adiM :: (Traversable t, Monad m)
 adiM f g = g ((f <=< traverse (adiM f g)) . unFix)
 #+end_src
 
-These functions can used as replacements for =cata= and =cataM=, while modify the
+These functions can used as replacements for =cata= and =cataM=, while modifying the
 algorithm they're passed in =f= using the transformation given in =g=. We'll see
 how this was put to use in each of the following sections.
 
@@ -356,7 +356,7 @@ stripFlags = cata $ Fix . snd . flagged
 #+end_src
 
 Now using =adiM= we can fold in the =IO= monad, allowing us to toggle these =IORef=
-boolean as we evaluate. For these function we need to know the types of the
+booleans as we evaluate. For these function we need to know the types of the
 trees involved, so that we can reduce this appropriately in =pruneTree=.
 
 #+begin_src haskell
