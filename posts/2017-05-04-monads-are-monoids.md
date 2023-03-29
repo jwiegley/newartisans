@@ -11,7 +11,7 @@ just now proved, in a completely general setting, the following statement:
 
 The proof, using no axioms,
 is
-[here](https://github.com/jwiegley/category-theory/blob/master/Isomorphism/Monoid/Monad.v#L22).
+[here](https://github.com/jwiegley/category-theory/blob/master/Monad/Monoid.v#L25).
 
 Now, just how much category theory was needed to establish this fact?
 
@@ -198,7 +198,7 @@ is
 Note that there is another way to arrive at monads, from the adjunction of two
 functors, which
 I
-[also have a proof for](https://github.com/jwiegley/category-theory/blob/master/Isomorphism/Adjunction/Monad.v#L23),
+[also have a proof for](https://github.com/jwiegley/category-theory/blob/master/Monad/Adjunction.v#L25),
 but this can wait until another post.
 
 Footnotes: 
