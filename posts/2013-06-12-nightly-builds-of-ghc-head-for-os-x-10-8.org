@@ -1,0 +1,12 @@
+---
+title: Nightly builds of GHC HEAD for OS X 10.8
+tags: tech, publish=newartisans
+---
+
+Since mid-January, I've been running nightly builds of GHC on my Mac Pro
+for 10.8.x, 64-bit. I've decided to make these results publically
+downloadable here: [[http://ghc.newartisans.com]].
+
+The installer tarballs are in =dist=, while the fulltest and nofib logs
+are in =logs=. According to Jenkins this build takes 8h15m minutes, so I
+figured this might save others some CPU heat.

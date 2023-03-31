@@ -1,0 +1,24 @@
+---
+title: Updated site to use Blueprint CSS again
+tags: tech, publish=newartisans
+---
+
+Recently I changed how the content on this site was generated, from
+using the standalone OS X application
+[[http://www.realmacsoftware.com/rapidweaver/][RapidWeaver]], to the
+server-side publishing platform [[http://www.movabletype.org/][Movable
+Type]]. During that transition I changed the site's style to the
+minimalist default offered by MT, which uses its own CSS for column
+layout and typography.
+
+Tonight I finally got around to switching the site back to
+[[http://github.com/joshuaclayton/blueprint-css/][blueprint-css]], which
+I very much prefer. I used the superb application
+[[http://macrabbit.com/cssedit/][CSSEdit]] to help me massage Movable
+Type's style into something that compatible with Blueprint's own
+typography and layout.
+
+I hope the result is pleasing. If anyone sees strange artifacts or
+display issues, please [[mailto:johnw@newartisans.com][let me know]].
+I'm aware code examples were being truncated on the right side before,
+but this should be corrected now. More on Haskell to come soon!

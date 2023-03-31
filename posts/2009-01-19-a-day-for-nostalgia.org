@@ -1,0 +1,54 @@
+---
+title: A day for nostalgia
+tags: tech, publish=newartisans
+---
+
+After tracking it down on a public domain mirror, and installing an
+emulator on my MacBook Pro, I was able to download and run the first
+full computer program I ever wrote: "Sector Inspector" for the Apple
+//e.
+
+I wrote this program in 1989, and took eleven months to write it (seven
+to code, four to debug). At the time, it was one of the more complete
+disk editing utilities I'd seen.
+
+It was released as Shareware (for $20), and I made a total of $60 over
+the course of eight years. This is the experience that turned me to
+freeware, actually; because I realized that coding for possible, yet
+unrealized profit was an unlikely aim. It's better to know that little
+will come of it ahead of time, which makes it all about the coding.
+
+#+begin_html
+  <!--more-->
+#+end_html
+
+Sector Inspector was written using the Merlin Prodos Assembler. It took
+thirteen minutes to assemble on my Apple //e, four using a friend's
+hardware accelerator card. In those days I owned a 1Mb expansion card,
+and would do all of my development there (for the sake of speed),
+frequently saving to 5.25” floppies.
+
+When finished Sector Inspector printed to 255 pages of assembly code,
+which was registered with the US copyright office. I tried selling it to
+three different software companies at the time, but only responded
+positively -- the authors of Merlin, who said they couldn't publish
+another title, but offered me a job instead. I didn't take the job (I
+don't know why), and instead released the program as Shareware.
+
+I remember having dreams that IS would make around $10k, and with that
+money I would buy a color Macintosh IIfx, all the rage at the time.
+Those dreams never materialized, of course, and shortly afterward the
+//e was cancelled, Prodos 8 was cancelled, and I started working on UNIX
+machines. The next year I worked for Network Solutions and used that
+money to buy a NeXT workstation, and said goodbye to the Apple world for
+a very long time (until just a few months ago, when I bought a PowerBook
+G4).
+
+Here is a screenshot of the splash screen on startup:
+
+And a screenshot of the main window:
+
+You can download an [[ftp://ftp.newartisans.com/pub/si.zip][Apple //e
+disk image]] of Sector Inspector, and play around with it, or read the
+[[http://ftp.newartisans.com/pub/SI.FEATURES.txt][FEATURES]] document I
+wrote as a young 17 year old programmer.

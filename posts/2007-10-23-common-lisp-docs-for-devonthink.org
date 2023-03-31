@@ -1,0 +1,33 @@
+---
+title: Common Lisp docs for DEVONthink
+tags: tech, publish=newartisans
+---
+
+*NOTE*: I have removed the pre-built tarball of these links form my Lisp
+repository due to possible copyright concerns. I recommend that if you
+want to collect these documents into one place (for searching in
+programs like DEVONthink), that you use the tools available in such
+programs to download these resources from the Web:
+
+- [[http://www.allegrograph.org/support/documentation/6.2/ansicl/ansicl.htm][ANSI
+  Common Lisp reference]] (from Franz)
+- A web mirror of [[http://www.cliki.net][CLiki.net]]
+- [[http://www.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html][Common Lisp
+  the Language, 2nd Edition]] (in HTML)
+- [[http://cl-cookbook.sourceforge.net/][The Common Lisp Cookbook]]
+- [[http://www.isr.ist.utl.pt/library/docs/encycmuclopedia/doc/][EncyCMUCLopedia]]
+  (excluding external resources)
+- [[http://www.lisp.org/HyperSpec/FrontMatter/][The Lisp HyperSpec 7.0]]
+- [[http://www.lispworks.com/documentation/][LispWorks 5.0 Manuals]]
+  (for Mac)
+- [[http://ecls.sourceforge.net/new-manual/][ECL Manual 0.9i]]
+- [[http://common-lisp.net/project/cmucl/doc/cmu-user/][CMUCL Manual
+  19d]]
+- [[http://www.sbcl.org/manual/][SBCL Manual 1.0.10.55]]
+- The book "[[http://www.paulgraham.com/onlisp.html][On Lisp]]", by Paul
+  Graham, as PDF
+- The book "[[http://www.gigamonkeys.com/book/][Practical Common
+  Lisp]]", by Peter Seibel, as HTML
+- The book
+  "[[http://mitpress.mit.edu/sicp/full-text/book/book.html][Structure
+  and Interpretation of Computer Programs]]", as HTML

@@ -1,0 +1,10 @@
+---
+title: Temporary mirror of comonad.com
+tags: tech, publish=newartisans
+---
+
+Until [[http://comonad.com][the Comonad Reader]] comes back online, I
+have a temporary mirror setup at [[http://comonad.newartisans.com]].
+It's a bit old (Sep 2012), but has some classics like "Free Monads for
+Less". It is missing the "Algebra of Applicatives", though, since I
+hadn't run the mirror in a while.

@@ -1,0 +1,9 @@
+---
+title: Japanese translation of "Git From the Bottom Up"
+tags: tech, publish=newartisans
+---
+
+The artice on Git that I wrote a couple years back,
+[[/2008/04/git-from-the-bottom-up][Git From the Bottom Up]], has been
+[[http://keijinsonyaban.blogspot.com/2011/05/git.html][translated into
+Japanese]] by Noriyuki Komatsuzaki. Thank you so much, Noriyuki!

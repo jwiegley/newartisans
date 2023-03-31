@@ -1,8 +1,0 @@
----
-title: Update of gitlib libraries on Hackage, plus git-monitor
-tags: haskell
----
-
-I've decided after many months of active development to release version 1.0.1 of gitlib and its related libraries to Hackage.  There is still more code review to done, and *much* documentation to be written, but this gets the code out there, which has been working very nicely at FP Complete for about six months now.
-
-The more exciting tool for users may be the `git-monitor` utility, which passively and efficiently makes one-minute snapshots of a single Git working tree while you work.  I use it continually for the repositories I work on during the day.  Just run `git-monitor -v` in a terminal window, and start making changes.  After about a minute you should see commit notifications appearing in the terminal window.

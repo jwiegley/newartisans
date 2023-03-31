@@ -1,0 +1,28 @@
+---
+title: Ready Lisp for OS X Leopard
+tags: tech, publish=newartisans
+---
+
+After upgrading my system to Leopard this weekend, I decided to refresh
+Ready Lisp as well. It now contains both 32-bit and 64-bit builds of
+SBCL (which has been bumped to 1.0.11), so if you have a Core 2 Duo
+machine, you'll be running Lisp at full 64-bit! Alas, Emacs itself
+cannot support 64-bit as a Carbon app, because there are no 64-bit
+Carbon libraries. SLIME has also been updated, to CVS latest as of
+today. Aquamacs is still the same version at 1.2a.
+
+I did spend several hours trying to build a fully Universal package that
+would run on PowerPC as well (I have a PowerBook G4 in addition to this
+MacBook Pro), but it seems Leopard has broken the PowerPC port of SBCL.
+Some of the core OS structures have changed, such as =os_context_t=.
+
+Ready Lisp is now being versioned according to the SBCL version it
+contains, which makes today's release
+[[ftp://ftp.newartisans.com/pub/lisp/ReadyLisp-1.0.11-10.5-x86.dmg][ReadyLisp-1.0.11-10.5-x86.dmg]].
+The older version, which still works on 10.4, can be downloaded
+[[ftp://ftp.newartisans.com/pub/lisp/ReadyLisp-1.0.10-10.4-x86.dmg][here]].
+
+*NOTE*: The recent loading bug for Leopard users has been fixed. Please
+re-download. Also, it still does not work on OS X 10.4 (Tiger) at the
+moment. I will have to create a separate build of SBCL for that version
+this weekend.

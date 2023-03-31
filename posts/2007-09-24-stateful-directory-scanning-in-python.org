@@ -1,0 +1,358 @@
+---
+title: Stateful directory scanning in Python
+tags: tech, publish=newartisans
+---
+
+This article describes how to utilize the stateful directory scanning
+module I've written for Python. But why did I write it? Understanding
+the problem I aimed to solve will help show why such a module is useful,
+and give you ideas how you might put it to use for yourself.
+
+#+begin_html
+  <!--more-->
+#+end_html
+
+** The problem to be solved
+The problem I faced was a growing Trash folder on my Macintosh laptop.
+I'm rather OCD about the stuff in my Trash folder. Every time I see a
+"full trash-bin" icon on my desktop, I yearn to empty it. It became an
+obsessive thing. I thought to myself, "Either I should delete everything
+straight away, or I should never delete it -- well, or delete it
+monthly." But I knew I would forget to delete it monthly, and then the
+same problem would nag at my mind: was my Trash over-full?
+
+It seems like a silly thing, but it troubled me. I like having the
+option of undeleting things, but I also hate endless clutter. It began
+to feel as though the Macintosh Trash-bin were a poisoning uncle running
+rampant through my neat, Danish kingdom.
+
+The answer, I realized, is that I should be able to constrain the items
+in my Trash-bin to a count of days. After X days an item should leave
+the Trash, silently, on its own, as though it had realized it was time
+to vacate. But who was going to monitor my Trash, and who would do the
+cleanup? What about files that need special privileges to be deleted?
+
+There exist applications for the Mac to do this, and also scripts I've
+seen for GNU/Linux. But I wanted a robust, extremely reliable script in
+Python that also has the facility to be used for other, similar tasks --
+not just cleaning my Trash. But since cleaning the Trash is something
+this code does well, the rest of my article will show how to use it to
+do just that.
+
+** Installing the Python module
+The trash cleaner script uses a directory scanning module called
+=dirscan.py=, which may be obtained from
+[[http://github.com/jwiegley/dirscan][GitHub]] section. Once downloaded,
+put it anywhere along your =PYTHONPATH=.
+
+** Creating a Trash cleaner script
+Dirscan's main entry point is a class named =DirScanner=. This class is
+used to keep state information about a directory in memory, so that this
+information doesn't need to be reloaded if you choose to perform
+multiple scans in a single run. The constructor for this class takes
+many arguments, which are described in a later section. For now, I'll
+use an example which shows just a few of them: my Trash cleaner.
+
+#+begin_example
+from os.path import expanduser
+from dirscan import DirScanner, safeRemove
+
+d = DirScanner(directory        = expanduser('~/.Trash'),
+               days             = 7,
+               sudo             = True,
+               depth            = 0,
+               minimalScan      = True,
+               onEntryPastLimit = safeRemove)
+#+end_example
+
+Here's what this object does: It scans my trash directory (=~/.Trash=)
+looking for entries older than 7.0 days. It only looks at entries in the
+top-level, meaning if a directory is older than 7.0 days, its children
+are removed all at once. Also, the Trash is only scanned if its modtime
+is newer than the state database, since this accurately reflects whether
+new objects have been added recently. Lastly, it removes old files using
+my =safeRemove= function, which understands the =sudo= option, and hence
+can use the =sudo= command to enforce removal of files needing special
+privileges.
+
+To make the removals happen, all I have to do now is to scan the
+directory:
+
+#+begin_example
+d.scanEntries()
+#+end_example
+
+Because of the =minimalScan= and =depth= settings, these two lines of
+code are extremely efficient if no changes to the Trash have actually
+occurred. If there are old files, the scanner knows just by looking at
+the state database. As a result, I can safely run this script hourly
+without worrying about excessive resource consumption when it runs. Even
+for lots and lots of entries, the state database loads very fast, since
+I'm using Python's =cPickle= module.
+
+That's all it takes to write a script that keeps your Trash squeaky
+clean, removing all entries beyond seven days in age! I don't have any
+options to delete files beyond a set size, since I couldn't come up with
+a reliable algorithm for deciding what should be deleted in that case.
+
+For example, if the limit were 5 GB, and I deleted a file 5.1 GB in
+size, does that mean I should remove everything else but that file to
+stay near the target size, or should I delete the 5.1 GB file right
+away? Either way, it doesn't give me the safety of having several days
+to decide whether that or another file shouldn't have been deleted. So
+my choice was to prefer time over size, since disk space is not as much
+at a premium as knowing I have seven days to reverse any hasty
+decisions.
+
+** Running Trash cleaner with launchd
+You could run the Trash cleaner as a =cron= job, or you can be all
+Mac-sy and run it as a =launchd= service. All you have to do in that
+case is create the following file in your =~/Library/LaunchAgents=
+directory (you may have to create it), under the name
+=com.newartisans.cleanup.plist=. Be sure to change any pathnames in the
+file to match your environment. I've assumed here that you've created my
+cleanup script under the name =/usr/local/bin/cleanup=:
+
+#+begin_example
+    EnvironmentVariables
+    
+      PYTHONPATH
+      /usr/local/lib/python
+    
+    Label
+    com.newartisans.cleanup
+    LowPriorityIO
+    
+    Nice
+    20
+    OnDemand
+    
+    Program
+    /usr/local/bin/cleanup
+    StartInterval
+    3600
+  
+#+end_example
+
+** Turning command-line options into arguments
+The =dirscan.py= module has a handy function for processing command-line
+arguments into =DirScanner= constructor options. To use it, just change
+the script above to the following:
+
+#+begin_example
+#!/usr/bin/env python
+# This is my Trash cleaner script!
+
+import sys
+from os.path import expanduser
+from dirscan import DirScanner, safeRemove, processOptions
+
+opts = {
+    'days': 7
+}
+if len(sys.argv) > 1:
+        opts = processOptions(sys.argv[1:])
+
+d = DirScanner(directory        = expanduser('~/.Trash'),
+               days             = 7,
+               sudo             = True,
+               depth            = 0,
+               minimalScan      = True,
+               onEntryPastLimit = safeRemove,
+               **opts)
+d.scanEntries()
+#+end_example
+
+Now the user can turn on =sudo= themselves by typing =cleanup -s=. Or
+they can watch what the script is doing with =cleanup -u=, or watch what
+it /would/ do with =cleanup -n -u=. Of course, for more sophisticated
+processing you'll probably want to write your own options handler, and
+create your own dictionary to pass to the =DirScanner= constructor.
+
+** Options for DirScanner's constructor
+Here is a run-down of the options which may be passed to the
+=DirScanner= constructor
+
+*** =directory=
+Sets the directory to be scanned. If not set, an exception is thrown.
+
+*** =ages=
+Setting this boolean to True changes the behavior of the scanner
+dramatically. Instead of doing its normal scan, it will print out the
+known age of every item in the directory. This is a really just a
+debugging option.
+
+*** =atime=
+If True, use the last access time to determining an entry's age, rather
+than the recorded "first time seen".
+
+*** =check=
+If True, always scan the contents of the directory to look for changed
+entries. The default is False, which means that if the modtime of the
+directory has not changed, it will not be scanned. If you care about
+entries within the sub-directories of the main directory, definitely set
+this to True.
+
+*** =database=
+The name of the state file to use as a database. The default is
+=.files.db=, which is kept in the scanned directory itself. It may also
+be an absolute or relative pathname, if you'd like to keep the scan data
+separate.
+
+*** =days=
+The number of days (as an integer or floating point value) after which
+an entry is considered "old". What happens to old entries is up to you;
+what it really means is that the =onEntryPastLimit= handle is called.
+
+*** =depth=
+How deep in the hierarchy should =DirScanner= go to find changes? If
+depth is 0, only the top-level is scanned. If it is -1, all sub-levels
+are scanned. If it's a number, only that many levels are scanned beyond
+the top-level.
+
+*** =dryrun=
+If True, no changes will be performed. This option gets passed to your
+handler, so you can know whether to avoid making changes.
+
+*** =ignoreFiles=
+A list of filenames which should not be monitored for changes. It
+defaults to just the name of the state database itself.
+
+*** =minimalScan=
+If True, and if the directory to be scanned's modtime is not newer than
+the state database, it's assumed that no changes have occurred and no
+disk scan will be performed. Old entries are still checked for, however,
+by scanning the dates in the state database.
+
+*** =mtime=
+If True, use the modtime of directory entries to determined if they are
+"old", rather than the recorded "first seen time".
+
+*** =onEntryAdded=
+This is a Python callable object, or a string, which is called when new
+entries are found. If it's a string, it will be executed as a shell
+command.
+
+*** =onEntryChanged=
+Handler called whenever an entry has changed (meaning it's modtime has
+changed).
+
+*** =onEntryRemoved=
+Handler called whenever an entry is removed.
+
+*** =onEntryPastLimit=
+Handler called whenever an entry is found to be "old". =DirScanner=
+knows of three ages for a file: time since its atime, time since it
+modtime, and time since the first time =DirScanner= saw it (the time
+when the entry was added to the state database).
+
+*** =pruneDirs=
+If True, directories with no entries are removed.
+
+*** =secure=
+If True, entries are removed using the command =srm= instead of =rm= or
+Python's =unlink=. This only works on systems which have =srm=
+installed, such as Mac OS X.
+
+*** =sort=
+If True, directory entries are acting on in name order. Otherwise, they
+are acted upon in directory order (essentially random).
+
+*** =sudo=
+If True, and if a file cannot be removed because of a permissions issue,
+the same command (either =rm= or =srm=) will be tried again using the
+=sudo= command. Only use this option if your =sudo= privilege does not
+require entering a password!
+
+** How else can you use it?
+The directory scanner can be used for many other things than just
+cleaning out old files. I use it for moving files from one directory to
+another after a certain length of time, for example (such as moving
+older downloaded files from a local Downloads cache to an offline
+archive whenever the offline drive is connected). Or you could use it to
+trigger an e-mail alert whenever a files in a directory tree change, or
+if a file is ever removed.
+
+** Extending the scanner using Python types
+It's also possible to extend =DirScanner= using custom entry types. This
+is the most powerful way to use the scanner, and allows you to define
+things like alternative meanings for "age" and so on. This would be the
+approach to take if you wanted to enforce size-based limits. Here's how
+it's done:
+
+#+begin_example
+import dirscan
+import time
+
+class MyEntry(dirscan.Entry):
+    def getTimestamp(self):
+        "This is my custom timestamp function."
+        return time.time()    # useless, nothing will ever be "old"
+
+d = dirscan.DirScanner(...)
+d.registerEntryClass(MyEntry)
+d.scanEntries()
+#+end_example
+
+The difference between this example, and the previous Trash cleaner
+script, is that =dirscan.py= will now store instances of =MyEntry= in
+its state database rather than its own entry class. You can use your own
+class to maintain whatever kind of state you want about an entry, and
+have it respond based on that information. The following are the methods
+you can override to provide such custom behavior:
+
+*** =contentsHaveChanged=
+Return True if the contents of the file have changed. This check is only
+performed if the modtime has changed from the last scan. The default
+implementation does nothing, but you could use this method to store an
+MD5 checksum, for example.
+
+*** =getTimestamp=
+Return the timestamp that will be used to determine the "age" of the
+file.
+
+*** =setTimestamp(stamp)=
+Called to forcibly set the timestamp for a file. The argument is of type
+=datetime= from the Python =datetime= module.
+
+*** =timestampHasChanged=
+Return True to indicate that the timestamp has changed.
+
+*** =isDirectory=
+Return True if the entry represents a directory.
+
+*** =shouldEntryDirectory=
+Return True if the scanner should descend into this directory. The
+default implementation checks the user's =depth= setting to answer this
+question.
+
+*** =onEntryEvent=
+Called whenever something notable has happened. This is a low-level
+hook, called by all of the other hooks.
+
+*** =onEntryAdded=
+Called when an entry is first seen in a directory.
+
+*** =onEntryChanged=
+Called when an entry has observed to change, either because of its
+timestamp or its contents.
+
+*** =onEntryRemoved=
+Called when the entry has been removed from disk.
+
+*** =onEntryPastLimit=
+Called when the entry has become "old", based on its timestamp and the
+user's =days= argument passed to the =DirScanner= constructor.
+
+*** =remove=
+Method called to completely remove the current entry. The default
+implementation goes to great lengths to ensure that whatever type of
+entry it is -- be it a file or a directory -- and whatever permissions
+it has, it's gone by the time this method returns.
+
+*** =__getstate__=
+If you need to keep your own instance data in the state database,
+override this method but be sure to call the base class's version.
+
+*** =__setstate__=
+The same goes for this method, as with =__getstate__=.

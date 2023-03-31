@@ -1,0 +1,37 @@
+---
+title: Unicode support on the cheap
+tags: tech, publish=newartisans
+---
+
+I'd been avoiding adding full Unicode support to Ledger for some time,
+since both times I tried it ended up in a veritable spaghetti of changes
+throughout the code, which it seemed would take forever to "prove". One
+branch I started used libICU to handle Unicode strings throughout, while
+an earlier attempted using regular wide-string support in C++. Both were
+left on the cutting floor.
+
+#+begin_html
+  <!--more-->
+#+end_html
+
+But last night an idea struck me: Ledger doesn't care if UTF8 encoded
+data is passed around. If a user has Cyrillic characters in their data
+file, and Ledger leaves its encoding alone, then when those same bytes
+are printed out the user will see exactly what they input. In this case,
+the best approach is "hands off". Just pass the user's data through
+transparently, and they will see in their output exactly what they
+input.
+
+Where this fails is when Ledger tries to output elided columnar data,
+such in the register report. The problem is, there is no way to know the
+length of a string without determining exactly how many code-points
+exist in that UTF8 string. And without knowing the length, it's
+impossible to get columns to line up, or to know exactly where a string
+can be cut in two without breaking a multibyte UTF8 character apart.
+
+Anyway, I discovered a cheap solution today which did the job: Convert
+strings from UTF8 to UTF32 only when individual character lengths
+matter, and convert them back after that work is done. This took about
+one hour to implement, but now Ledger is able to justify columns
+correctly, even when other alphabets are used! It still doesn't work for
+right-to-left alphabets, though.

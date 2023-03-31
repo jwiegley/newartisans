@@ -1,0 +1,326 @@
+---
+title: "FP techniques in Lisp: Data sharing"
+tags: tech, publish=newartisans
+---
+
+Common Lisp has often been called a "multi-paradigm" language, in that
+it allows you to program in many different styles, sometimes
+simultaneously: imperative, object-oriented, functional, statically
+typed, etc. It depends on what style you want to adopt, how your code
+will look.
+
+#+begin_html
+  <!--more-->
+#+end_html
+
+Recently I've been porting a C++ accounting system to Common Lisp. And
+after only six weeks, the port is nearly complete -- a feat I credit to
+the power of the Lisp language and the facilities it offers I'd been
+forced to replicate in C++.
+
+But as the port nears completion, I find myself questioning some of the
+design decisions. Did C++ force me down a path where Lisp can offer a
+better alternative?
+
+** The imperative approach
+One thing C++ does not support well at all is Functional Programming, or
+the idea that a program is simply a group of functions, each taking
+inputs and producing outputs, with none of them changing the
+environment. This has powerful implications for things like concurrency,
+an area where Erlang is currently experiencing considerable success.
+
+There are many facets to FP, but one of its core tenets is this: That
+all inputs to a function are immutable; that all outputs from a function
+must remain immutable; and that no environmental side-effects can occur
+in any function.
+
+In a language like C++, this approach incurs considerable data copying.
+In cases where data often cannot be changed -- such as strings -- it
+requires the evolution of "copy on write" strategies, to defer the
+copying until the last possible moment. Take for example a function
+which receives a vector, and must add a new element to the beginning of
+that vector, afterwards returning the new version:
+
+#+begin_example
+std::vector push_element(std::vector foo, const int x) {
+  foo.push_front(x);
+  return foo;
+}
+#+end_example
+
+Of course for longer lists this gets extremely expensive, causing most
+C+ programmers coders to switch to using references, modifying the list
+in place. While more efficient, the question then becomes: who else
+holds a reference to the list, and do they need to be informed of the
+insertion? If the vector had been one of objects, rather than integers,
+full copying would not be an option for non-trivial lists. In that case,
+pointers would have to be used to avoid the cost of all the additional
+copies. But then how do we know when the last pointer is freed? So not
+pointers, really, but rather thin objects of type =shared_ptr= which use
+reference counting to track object lifetimes. And believe me, the
+complexity has only just begun.
+
+This level of complexity is avoided in C++ by carefully drawing lines
+between code boundaries, and safely allowing direct modification of
+data. It's simple, straightforward and efficient. But it also places the
+burden on the author to know when data can be shared, and when it can't.
+If the program is multi-threaded, certain ranges of code must be guarded
+against concurrent access, leading to sophisticated strategies involving
+multiple-reader, one-writer gates, with concomitant algorithms to
+prevent resource exhaustion. In other words, the simplicity gained in
+the single-threaded case in almost entirely lost in the multi-threaded
+case.
+
+** FP and maximal sharing
+FP languages get around these two extreme by using a technique I call
+"maximal sharing". Instead of the first case above, where the entire
+list was copied; and the second case, where an existing list was
+modified; FP creates a third alternative: create a new list by sharing
+one new value with the contents of the old. In this scenario, only the
+first element of the new list is truly "new". The remainder of the old
+list is pointed to by the new list, meaning that all of its contents are
+shared between the two lists.
+
+The type of scheme relies on memory algorithms like garbage collection
+to work well, because it becomes very important to know when an item is
+no longer referenced. In a typical FP-style program, a single element
+might be shared by hundreds of other objects, since each time that
+element is passed to a function, a new value involving that element
+might be created.
+
+This sort of approach can be used quite readily in Common Lisp. Here's a
+simple version of the =push= routine above which makes the single
+assumption that both lists must remain immutable after the call:
+
+#+begin_example
+(defun push-element (list element)
+  (cons element list))
+#+end_example
+
+Note two things about this implementation: 1) It does not change the
+input list; and 2) the output list results required the allocation of
+only a single cons cell. As long as neither list is ever changed, it
+works beautifully. It's fast, memory efficient, and as straightforward
+as possible (though granted, it's a trivial example).
+
+But can such an approach pan out when we're modifying elements further
+down, in longer lists?
+
+*** A new function: apply-to-list
+To test this theory, I've created an algorithm called =apply-to-list=,
+as part of
+[[http://hg.newartisans.com/cambl/raw-file/be39ad4684d9/fprog.lisp][a
+functional programming library]] I'm working on. The job of
+=apply-to-list= is to generate a new list from an old one, while sharing
+as much structure as possible from the original list. Using
+=apply-to-list=, I've implemented a function called =mapcar-if=, which
+can be used just like =mapcar= to selectively generate new list
+elements, but with the new advantage of maximal sharing. Here's the
+documentation for =apply-to-list=, which describes how it works:
+
+#+begin_example
+(defmacro apply-to-list (list predicate function &key (first-only nil)
+                         (skip-to-next t) (lookahead t))
+  ...)
+#+end_example
+
+=APPLY-TO-LIST=: Given an input =LIST=, replicate as much of its
+structure as possible while applying some kind of transform on its
+value. This is implemented as macro simply to remove the redundant
+boolean tests involving the keyed parameters. Testing showed that as a
+macro, in the case where =APPLY-TO-LIST= is used to mimic =MAPCAR=
+exactly, it led to a 10 percent speed gain over the =MAPCAR= provided by
+SBCL; but as a function, it was always slower by up to 20 percent due to
+these constant checks.
+
+For every member of the list where =PREDICATE= returns =T=, =FUNCTION=
+is called with the list whose =CAR= is that member; =FUNCTION= should
+return the list which will be substituted at that point (this makes it
+possible to remove, change or insert the matched cell). If =FIRST-ONLY=
+is =NIL=, this is done for every cell that matches. If =SKIP-TO-NEXT= is
+=T=, scanning resumes using the =CDR= of the value returned by
+=FUNCTION=. Note: Be very careful when setting =SKIP-TO-NEXT= to =NIL=,
+since if =FUNCTION= returns a new list which also matches the
+=PREDICATE=, an infinitely recursive loop can occur. If =LOOKAHEAD= is
+=T=, the list is pre-scanned to see if =PREDICATE= matches, otherwise
+copying is done regardless of whether there is a match in =LIST= or not;
+this mimics the behavior of =CL:MAPCAR= and is better for very short
+lists. In fact, the only reason for =LOOKAHEAD= is to allow for the
+function to be used as an implementation of =MAPCAR= in such cases.
+
+This function depends on the following contract with the caller:
+
+1. The input =LIST= is immutable after any call to =APPLY-TO-LIST= until
+   the end of the program.
+2. The returned =LIST= is likewise immutable.
+
+The memory savings offered by this function comes at two costs: The
+first is the subsequent immutability of the input data, and the second
+is an increase in functional complexity. Specifically, while =CL:MAPCAR=
+is O(N) for a given list, =FPROG:APPLY-TO-LIST= -- when used to
+implement a sharing form of =MAPCAR=, such as =FPROG:MAPCAR-IF= -- has
+complexity O(N) in the best case, and is twice as costly in the worst
+case (when =LOOKAHEAD= is =T= and the element to be substituted occurs
+at the end of the list).
+
+Now, the cost of speed in the worst case can lead to dramatic
+improvements in memory usage in the average case, with an attendant
+speed advantage. Take the case of a list which is 500 elements long. In
+my environment, here are the timings for using =MAPCAR= to generate a
+new list from an old one where only one cons cell needs to be changed.
+These times were determined by calling the same code repeatedly
+1,000,000 times (that code is near the end of this file, in the function
+=TIMING-TESTS=):
+
+#+begin_example
+Evaluation took:
+  8.367 seconds of real time
+  7.931782 seconds of user run time
+  0.342331 seconds of system run time
+  [Run times include 2.679 seconds GC run time.]
+  0 calls to %EVAL
+  0 page faults and
+  4,024,029,056 bytes consed.
+#+end_example
+
+That's 4 gigabytes of memory, probably to be expected. The only reason
+this doesn't blow the heap is because all of the intermediate results
+are being thrown away, making a lot of the cons'ing "free". If the
+results are kept, the =MAPCAR= solution becomes impossible without
+dramatically increasing Lisp's heap size.
+
+The memory and time costs of using =MAPCAR= in this example are constant
+no matter whether the cons cell is substituted at the beginning, middle
+or end of the 500 element list. To compare, here are the time and memory
+statistics from =FPROG:MAPCAR-IF= for the same data, in all three cases
+(best, average, worst):
+
+#+begin_example
+Evaluation took:
+  3.478 seconds of real time
+  3.474324 seconds of user run time
+  0.003887 seconds of system run time
+  [Run times include 0.026 seconds GC run time.]
+  0 calls to %EVAL
+  0 page faults and
+  40,007,952 bytes consed.
+#+end_example
+
+In the best case, memory usage is reduced by two orders of magnitude,
+with an appreciable boost in speed. If the results of this case are
+saved (using =COLLECT= in the =LOOP= instead of =DO=), the speed savings
+can become dramatic. Note also that except for the immutability
+constraints, the results from the two different approaches are =EQUAL=.
+
+#+begin_example
+Evaluation took:
+  7.495 seconds of real time
+  7.272269 seconds of user run time
+  0.173947 seconds of system run time
+  [Run times include 1.416 seconds GC run time.]
+  0 calls to %EVAL
+  0 page faults and
+  2,032,015,008 bytes consed.
+#+end_example
+
+In the average case (middle of the list), memory usage is cut in half,
+while runtime speed is still faster. The cons'ing of =CL:MAPCAR= also
+gets more expensive the more the results are kept, so this trivial speed
+tests -- where no results are saved -- is not exactly fair between the
+two. But even still =FPROG:MAPCAR-IF= is doing well.
+
+#+begin_example
+Evaluation took:
+  11.343 seconds of real time
+  10.969349 seconds of user run time
+  0.327477 seconds of system run time
+  [Run times include 2.679 seconds GC run time.]
+  0 calls to %EVAL
+  0 page faults and
+  4,024,030,568 bytes consed.
+#+end_example
+
+Finally, the pathological case, where =MAPCAR-IF= degenerates into an
+exact duplicate of =MAPCAR=. Memory use is the same, but speed is much
+slower because the call to =MEMBER-IF= is searching the entire list
+before we decide that all of it needs duplication.
+
+The functionality offered by =APPLY-TO-LIST= is that every cons cell
+from the original =LIST=, after the last matching member, is shared
+entirely. This is quite different from =COPY-LIST=, which creates new
+cons cells for every position -- even those that do not require a unique
+structure. For example, consider the following list:
+
+#+begin_example
+(defparameter *alist* '((a . 1) (b . 2) (e . 3) (f . 6) (g . 7)))
+#+end_example
+
+The idea is to return another version of this immutable list, while
+sharing as much structure as possible -- because the return value is
+also considered immutable. The following function call achieves this,
+using the Modify pattern from above:
+
+#+begin_example
+(apply-to-list *alist* #'(lambda (member) (eq 'e (car member)))
+                       #'(lambda (list) (cons (cons (caar list) 5)
+                                        (cdr list))))
+  => '((a . 1) (b . 2) (e . 5) (f . 6) (g . 7))
+#+end_example
+
+In the returned list, 15 atoms are shared with the original, while one
+new cons cell and one new atom are created:
+
+#+begin_example
+1, 2, 3:         (a . 1)
+4, 5, 6:         (b . 2)
+7:               e
+8, 9, 10 11:     ((f . 6) ...)
+12, 13, 14, 15:  ((g . 7))
+#+end_example
+
+The usual practice of calling =MAPCAR= and changing the incorrect
+element would have result in sharing only 13 atoms. That code might have
+looked like this:
+
+#+begin_example
+(mapcar #'(lambda (cell)
+            (if (eq 'e (car cell))
+                (cons (car cell) 5)
+                cell))
+        *alist*)
+#+end_example
+
+Further, while a discrepancy of 2 cons cells may not seem like much in
+this example, the difference increases by one for every cell beyond the
+cell that matches. Thus, if the input list had contained 100 cells
+beyond (e . 3), the difference would have been 102 cells, and not
+merely 2.
+
+Finally, in our example exactly 4 new cons cells and 1 new atom were
+created as a result of the call:
+
+#+begin_example
+1: ((a . 1) ...)
+2: ((b . 2) ...)
+3: ((e . 5) ...)
+4: (e . 5)
+5: 5
+#+end_example
+
+This is the minimum amount of new information required to represent a
+new structure where the only change is that 'e' is paired with 5 instead
+of 3.
+
+** Conclusion
+The idea of =APPLY-TO-LIST= is to support efficient functional
+programming, wherein immutable outputs are derived from immutable inputs
+by efficiently sharing as much structure as possible -- resulting in the
+least new memory allocated. In cases where no references are held, this
+offers only a little gain over advanced generational garbage collection
+(such as lists passed within a recursive function); but if the results
+are held over the longer term, such as a series of computed values
+stored in a result list, the savings of this function become quite
+substantial. It was exactly this sort of situation which motivated the
+creation of =APPLY-TO-LIST=: it made it possible to reduce overall
+memory consumption by a factor of 20, without introducing any additional
+complexity in the calling code.

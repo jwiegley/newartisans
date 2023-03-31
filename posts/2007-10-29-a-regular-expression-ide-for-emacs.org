@@ -1,0 +1,47 @@
+---
+title: A regular expression IDE for Emacs
+tags: tech, publish=newartisans
+---
+
+I've started work on a new mode for Emacs, which intends to be something
+like an "IDE" for regular expressions. There are similar tools out
+there, such as [[http://code.google.com/p/reggy/][Reggy]] for OS X and
+[[http://www.weitz.de/regex-coach/][The Regex Coach]] for Windows. But
+the former doesn't show me subgroup matches, and the latter won't run on
+OS X. Which made me wonder, wouldn't this be easy to do in Emacs? Three
+hours later says yes.
+
+#+begin_html
+  <!--more-->
+#+end_html
+
+After downloading [[/downloads_files/regex-tool.el][regex-tool.el]], put
+it somewhere where your Emacs can see it (typically
+=/usr/local/share/emacs/site-lisp=), and then add this to your =.emacs=
+file:
+
+#+begin_example
+(load "regex-tool" t)    ; load regex-tool if it's available
+#+end_example
+
+Then type =M-x load-file= and load it manually for your current session.
+Once that is done, type =M-x regex-tool= to start the show. It will
+create a new Emacs frame for you looking something like this:
+
+The =*Regex*= section starts out blank, awaiting you to type in your
+regular expression. The default syntax is Emacs; if you would prefer
+=regex-tool= to use full Perl regular expressions, type the command
+=M-x customize-group=, choose the group =regex-tool=, and then change
+the backend to "perl" by clicking on the Value Menu. When configured to
+use Perl, =regex-tool= will actually invoke a real Perl subprocess to
+run your matches against, so you can use whatever syntax your installed
+version of Perl accepts.
+
+The matched parts of the sample string are highlighted in bold red, and
+all the matching subgroups (including group 0, to show the whole match)
+are indicated in the =*Groups*= buffer.
+
+I'm sure there are many ways this little tool could be extended, so
+please don't hesitate to send me a note with your suggestions. Or find
+me in the #emacs IRC channel, on the server =irc.freenode.net=. I'm
+=johnw= on there, and am online most evenings.

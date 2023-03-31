@@ -1,5 +1,6 @@
 ---
 title: "Program Reduction: A Win for Recursion Schemes"
+tags: tech, publish=newartisans
 ---
 
 I first encountered the "recursion schemes" idea in Haskell while attending an

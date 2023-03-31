@@ -1,0 +1,196 @@
+---
+title: Hello Haskell, Goodbye Lisp
+tags: tech, publish=newartisans
+---
+
+As some one who has enjoyed the Lisp language (in several flavors) for
+about 15 years now, I wanted to express some of my reactions at recently
+discovering Haskell, and why it has supplanted Lisp as the apple of my
+eye. Perhaps it will encourage others to explore this strange, wonderful
+world, where it looks like some pretty damn cool ideas are starting to
+peek over the horizon.
+
+#+begin_html
+  <!--more-->
+#+end_html
+
+First, let me say that unlike many posts on the Lisp subject, I have
+nothing negative to report here. It's not that I haven't had my share of
+ups and downs with Lisp, but that if you want to know about those, look
+around. Most of what other bloggers have to say is dead on, so there's
+little need to repeat it here.
+
+I'll just address some of the cooler aspects of Lisp, and how Haskell
+compares in response.
+
+* Elegant syntax
+While many dislike Lisp's abundant parentheses, I fell in love with
+them. Perhaps it's because I spend so much of my time working on
+compilers, and Lisp programs read like their parse trees. This
+"code/data equivalence" is beautiful. It makes it trivial to write DSLs,
+for example, since you all you need to do is model the syntax tree as a
+series of Lisp data structures, and then evaluate them directly. It
+removes the need for an intermediate parse-tree representation.
+
+When I first approached Haskell, I was shocked at the amount of syntax I
+saw. Operators abounded -- more even than C -- like: =->=, ==>=, =::=,
+=$=, =$!=, etc, etc. The more I looked, the more operators there seemed
+to be, until I began feel as lost as when I read Perl code.
+
+What I didn't realize is that in Haskell, much of the syntax you see are
+just special function names. There is very little "true" syntax going
+on; the rest is built on top of a highly expressive core. Lisp looks
+clean because nearly all its operators are used like functions. Haskell
+goes for an "infix optional" style, which allows you to call anything as
+either prefix or infix, provided you quality the function name
+correctly:
+
+#+begin_example
+(/= (+ 1 2) 4)        ; Lisp reads very logically
+((/=) ((+) 1 2) 4)    -- Haskell can look almost identical!
+1 ^ 4                 -- this is the infix form of ((^) 1 4)
+#+end_example
+
+Nothing can match Lisp's rigorous purity, but once you see past the
+sugary veils, Haskell is pretty basic underneath as well. Almost
+everything, for both languages, boils down to calling functions.
+
+* Macros
+Another beauty of Lisp is its macro facility. I've not seen its like in
+any other language. Because the forms of code and data are equivalent,
+Lisps macro are not just text substitution, /they allow you to modify
+code structure at compile-time/. It's like having a compiler
+construction kit as part of the core language, using types and routines
+identical to what you use in the runtime environment. Compare this to a
+language like C++, where, despite the power of its template
+meta-language, it employs such a radically different set of tools from
+the core language that even seasoned C++ programmers often have little
+hope of understanding it.
+
+But why is all this necessary? Why do I need to be able to perform
+compile-time substitutions with a macro, when I can do the same things
+at runtime with a function? It comes down to *evaluation*: Before a
+function is called in Lisp, each of its arguments must be evaluated to
+yield a concrete value. In fact, it requires that they be evaluated in
+order[fn:1] before the function is ever called.
+
+Say I wanted to write a function called =doif=, which evaluates its
+second argument only if the first argument evaluates to true. In Lisp
+this requires a macro, because an ordinary function call would evaluate
+that argument in either case:
+
+#+begin_example
+(defun doif (x y) (if x y))       ; WRONG: both x and y have been evaluated already
+(defmacro doif (x y) `(if ,x ,y)) ; Right: y is only evaluated if x is true
+#+end_example
+
+What about Haskell? Does it have a super-cool macro system too? It turns
+out it doesn't need to. In fact, much of the coolness of Haskell is that
+you get so many things for free, as a result of its design. The lack of
+needing macros is one of those:
+
+#+begin_example
+doif x y = if x then (Just y) else Nothing
+#+end_example
+
+Because Haskell never evaluates anything unless you use it, there's no
+need to distinguish between macros and functions.
+
+* Closures
+The next amazing thing Lisp taught me about was closures. Closures are
+function objects which retain information from the scope they were
+constructed in. Here's a trivial example:
+
+#+begin_example
+(defun foo (x) (lambda (y) (+ x y)))
+
+(let ((bar (foo 10)))
+   (funcall bar 20))
+  => 30
+#+end_example
+
+In calling =foo=, I've created a function object which adds two numbers:
+the number that was originally passed to =foo=, plus whatever number get
+passed to that closure in turn. Now, I could go on and on about the
+possibilities of this mechanism, but suffice it to say it can solve some
+really difficult problems in simple ways. It's deceptively simple, in
+fact.
+
+Does Haskell have all this closurey goodness? You bet it does, in
+spades.
+
+#+begin_example
+foo x = (\y -> x + y)        -- here \ means lambda
+bar = foo 10
+bar 20                       -- arguably cleaner syntax, no?
+  => 30
+#+end_example
+
+In fact, Haskell even one-ups Lisp by making /partial application/
+something as natural to use as an ordinary function call:
+
+#+begin_example
+foo = (+)
+bar = foo 10
+bar 20
+  => 30
+#+end_example
+
+This code doesn't just make =foo= an alias for add, which I could have
+done in Lisp as well. It says that =foo= returns a function object
+expecting two arguments. Then that =bar= assigns one of those arguments,
+returning a closure which references the 10 and expects another
+argument. The final call provides the 20 to this closure and sets up the
+addition. The fact I'm evaluating it in the interpreter loop causes
+Haskell to perform the addition and show me the result.
+
+This combination of lazy evaluation with partial application leads to
+expressive capabilities I've frankly never experienced before. Sometimes
+it causes my head to spin a bit.
+
+* Parallelism
+One thing about Common Lisp is that it harkens back to a day when
+computers were much simpler -- before multi-threading, and multiple
+processor machines were both cheap and common. Since it was designed at
+a time when there was One Processor to Rule them All, it didn't go to
+great lengths to consider how its design might effect the needs of
+parallelism.
+
+Let's take function argument evaluation, as a simple example. Because a
+function call in Lisp must evaluate all arguments, in order, function
+calls cannot be parallelized. Even if the arguments /could/ have been
+computed in parallel, there's no way to know for sure that the
+evaluation of one argument doesn't cause a side-effect which might
+interfere with another argument's evaluation. It forces Lisp's hand into
+doing everything in the exact sequence laid down by the programmer.
+
+This isn't to say that things couldn't happen on multiple threads, just
+that /Lisp itself can't decide when it's appropriate to do so/.
+Parallelizing code in Lisp requires that the programmer explicitly
+demarcate boundaries between threads, and that he use global locks to
+avoid out-of-order side-effects.
+
+With Haskell, the whole game is changed. Functions aren't allowed to
+have side-effects, and their value is not computed until needed. These
+two design decisions lead to situations like the following: Say I've
+just called a function and passed it a bunch of arguments which are
+expensive to compute. None of these operations need to be done in
+sequence, because none of them depend on the others for their value. If
+then I do something in my function which needs some of those values,
+Haskell can start computing the ones it needs in parallel, waiting on
+the completion of the whole set before returning the final result. This
+is a decision /the language itself can make/, as a by-product of its
+design.
+
+* Community
+Lastly, the Haskell community is amazing. Newbies, you are welcome here.
+Their IRC channel is both a friendly and knowledgable place, where
+newcomers are cherished and developed.
+
+Likewise, the web resources and books I've read about Haskell so far
+have all been top-notch. You get the feeling people are /fascinated/ by
+the language, and eager to share their joy with others. What a
+refreshing change. Lisp may have a rich history, but I think Haskell is
+the one with the future.
+
+[fn:1] http://www.lispworks.com/documentation/HyperSpec/Body/03_ababc.htm

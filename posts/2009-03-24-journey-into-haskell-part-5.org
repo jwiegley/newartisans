@@ -1,0 +1,75 @@
+---
+title: Journey into Haskell, part 5
+tags: tech, publish=newartisans
+---
+
+Haskell may be difficult to start out with, but once things start
+rolling, they roll fast. Yesterday (real world time, these blog entries
+are staggered) I had started the first lines of HackPorts, but now
+things are getting close to done for the first version. It's not that
+I've written much code, but that it was simple to integrate with other
+people's code.
+
+#+begin_html
+  <!--more-->
+#+end_html
+
+** Borrowing all I can
+The first thing I wanted to do was avoid dealing with any of Hackage's
+data formats, so I cribbed everything I could from the =cabal-install=
+package. I actually imported the full source into HackPorts, ripped out
+its =List.hs= file, renamed it to my =Main.hs= file, and then began
+changing it from a function that prints out a list of available
+packages, to one that writes the data into properly formatted =Portfile=
+entries.
+
+The code does the following bits of work:
+
+1. Talks to =cabal-install= and Cabal to get a list of all known
+   packages on Hackage.
+
+2. For every package, creates a directory named =haskell/$package=, and
+   then writes information about that package into
+   =haskell/$package/Portfile=.
+
+3. As it does this, it fetches the current version's tarball over HTTP,
+   and uses OpenSSL (directly, through FFI) to generate MD5, SHA1 and
+   RIPEMD160 checksums of the tarball image.
+
+And voilá, a directory populated with 1136 Portfile entries. What's
+missing now is the external dependency mapping. As a stub, I have them
+all depending on =port:ghc=, but I think there's sufficient information
+in the Cabal package info to figure out what the right dependencies
+should be, both among the Hackage packages themselves and against any
+external libraries (like OpenSSL).
+
+** What I learned
+As for my Haskell education, I learned about using Haskell's very nice
+FFI mechanism, and had a lot more experience using the IO Monad. An
+example of using FFI to call out to OpenSSL:
+
+#+begin_example
+{-# OPTIONS -#include "openssl/md5.h" #-}
+
+foreign import ccall "openssl/md5.h MD5" c_md5
+    :: Ptr CChar -> CULong -> Ptr CChar -> IO (Ptr Word8)
+#+end_example
+
+I now have access to a =c_md5= function, which go directly over to the C
+library to do its work. Not too shabby!
+
+As for the IO Monad, here is the =main= function for Hackports:
+
+#+begin_example
+main :: IO ()
+main = do
+  createDirectoryIfMissing True "haskell"
+  pkgs ,- allPackages verbose
+  mapM writePortfile pkgs
+  putStrLn "Hackage has been exported to MacPorts format in haskell/"
+#+end_example
+
+The trickiest part for me was understanding how =mapM= differs from
+=map=. Whereas =map= takes a list of values and returns a list of
+values, =mapM= takes a list of values and returns a list of actions that
+get invoked in sequence in the current Monad (in this case, =IO=).

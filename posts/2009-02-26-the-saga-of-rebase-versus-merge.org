@@ -1,0 +1,42 @@
+---
+title: The saga of rebase versus merge
+tags: tech, publish=newartisans
+---
+
+Following on my last entry, where I built a better =pre-commit= hook to
+ensure every commit in my Git history passed =make check= with flying
+colors, I realized something today about my good friend, =rebase=.
+
+#+begin_html
+  <!--more-->
+#+end_html
+
+=git rebase= is a brilliant tool for editing history you haven't pushed
+yet. If I have a set of ten commits, and realize the 3rd commit has an
+oversight I'd like to smooth out, I can make a new commit to fix the
+problem and then merge it with that old commit, resulting in a nice,
+clean set of commits for pushing.
+
+However, using rebase at any time /invalidates the work of my
+=pre-commit= hook/. Why? Because any time I use rebase, I throw away
+whatever I've confirmed in the past about those commits. A rewritten
+commit is really a /new commit/, which means it hasn't been tested, may
+never have existed as a working tree, and certainly isn't the same as
+the previous commit, however similar its diff output may be.
+
+What this goes to show is that immutability is a requirement of sane
+integration. Not only does code go into a commit, plus a date and a
+description, but also the work that went into verifying that commit. All
+of these details are bound up in the immutable state of that commit. If
+the state is change, and the immutability guarantee broken, all bets are
+off.
+
+Thus the only way I could use rebase in confidence would be to run the
+same =pre-commit= again on every changed commit during the rebase
+operation -- which is something Git doesn't do. It thinks that if you
+rewrite a series of commits, the final HEAD will have the same contents
+as the previous HEAD, which is true. But the rebased commits leading up
+to that head, especially if their order was changed, now represent a
+fictitious history behind that new HEAD.
+
+It makes me think more and more about the virtues of merging.
