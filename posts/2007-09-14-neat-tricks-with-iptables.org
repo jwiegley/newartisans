@@ -1,6 +1,6 @@
 ---
 title: Neat tricks with iptables
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 The past few months have seen me digging deep into the world of TCP/IP

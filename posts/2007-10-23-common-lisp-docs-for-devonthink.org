@@ -1,6 +1,6 @@
 ---
 title: Common Lisp docs for DEVONthink
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 *NOTE*: I have removed the pre-built tarball of these links form my Lisp

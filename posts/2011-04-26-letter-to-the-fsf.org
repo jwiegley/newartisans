@@ -1,6 +1,6 @@
 ---
 title: Letter to the Free Software Foundation
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 The following is an amalgam of several letters I sent to Richard

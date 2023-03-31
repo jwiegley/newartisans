@@ -1,6 +1,6 @@
 ---
 title: Ready Lisp version 20090130 now available
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 There is a new version of Ready Lisp for Mac OS X available. This

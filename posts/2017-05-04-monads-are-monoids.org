@@ -1,6 +1,6 @@
 ---
 title: Monads are monoid objects
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Lately I've been working again on my Category Theory formalization in

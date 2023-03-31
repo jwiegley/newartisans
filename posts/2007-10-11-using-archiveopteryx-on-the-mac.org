@@ -1,6 +1,6 @@
 ---
 title: Using Archiveopteryx on the Mac
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 The following instructions are for a Mac running OS X 10.4. Your mileage

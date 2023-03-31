@@ -1,6 +1,6 @@
 ---
 title: Submitting Haskell functions to Z3
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 [[http://conal.net/][Conal Elliott]] has been working for several years

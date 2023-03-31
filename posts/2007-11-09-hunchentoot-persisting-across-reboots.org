@@ -1,6 +1,6 @@
 ---
 title: "Hunchentoot: Persisting across reboots"
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 In my earlier article on running Hunchentoot behind Apache, I mentioned

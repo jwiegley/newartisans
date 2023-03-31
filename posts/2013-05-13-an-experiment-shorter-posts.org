@@ -1,6 +1,6 @@
 ---
 title: "An experiment: shorter posts"
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I think one reason I've been avoiding posting to my blog lately is the

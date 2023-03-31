@@ -1,6 +1,6 @@
 ---
 title: Using local DNS caching
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I've found a very easy way to use local DNS caching on the Mac: simply

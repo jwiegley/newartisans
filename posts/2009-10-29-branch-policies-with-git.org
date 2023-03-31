@@ -1,6 +1,6 @@
 ---
 title: Branch policies with Git
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I've been managing my [[http://wiki.github.com/jwiegley/ledger][Ledger]]

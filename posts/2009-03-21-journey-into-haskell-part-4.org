@@ -1,6 +1,6 @@
 ---
 title: Journey into Haskell, part 4
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I've been reading [[http://book.realworldhaskell.org/][Real World

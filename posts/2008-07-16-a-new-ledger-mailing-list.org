@@ -1,6 +1,6 @@
 ---
 title: A new Ledger mailing list
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 The Ledger project now has a new mailing list, hosted at

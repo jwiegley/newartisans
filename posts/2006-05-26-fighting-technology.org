@@ -1,6 +1,6 @@
 ---
 title: Fighting technology
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 My apologies to anyone still reading this blog, but a technical hiccup

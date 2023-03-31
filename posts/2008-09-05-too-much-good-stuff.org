@@ -1,6 +1,6 @@
 ---
 title: Too much good stuff
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I have been somewhat lax with blogging lately, because I've been too

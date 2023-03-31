@@ -1,6 +1,6 @@
 ---
 title: Defragmentation and disk images
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 There has been a small debate among some Mac users about whether

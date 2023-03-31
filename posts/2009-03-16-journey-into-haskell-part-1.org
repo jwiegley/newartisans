@@ -1,6 +1,6 @@
 ---
 title: Journey into Haskell, Part 1
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Having just begun my descent down the rabbit hole, I thought I'd try

@@ -1,6 +1,6 @@
 ---
 title: Writing SELinux policies
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I started the adventure of writing an SELinux security policy from

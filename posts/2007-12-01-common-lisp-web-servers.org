@@ -1,6 +1,6 @@
 ---
 title: Common Lisp web servers
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Recently at work my manager asked me to create a server solution that

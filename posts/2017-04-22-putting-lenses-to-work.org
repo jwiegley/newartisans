@@ -1,6 +1,6 @@
 ---
 title: Putting lenses to work
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I gave a talk a couple of weeks ago at BayHac 2017 on "Putting lenses to

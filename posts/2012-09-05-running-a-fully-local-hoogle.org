@@ -1,6 +1,6 @@
 ---
 title: Running a fully local Hoogle
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Today I finally succeeded at getting a fully local version of Hoogle

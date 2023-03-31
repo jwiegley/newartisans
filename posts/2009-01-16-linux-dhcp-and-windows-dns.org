@@ -1,6 +1,6 @@
 ---
 title: Linux DHCP and Windows DNS
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I feel a need to blog about this today because it took several days to

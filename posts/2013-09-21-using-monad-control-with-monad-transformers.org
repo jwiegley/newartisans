@@ -1,6 +1,6 @@
 ---
 title: Using monad-control with monad transformers
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 This article assumes familiarity with monads and monad transformers. If

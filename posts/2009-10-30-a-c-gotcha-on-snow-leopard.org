@@ -1,6 +1,6 @@
 ---
 title: A C++ gotcha on Snow Leopard
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I've seen this issue mentioned in some random and hard to reach places

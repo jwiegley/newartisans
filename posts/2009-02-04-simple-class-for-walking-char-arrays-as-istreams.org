@@ -1,6 +1,6 @@
 ---
 title: Simple class for walking char arrays as istreams
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 This has probably been written countless times before, but I found

@@ -1,6 +1,6 @@
 ---
 title: OpenSSH connection mastering
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I just discovered a very cool feature of SSH today: control mastering.
@@ -86,9 +86,9 @@ fi
 
 if ! ssh -S /tmp/sshsock.$$ $user@$server test -f .ssh/authorized_keys; then
     scp -o ControlPath=/tmp/sshsock.$$ \
-    ~/.ssh/id_dsa.pub $user@$server:.ssh/authorized_keys
+        ~/.ssh/id_dsa.pub $user@$server:.ssh/authorized_keys
     ssh -S /tmp/sshsock.$$ $user@$server \
-    chmod 600 $user@$server:.ssh/authorized_keys
+        chmod 600 $user@$server:.ssh/authorized_keys
 fi
 
 scp -p -o ControlPath=/tmp/sshsock.$$ \

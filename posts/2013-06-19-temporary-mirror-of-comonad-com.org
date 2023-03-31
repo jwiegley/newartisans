@@ -1,6 +1,6 @@
 ---
 title: Temporary mirror of comonad.com
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Until [[http://comonad.com][the Comonad Reader]] comes back online, I

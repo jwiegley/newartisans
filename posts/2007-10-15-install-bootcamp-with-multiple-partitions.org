@@ -1,6 +1,6 @@
 ---
 title: Install BootCamp with multiple partitions
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Just as a note to others who were dismayed by the inability to have

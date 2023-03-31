@@ -1,6 +1,6 @@
 ---
 title: "Script of the week: redirect"
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 This week's script of the week is so simple, it doesn't really deserve

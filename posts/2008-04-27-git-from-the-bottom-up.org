@@ -1,6 +1,6 @@
 ---
 title: Git from the bottom up
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 In my pursuit to understand Git, it's been helpful for me to understand

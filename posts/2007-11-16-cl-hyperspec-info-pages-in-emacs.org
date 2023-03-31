@@ -1,6 +1,6 @@
 ---
 title: CL HyperSpec Info pages in Emacs
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I just discovered the [[http://bc.tech.coop/blog/031002.html][following

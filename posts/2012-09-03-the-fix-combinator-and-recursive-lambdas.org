@@ -1,6 +1,6 @@
 ---
 title: The fix combinator and recursive lambdas
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 The =fix= combinator is a higher order function that can turn any

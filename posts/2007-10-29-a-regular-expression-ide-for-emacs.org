@@ -1,6 +1,6 @@
 ---
 title: A regular expression IDE for Emacs
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I've started work on a new mode for Emacs, which intends to be something

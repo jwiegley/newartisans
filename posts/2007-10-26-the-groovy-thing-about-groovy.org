@@ -1,6 +1,6 @@
 ---
 title: The groovy thing about Groovy
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 One of my favorite languages this year is

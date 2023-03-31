@@ -1,6 +1,6 @@
 ---
 title: Building a better pre-commit hook for Git
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Recently a friend turned me onto an

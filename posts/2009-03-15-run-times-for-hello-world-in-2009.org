@@ -1,6 +1,6 @@
 ---
 title: Run times for Hello, World in 2009
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Someone recently asked what my issue was regarding the JVM, since at the

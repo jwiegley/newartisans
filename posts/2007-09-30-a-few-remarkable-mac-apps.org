@@ -1,6 +1,6 @@
 ---
 title: A few remarkable Mac apps
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 The following is a list of some of the Mac applications I live in every

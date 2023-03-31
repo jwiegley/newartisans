@@ -1,6 +1,6 @@
 ---
 title: Hello Haskell, Goodbye Lisp
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 As some one who has enjoyed the Lisp language (in several flavors) for

@@ -1,6 +1,6 @@
 ---
 title: Applescript and UTF-8 arguments
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 The following tip is based on a hint by *mzs* found on MacOSXHints.com.

@@ -1,6 +1,6 @@
 ---
 title: Ledger 2.6.1 released
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Ledger 2.6.1 is released today. This is a bug fix release only, which

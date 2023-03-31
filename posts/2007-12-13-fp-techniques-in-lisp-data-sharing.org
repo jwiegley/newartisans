@@ -1,6 +1,6 @@
 ---
 title: "FP techniques in Lisp: Data sharing"
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Common Lisp has often been called a "multi-paradigm" language, in that

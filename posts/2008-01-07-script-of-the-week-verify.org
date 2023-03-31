@@ -1,6 +1,6 @@
 ---
 title: "Script of the week: verify"
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 This week's script uses Leopard's new =xattr= tool to store MD5 checksum

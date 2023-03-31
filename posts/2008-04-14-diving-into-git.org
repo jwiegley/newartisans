@@ -1,6 +1,6 @@
 ---
 title: Diving into Git
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 This week I decided to convert my Ledger repository over to Git.

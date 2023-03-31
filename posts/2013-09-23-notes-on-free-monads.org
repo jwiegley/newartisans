@@ -1,6 +1,6 @@
 ---
 title: Notes on Free monads
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 The following article is just a few notes on the nature of the Free

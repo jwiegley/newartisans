@@ -1,6 +1,6 @@
 ---
 title: The saga of rebase versus merge
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Following on my last entry, where I built a better =pre-commit= hook to

@@ -1,6 +1,6 @@
 ---
 title: A quick Hunchentoot primer
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I wrote yesterday about setting up Hunchentoot, a Common Lisp web server

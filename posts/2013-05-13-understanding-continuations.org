@@ -1,6 +1,6 @@
 ---
 title: Understanding continuations
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 In this tutorial I would like to talk all about continuations, to

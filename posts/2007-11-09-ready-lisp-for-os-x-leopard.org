@@ -1,6 +1,6 @@
 ---
 title: Ready Lisp for OS X Leopard
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 After upgrading my system to Leopard this weekend, I decided to refresh

@@ -1,6 +1,6 @@
 ---
 title: Unicode support on the cheap
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 I'd been avoiding adding full Unicode support to Ledger for some time,

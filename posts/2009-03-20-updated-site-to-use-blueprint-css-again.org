@@ -1,6 +1,6 @@
 ---
 title: Updated site to use Blueprint CSS again
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Recently I changed how the content on this site was generated, from

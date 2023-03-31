@@ -1,6 +1,6 @@
 ---
 title: Serving up Mercurial using mod_python
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 The following information resulted from several hours of battling with

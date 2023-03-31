@@ -1,6 +1,6 @@
 ---
 title: Simpler conduit library based on monadic folds
-tags: tech, publish=newartisans
+tags: tech
 ---
 
 Recently I was playing around with the core types in the =conduit=
