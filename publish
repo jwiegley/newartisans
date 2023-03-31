@@ -1,10 +1,5 @@
 #!/bin/bash
 
-lftp -u johnw@newartisans.com,$(pass show ftp.fastmail.com | head -1) \
-     ftp://johnw@newartisans.com@ftp.fastmail.com \
-     -e "set ssl:ca-file \"${NIX_SSL_CERT_FILE}\";
-         set ftp:ssl-allow no;
-         mirror --no-perms --no-symlinks --no-umask --overwrite --reverse \
-             ./result/share/html/newartisans \
-             /johnw.newartisans.com/files/newartisans;
-         quit"
+rclone sync -v                                                  \
+       ./result/share/html/newartisans                          \
+       fastmail:/johnw.newartisans.com/files/newartisans
