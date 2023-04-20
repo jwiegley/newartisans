@@ -1,6 +1,6 @@
 ---
-title: Journey into Haskell, Part 1
 tags: tech
+title: Journey into Haskell, Part 1
 ---
 
 Having just begun my descent down the rabbit hole, I thought I'd try

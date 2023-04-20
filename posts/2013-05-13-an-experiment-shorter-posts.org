@@ -1,6 +1,6 @@
 ---
-title: "An experiment: shorter posts"
 tags: tech
+title: "An experiment: shorter posts"
 ---
 
 I think one reason I've been avoiding posting to my blog lately is the

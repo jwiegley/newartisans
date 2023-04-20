@@ -1,6 +1,6 @@
 ---
-title: Too much good stuff
 tags: tech
+title: Too much good stuff
 ---
 
 I have been somewhat lax with blogging lately, because I've been too

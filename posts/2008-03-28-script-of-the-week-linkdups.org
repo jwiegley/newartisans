@@ -1,6 +1,6 @@
 ---
-title: "Script of the week: linkdups"
 tags: tech
+title: "Script of the week: linkdups"
 ---
 
 It's been a while since I've posted a script; life has been distracting

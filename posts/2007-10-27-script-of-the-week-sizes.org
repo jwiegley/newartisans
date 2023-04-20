@@ -1,6 +1,6 @@
 ---
-title: "Script of the week: sizes"
 tags: tech
+title: "Script of the week: sizes"
 ---
 
 For the next few months, I will have a "script of the week" each week:

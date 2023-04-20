@@ -1,6 +1,6 @@
 ---
-title: Simpler conduit library based on monadic folds
 tags: tech
+title: Simpler conduit library based on monadic folds
 ---
 
 Recently I was playing around with the core types in the =conduit=

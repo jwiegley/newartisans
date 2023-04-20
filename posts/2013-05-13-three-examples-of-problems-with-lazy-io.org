@@ -1,6 +1,6 @@
 ---
-title: Three examples of problems with Lazy I/O
 tags: tech
+title: Three examples of problems with Lazy I/O
 ---
 
 *** Problem 1: The source of exceptions is obscured

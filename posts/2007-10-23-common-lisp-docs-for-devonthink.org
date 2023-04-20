@@ -1,6 +1,6 @@
 ---
-title: Common Lisp docs for DEVONthink
 tags: tech
+title: Common Lisp docs for DEVONthink
 ---
 
 *NOTE*: I have removed the pre-built tarball of these links form my Lisp

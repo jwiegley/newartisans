@@ -1,6 +1,6 @@
 ---
-title: Git from the bottom up
 tags: tech
+title: Git from the bottom up
 ---
 
 In my pursuit to understand Git, it's been helpful for me to understand

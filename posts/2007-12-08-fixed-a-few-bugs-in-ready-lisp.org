@@ -1,6 +1,6 @@
 ---
-title: Fixed a few bugs in Ready Lisp
 tags: tech
+title: Fixed a few bugs in Ready Lisp
 ---
 
 A couple of pathname issues were discovered in the release of Ready Lisp

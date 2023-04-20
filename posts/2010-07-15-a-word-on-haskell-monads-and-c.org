@@ -1,6 +1,6 @@
 ---
-title: A word on Haskell Monads and C++
 tags: tech
+title: A word on Haskell Monads and C++
 ---
 
 After spending a good while trying to understand monads in Haskell, and

@@ -1,6 +1,6 @@
 ---
-title: Diving into Git
 tags: tech
+title: Diving into Git
 ---
 
 This week I decided to convert my Ledger repository over to Git.

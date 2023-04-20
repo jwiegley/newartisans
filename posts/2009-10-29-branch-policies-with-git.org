@@ -1,6 +1,6 @@
 ---
-title: Branch policies with Git
 tags: tech
+title: Branch policies with Git
 ---
 
 I've been managing my [[http://wiki.github.com/jwiegley/ledger][Ledger]]

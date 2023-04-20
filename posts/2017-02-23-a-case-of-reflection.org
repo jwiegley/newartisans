@@ -1,6 +1,6 @@
 ---
-title: A case of reflection
 tags: tech
+title: A case of reflection
 ---
 
 A while back, Edward Kmett wrote a library called =reflection=, based on

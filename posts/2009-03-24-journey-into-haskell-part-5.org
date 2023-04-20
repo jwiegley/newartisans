@@ -1,6 +1,6 @@
 ---
-title: Journey into Haskell, part 5
 tags: tech
+title: Journey into Haskell, part 5
 ---
 
 Haskell may be difficult to start out with, but once things start

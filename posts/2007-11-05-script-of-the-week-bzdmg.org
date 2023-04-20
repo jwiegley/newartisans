@@ -1,6 +1,6 @@
 ---
-title: "Script of the week: bzdmg"
 tags: tech
+title: "Script of the week: bzdmg"
 ---
 
 I haven't written much this past week because I've been upgrading all

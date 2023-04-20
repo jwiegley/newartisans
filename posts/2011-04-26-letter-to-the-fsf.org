@@ -1,6 +1,6 @@
 ---
-title: Letter to the Free Software Foundation
 tags: tech
+title: Letter to the Free Software Foundation
 ---
 
 The following is an amalgam of several letters I sent to Richard

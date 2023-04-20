@@ -1,6 +1,6 @@
 ---
-title: A Ledger success story
 tags: tech
+title: A Ledger success story
 ---
 
 Over the Christmas break I went on Bahá'í pilgrimage to the holy sites

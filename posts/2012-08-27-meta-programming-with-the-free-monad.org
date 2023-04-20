@@ -1,6 +1,6 @@
 ---
-title: Meta-programming with the Free Monad
 tags: tech
+title: Meta-programming with the Free Monad
 ---
 
 The Free Monad is something I've been having a great deal of difficulty

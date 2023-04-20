@@ -1,6 +1,6 @@
 ---
-title: Moving to Movable Type
 tags: tech
+title: Moving to Movable Type
 ---
 
 The blog has now fully moved over to Movable Type, including all past

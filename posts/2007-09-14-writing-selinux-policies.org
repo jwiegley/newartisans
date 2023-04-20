@@ -1,6 +1,6 @@
 ---
-title: Writing SELinux policies
 tags: tech
+title: Writing SELinux policies
 ---
 
 I started the adventure of writing an SELinux security policy from

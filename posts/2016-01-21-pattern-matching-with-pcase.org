@@ -1,6 +1,6 @@
 ---
-title: "Emacs: Pattern Matching with pcase"
 tags: tech
+title: "Emacs: Pattern Matching with pcase"
 ---
 
 This is a tutorial on how to use the =pcase= macro in modern flavors of

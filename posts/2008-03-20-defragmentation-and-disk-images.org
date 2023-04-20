@@ -1,6 +1,6 @@
 ---
-title: Defragmentation and disk images
 tags: tech
+title: Defragmentation and disk images
 ---
 
 There has been a small debate among some Mac users about whether

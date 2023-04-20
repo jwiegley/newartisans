@@ -1,6 +1,6 @@
 ---
-title: Securing the Buildbot
 tags: tech
+title: Securing the Buildbot
 ---
 
 One of the services I'm setting up on =newartisans.com= is

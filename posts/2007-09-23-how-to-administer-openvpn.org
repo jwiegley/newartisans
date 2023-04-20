@@ -1,6 +1,6 @@
 ---
-title: How to administer OpenVPN
 tags: tech
+title: How to administer OpenVPN
 ---
 
 This document describes how to administrate OpenVPN on a Debian

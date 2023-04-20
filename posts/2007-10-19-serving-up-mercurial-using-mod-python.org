@@ -1,6 +1,6 @@
 ---
-title: Serving up Mercurial using mod_python
 tags: tech
+title: Serving up Mercurial using mod_python
 ---
 
 The following information resulted from several hours of battling with

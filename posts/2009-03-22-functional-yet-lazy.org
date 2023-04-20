@@ -1,6 +1,6 @@
 ---
-title: How laziness changes thinking in Haskell
 tags: tech
+title: How laziness changes thinking in Haskell
 ---
 
 As I explore Haskell, I'm discovering that one of its trickiest aspects

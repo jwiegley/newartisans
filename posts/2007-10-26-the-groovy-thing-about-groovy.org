@@ -1,6 +1,6 @@
 ---
-title: The groovy thing about Groovy
 tags: tech
+title: The groovy thing about Groovy
 ---
 
 One of my favorite languages this year is

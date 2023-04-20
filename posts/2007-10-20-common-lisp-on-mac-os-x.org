@@ -1,6 +1,6 @@
 ---
-title: Common Lisp on Mac OS X
 tags: tech
+title: Common Lisp on Mac OS X
 ---
 
 You could be having fun with Common Lisp on your Mac right now; you know

@@ -1,6 +1,6 @@
 ---
-title: Run the Spotlight indexer at a lower priority
 tags: tech
+title: Run the Spotlight indexer at a lower priority
 ---
 
 I realized the other day that on OS X, the Spotlight indexing process is

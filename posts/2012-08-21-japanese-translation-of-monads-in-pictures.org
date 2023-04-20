@@ -1,6 +1,6 @@
 ---
-title: Japanese translation of "Monads in pictures"
 tags: tech
+title: Japanese translation of "Monads in pictures"
 ---
 
 Yesterday's artice on [[/2012/08/monads-in-pictures/][Monads in

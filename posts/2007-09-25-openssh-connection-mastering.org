@@ -1,6 +1,6 @@
 ---
-title: OpenSSH connection mastering
 tags: tech
+title: OpenSSH connection mastering
 ---
 
 I just discovered a very cool feature of SSH today: control mastering.

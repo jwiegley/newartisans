@@ -1,6 +1,6 @@
 ---
-title: "Script of the week: redirect"
 tags: tech
+title: "Script of the week: redirect"
 ---
 
 This week's script of the week is so simple, it doesn't really deserve

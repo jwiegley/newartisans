@@ -1,6 +1,6 @@
 ---
-title: Stateful directory scanning in Python
 tags: tech
+title: Stateful directory scanning in Python
 ---
 
 This article describes how to utilize the stateful directory scanning

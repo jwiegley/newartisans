@@ -1,6 +1,6 @@
 ---
-title: Parsing with Haskell and Attoparsec
 tags: tech
+title: Parsing with Haskell and Attoparsec
 ---
 
 In an effort to better understand parsing in the Haskell world, I

@@ -1,6 +1,6 @@
 ---
-title: Fighting technology
 tags: tech
+title: Fighting technology
 ---
 
 My apologies to anyone still reading this blog, but a technical hiccup

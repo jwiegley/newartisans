@@ -1,6 +1,6 @@
 ---
-title: Get Lisp running on OS X (easy version!)
 tags: tech
+title: Get Lisp running on OS X (easy version!)
 ---
 
 A few days ago I posted instructions for getting a freeware based Common

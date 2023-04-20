@@ -1,6 +1,6 @@
 ---
-title: Update of gitlib libraries on Hackage, plus git-monitor
 tags: tech
+title: Update of gitlib libraries on Hackage, plus git-monitor
 ---
 
 I've decided after many months of active development to release version

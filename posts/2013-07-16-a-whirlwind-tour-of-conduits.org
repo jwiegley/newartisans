@@ -1,6 +1,6 @@
 ---
-title: A whirlwind tour of conduits
 tags: tech
+title: A whirlwind tour of conduits
 ---
 
 While talking with people on IRC, I've encountered enough confusion

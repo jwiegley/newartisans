@@ -1,6 +1,6 @@
 ---
-title: Arrows are simpler than they appear
 tags: tech
+title: Arrows are simpler than they appear
 ---
 
 I have found that arrows in Haskell are far simpler than they might

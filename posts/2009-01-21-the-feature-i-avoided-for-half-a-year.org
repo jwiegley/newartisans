@@ -1,6 +1,6 @@
 ---
-title: The feature I avoided for half a year
 tags: tech
+title: The feature I avoided for half a year
 ---
 
 The other day I finally implemented a feature in Ledger which I'd

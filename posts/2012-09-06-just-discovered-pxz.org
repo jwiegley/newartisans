@@ -1,6 +1,6 @@
 ---
-title: Just discovered pxz
 tags: tech
+title: Just discovered pxz
 ---
 
 To show just how significant parallelized algorithms can be, today I

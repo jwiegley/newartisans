@@ -1,6 +1,6 @@
 ---
-title: Life and times of a TCP packet
 tags: tech
+title: Life and times of a TCP packet
 ---
 
 Have you ever wondered how data reaches your computer from all over the

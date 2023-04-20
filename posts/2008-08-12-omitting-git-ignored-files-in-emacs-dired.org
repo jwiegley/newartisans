@@ -1,6 +1,6 @@
 ---
-title: Omitting Git-ignored files in Emacs dired
 tags: tech
+title: Omitting Git-ignored files in Emacs dired
 ---
 
 Adding the following snippet to your =.emacs= file will cause Emacs'

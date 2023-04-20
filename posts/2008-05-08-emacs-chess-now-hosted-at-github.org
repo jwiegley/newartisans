@@ -1,6 +1,6 @@
 ---
-title: Emacs Chess now hosted at GitHub
 tags: tech
+title: Emacs Chess now hosted at GitHub
 ---
 
 Emacs Chess is a fully featured chess client written entirely in Emacs

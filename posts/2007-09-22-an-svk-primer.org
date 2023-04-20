@@ -1,6 +1,6 @@
 ---
-title: An SVK primer
 tags: tech
+title: An SVK primer
 ---
 
 Today's entry is a little primer I wrote for some co-workers at CEG, on

@@ -1,6 +1,6 @@
 ---
-title: Journey into Haskell, part 6
 tags: tech
+title: Journey into Haskell, part 6
 ---
 
 Another thing to be learned down the Haskell rabbit-hole: Thinking in

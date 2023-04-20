@@ -1,6 +1,6 @@
 ---
-title: Nightly builds of GHC HEAD for OS X 10.8
 tags: tech
+title: Nightly builds of GHC HEAD for OS X 10.8
 ---
 
 Since mid-January, I've been running nightly builds of GHC on my Mac Pro

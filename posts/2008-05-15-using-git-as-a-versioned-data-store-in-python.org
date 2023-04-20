@@ -1,6 +1,6 @@
 ---
-title: Using Git as a versioned data store in Python
 tags: tech
+title: Using Git as a versioned data store in Python
 ---
 
 Git has sometimes been described as a versioning file-system which

@@ -1,6 +1,6 @@
 ---
-title: Response to PG's "How to Do Philosophy"
 tags: tech
+title: Response to PG's "How to Do Philosophy"
 ---
 
 Back in late 2007, Paul Graham put up an essay titled "How to Do

@@ -1,6 +1,6 @@
 ---
-title: The JVM, and costs vs. benefits
 tags: tech
+title: The JVM, and costs vs. benefits
 ---
 
 In a [[/2009/03/hello-haskell-goodbye-lisp.html][recent entry]] on

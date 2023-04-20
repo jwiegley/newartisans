@@ -1,6 +1,6 @@
 ---
-title: Install BootCamp with multiple partitions
 tags: tech
+title: Install BootCamp with multiple partitions
 ---
 
 Just as a note to others who were dismayed by the inability to have

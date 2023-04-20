@@ -1,6 +1,6 @@
 ---
-title: Monads in Pictures
 tags: tech
+title: Monads in Pictures
 ---
 
 This is not a tutoral on monads, nor will I use any math terms here.

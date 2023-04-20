@@ -1,6 +1,6 @@
 ---
-title: Using org-mode as a Day Planner
 tags: tech
+title: Using org-mode as a Day Planner
 ---
 
 The following document describes how to use Carsten Dominik's excellent
